@@ -52,30 +52,31 @@ function esc(s) {
     .replaceAll('"', "&quot;");
 }
 
-function signalBars(n = 4, color = "#000") {
-  const heights = [4.5, 7, 9.5, 12];
-  return heights
-    .map((h, i) => {
-      const on = i < n;
-      return `<rect x="${i * 4.6}" y="${12 - h}" width="3.2" height="${h}" rx="1" fill="${color}" fill-opacity="${on ? 1 : 0.3}"/>`;
-    })
-    .join("");
-}
-
-function wifiSvg(color = "#000") {
-  return `<svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 2.3c2.4 0 4.6.9 6.3 2.5l1.2-1.2A10.6 10.6 0 0 0 8.5.6 10.6 10.6 0 0 0 1 3.6l1.2 1.2a8.9 8.9 0 0 1 6.3-2.5Zm0 3.4c1.5 0 2.9.6 3.9 1.5l1.2-1.2a7.3 7.3 0 0 0-10.2 0l1.2 1.2c1-.9 2.4-1.5 3.9-1.5Zm0 3.4c-.6 0-1.2.3-1.6.7l1.6 1.6 1.6-1.6c-.4-.4-1-.7-1.6-.7Z" fill="${color}"/></svg>`;
-}
-
-function batterySvg(pct, color = "#000") {
+function statusIcons({ sinal = 4, wifi = true, bateria = 80, color = "#fff" }) {
+  const pct = Math.min(100, Math.max(0, Number(bateria) || 0));
   const low = pct <= 20;
   const fill = low ? "#FF3B30" : color;
-  const w = Math.max(2, (pct / 100) * 19);
-  return `
-  <svg width="28" height="13" viewBox="0 0 28 13">
-    <rect x="0.6" y="0.6" width="23.8" height="11.8" rx="3.6" fill="none" stroke="${color}" stroke-opacity="0.4" stroke-width="1.1"/>
-    <rect x="2.6" y="2.6" width="${w}" height="7.8" rx="2" fill="${fill}"/>
-    <path d="M25.8 4.4v4.2c.8-.3 1.4-1.1 1.4-2.1s-.6-1.8-1.4-2.1Z" fill="${color}" fill-opacity="0.45"/>
-  </svg>`;
+  const bodyW = 22;
+  const innerW = Math.max(2.4, (pct / 100) * 17.5);
+  const bars = [4.6, 6.6, 8.6, 10.6]
+    .map((h, i) => {
+      const x = 0.5 + i * 4.35;
+      const y = 12.2 - h;
+      const on = i < sinal;
+      return `<rect x="${x}" y="${y}" width="2.9" height="${h}" rx="0.85" fill="${color}" fill-opacity="${on ? 1 : 0.28}"/>`;
+    })
+    .join("");
+  const wifiPath = wifi
+    ? `<g transform="translate(20.5,0)"><path d="M8.2 1.9c2.3 0 4.4.85 6 2.3l-1.05 1.05a7 7 0 0 0-9.9 0L2.2 4.2a8.9 8.9 0 0 1 6-2.3Zm0 3.15c1.45 0 2.75.55 3.75 1.45L10.9 7.55a3.9 3.9 0 0 0-5.4 0L4.45 6.5A5.35 5.35 0 0 1 8.2 5.05Zm0 3.15c.65 0 1.25.25 1.7.65L8.2 11.05 6.5 8.85c.45-.4 1.05-.65 1.7-.65Z" fill="${color}"/></g>`
+    : "";
+  const batX = wifi ? 40.5 : 21;
+  const battery = `<g transform="translate(${batX},0.5)">
+      <rect x="0.5" y="0.5" width="${bodyW}" height="11" rx="3" fill="none" stroke="${color}" stroke-opacity="0.4" stroke-width="1"/>
+      <rect x="2.1" y="2.1" width="${innerW.toFixed(2)}" height="7.8" rx="1.7" fill="${fill}"/>
+      <rect x="${bodyW + 0.5}" y="3.6" width="2.2" height="4.8" rx="1" fill="${color}" fill-opacity="0.45"/>
+    </g>`;
+  const totalW = batX + bodyW + 4;
+  return `<svg class="status-icons" width="${totalW}" height="13" viewBox="0 0 ${totalW} 13">${bars}${wifiPath}${battery}</svg>`;
 }
 
 function fileToDataUri(filePath, fallback = null) {
@@ -300,12 +301,12 @@ export function buildHtml(data, photoSrc, baseDir = __dirname) {
   .status {
     position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 30;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 28px 0 42px;
+    padding: 14px 16px 0 32px;
     color: ${t.fg};
   }
-  .status .time { font-size: 16px; font-weight: 600; letter-spacing: -0.2px; line-height: 1; display: block; }
-  .status-right { display: flex; align-items: center; gap: 7px; height: 12px; line-height: 0; }
-  .status-right svg { display: block; flex-shrink: 0; overflow: visible; }
+  .status .time { font-size: 16px; font-weight: 600; letter-spacing: -0.2px; line-height: 13px; height: 13px; display: block; }
+  .status-right { display: flex; align-items: center; justify-content: flex-end; margin-left: auto; height: 13px; line-height: 0; }
+  .status-icons { display: block; flex-shrink: 0; }
 
   .header {
     position: absolute; top: 58px; left: 0; right: 0; height: 44px; z-index: 30;
@@ -421,11 +422,7 @@ export function buildHtml(data, photoSrc, baseDir = __dirname) {
 
     <div class="status">
       <div class="time" data-edit="horaStatus">${esc(horaStatus)}</div>
-      <div class="status-right">
-        <svg width="18" height="12" viewBox="0 0 18 12">${signalBars(sinal, t.fg)}</svg>
-        ${wifi ? wifiSvg(t.fg) : ""}
-        ${batterySvg(bateria, t.fg)}
-      </div>
+      <div class="status-right">${statusIcons({ sinal, wifi, bateria, color: t.fg })}</div>
     </div>
 
     <div class="header">

@@ -57,33 +57,40 @@ function checks(status) {
   </svg>`;
 }
 
-function signal(n, color) {
-  // 4 barras, baseline comum (viewBox 19×12)
-  return [5, 7.2, 9.4, 11.5]
-    .map((h, i) => {
-      const x = 1 + i * 4.5;
-      const y = 12 - h;
-      const on = i < n;
-      return `<rect x="${x}" y="${y}" width="3.1" height="${h}" rx="0.9" fill="${color}" fill-opacity="${on ? 1 : 0.28}"/>`;
-    })
-    .join("");
-}
-
-function wifiIcon(color) {
-  // arco wifi centrado opticamente na mesma faixa 12px
-  return `<path d="M9.5 2.1c2.55 0 4.9.95 6.7 2.55l-1.15 1.15a7.6 7.6 0 0 0-11.1 0L2.8 4.65A9.9 9.9 0 0 1 9.5 2.1Zm0 3.35c1.6 0 3.05.6 4.15 1.6l-1.15 1.15a4.3 4.3 0 0 0-6 0L5.35 7.05a5.9 5.9 0 0 1 4.15-1.6Zm0 3.35c.7 0 1.35.25 1.85.7L9.5 11.3 7.65 9.5c.5-.45 1.15-.7 1.85-.7Z" fill="${color}"/>`;
-}
-
-function battery(pct, color) {
+/** Status icons as ONE svg so signal/wifi/battery share the same baseline. */
+function statusIcons({ sinal = 4, wifi = true, bateria = 80, color = "#fff" }) {
+  const pct = Math.min(100, Math.max(0, Number(bateria) || 0));
   const low = pct <= 20;
   const fill = low ? "#FF3B30" : color;
-  const w = Math.max(2.2, (pct / 100) * 18.4);
-  // corpo 23×12 + pino — altura total 12, alinhado com sinal/wifi
-  return `<svg class="ico bat" width="27" height="12" viewBox="0 0 27 12" aria-hidden="true">
-    <rect x="0.5" y="0.5" width="22" height="11" rx="3.2" fill="none" stroke="${color}" stroke-opacity="0.45" stroke-width="1"/>
-    <rect x="2" y="2" width="${w.toFixed(2)}" height="8" rx="1.8" fill="${fill}"/>
-    <path d="M23.5 3.6v4.8c1.1-.35 1.1-4.45 0-4.8Z" fill="${color}" fill-opacity="0.45"/>
-  </svg>`;
+  const bodyW = 22;
+  const innerMax = 17.5;
+  const innerW = Math.max(2.4, (pct / 100) * innerMax);
+
+  // Shared mid-line y=6.5 in a 13-tall strip. All icons sit on that.
+  const bars = [4.6, 6.6, 8.6, 10.6]
+    .map((h, i) => {
+      const x = 0.5 + i * 4.35;
+      const y = 12.2 - h;
+      const on = i < sinal;
+      return `<rect x="${x}" y="${y}" width="2.9" height="${h}" rx="0.85" fill="${color}" fill-opacity="${on ? 1 : 0.28}"/>`;
+    })
+    .join("");
+
+  const wifiPath = wifi
+    ? `<g transform="translate(20.5,0)">
+        <path d="M8.2 1.9c2.3 0 4.4.85 6 2.3l-1.05 1.05a7 7 0 0 0-9.9 0L2.2 4.2a8.9 8.9 0 0 1 6-2.3Zm0 3.15c1.45 0 2.75.55 3.75 1.45L10.9 7.55a3.9 3.9 0 0 0-5.4 0L4.45 6.5A5.35 5.35 0 0 1 8.2 5.05Zm0 3.15c.65 0 1.25.25 1.7.65L8.2 11.05 6.5 8.85c.45-.4 1.05-.65 1.7-.65Z" fill="${color}"/>
+      </g>`
+    : "";
+
+  const batX = wifi ? 40.5 : 21;
+  const battery = `<g transform="translate(${batX},0.5)">
+      <rect x="0.5" y="0.5" width="${bodyW}" height="11" rx="3" fill="none" stroke="${color}" stroke-opacity="0.4" stroke-width="1"/>
+      <rect x="2.1" y="2.1" width="${innerW.toFixed(2)}" height="7.8" rx="1.7" fill="${fill}"/>
+      <rect x="${bodyW + 0.5}" y="3.6" width="2.2" height="4.8" rx="1" fill="${color}" fill-opacity="0.45"/>
+    </g>`;
+
+  const totalW = batX + bodyW + 4;
+  return `<svg class="status-icons" width="${totalW}" height="13" viewBox="0 0 ${totalW} 13" aria-hidden="true">${bars}${wifiPath}${battery}</svg>`;
 }
 
 function avatarSvg() {
@@ -146,10 +153,10 @@ export function renderPhone(data) {
     #phone .fade-top{position:absolute;top:0;left:0;right:0;height:118px;z-index:18;background:linear-gradient(to bottom,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 72%,rgba(${t.fade},0))}
     #phone .fade-bottom{position:absolute;bottom:0;left:0;right:0;height:92px;z-index:18;background:linear-gradient(to top,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 62%,rgba(${t.fade},0))}
     #phone .glass{background:${t.glass};backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:.5px solid ${t.glassBorder};box-shadow:inset 0 1px 0 ${t.glassHi},0 2px 10px ${t.shadow}}
-    #phone .status{position:absolute;top:0;left:0;right:0;height:54px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:12px 28px 0 42px;color:${t.fg}}
-    #phone .time{font-size:16px;font-weight:600;letter-spacing:-.2px;line-height:1;display:block}
-    #phone .status-right{display:flex;align-items:center;gap:7px;height:12px;line-height:0}
-    #phone .status-right .ico{display:block;flex-shrink:0;overflow:visible}
+    #phone .status{position:absolute;top:0;left:0;right:0;height:54px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0 32px;color:${t.fg}}
+    #phone .time{font-size:16px;font-weight:600;letter-spacing:-.2px;line-height:13px;height:13px;display:block}
+    #phone .status-right{display:flex;align-items:center;justify-content:flex-end;margin-left:auto;height:13px;line-height:0}
+    #phone .status-icons{display:block;flex-shrink:0}
     #phone .header{position:absolute;top:58px;left:0;right:0;height:44px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 16px}
     #phone .header-left{display:flex;align-items:center;min-width:0;height:44px}
     #phone .back{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
@@ -184,11 +191,7 @@ export function renderPhone(data) {
   <div class="fade-top"></div><div class="fade-bottom"></div>
   <div class="status">
     <div class="time" data-edit="horaStatus" contenteditable="true">${esc(data.horaStatus || "09:14")}</div>
-    <div class="status-right">
-      <svg class="ico" width="19" height="12" viewBox="0 0 19 12" aria-hidden="true">${signal(sinal, t.fg)}</svg>
-      ${showWifi ? `<svg class="ico" width="19" height="12" viewBox="0 0 19 12" aria-hidden="true">${wifiIcon(t.fg)}</svg>` : ""}
-      ${battery(bateria, t.fg)}
-    </div>
+    <div class="status-right">${statusIcons({ sinal, wifi: showWifi, bateria, color: t.fg })}</div>
   </div>
   <div class="header">
     <div class="header-left">
