@@ -190,7 +190,7 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 
 <script type="module">
 import { EXAMPLES, renderPhone } from './phone.mjs';
-import { randomConversation, randomFoto, randomNome } from './shuffle.mjs';
+import { randomConversation, randomFoto, randomMsgImg, randomNome } from './shuffle.mjs';
 
 const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null, avatars: { homem: [], mulher: [] } };
 const $ = (s) => document.querySelector(s);
@@ -334,14 +334,69 @@ function setPath(obj, path, value){
   const last=parts.at(-1); cur[Number.isNaN(Number(last))?last:Number(last)]=value;
 }
 
-function addMsg(){ state.data.mensagens.push({de:'ela',texto:'nova mensagem',hora:'12:00'}); syncForm(); paint(); }
-function addData(){ state.data.mensagens.push({tipo:'data',texto:'hoje'}); syncForm(); paint(); }
+function bumpHora(hora){
+  const m = String(hora||'').match(/^(\d{1,2}):(\d{2})$/);
+  if(!m) return '12:00';
+  let h = Number(m[1]), mi = Number(m[2]) + 1;
+  if(mi >= 60){ h = (h + 1) % 24; mi = 0; }
+  return `${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}`;
+}
+function horaApos(i){
+  const list = state.data.mensagens || [];
+  for(let j = i; j >= 0; j--){
+    if(list[j]?.hora) return bumpHora(list[j].hora);
+  }
+  return state.data.horaStatus || '12:00';
+}
+function hojeLabel(){
+  const MESES = ['jan.','fev.','mar.','abr.','mai.','jun.','jul.','ago.','set.','out.','nov.','dez.'];
+  const d = new Date();
+  return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
+}
+function addMsg(){ state.data.mensagens.push({de:'ela',texto:'nova mensagem',hora:horaApos(state.data.mensagens.length-1)}); syncForm(); paint(); }
+function addData(){ state.data.mensagens.push({tipo:'data',texto:hojeLabel()}); syncForm(); paint(); }
 
 document.addEventListener('focusout',(e)=>{
   const el=e.target.closest?.('[data-edit]'); if(!el) return;
   setPath(state.data, el.dataset.edit, el.innerText); syncForm();
 });
 document.addEventListener('click',(e)=>{
+  const actBtn = e.target.closest?.('[data-msg-act]');
+  if(actBtn){
+    e.preventDefault(); e.stopPropagation();
+    const i = Number(actBtn.dataset.i);
+    const act = actBtn.dataset.msgAct;
+    const list = state.data.mensagens;
+    if(!Number.isInteger(i) || !list[i]) return;
+    if(act === 'del'){
+      list.splice(i, 1);
+      syncForm(); paint(); status('Mensagem removida', true);
+      return;
+    }
+    if(act === 'side'){
+      const m = list[i];
+      if(m.tipo === 'data') return;
+      m.de = m.de === 'eu' ? 'ela' : 'eu';
+      if(m.de === 'eu') m.status = m.status || 'lido';
+      else delete m.status;
+      syncForm(); paint();
+      return;
+    }
+    if(act === 'add'){
+      const prev = list[i];
+      const de = prev?.tipo === 'data' ? 'ela' : (prev?.de === 'eu' ? 'ela' : 'eu');
+      const item = { de, texto: 'nova mensagem', hora: horaApos(i) };
+      if(de === 'eu') item.status = 'lido';
+      list.splice(i + 1, 0, item);
+      syncForm(); paint(); status('Mensagem adicionada', true);
+      return;
+    }
+    if(act === 'date'){
+      list.splice(i + 1, 0, { tipo:'data', texto: hojeLabel() });
+      syncForm(); paint(); status('Data inserida', true);
+      return;
+    }
+  }
   const shuff=e.target.closest?.('[data-shuffle]');
   if(shuff){
     e.preventDefault(); e.stopPropagation();
@@ -357,9 +412,17 @@ document.addEventListener('click',(e)=>{
       syncForm(); paint(); status('Nome trocado', true);
       return;
     }
+    if(kind==='msg-img'){
+      const i = Number(shuff.dataset.i);
+      const m = state.data.mensagens?.[i];
+      if(!m || m.tipo === 'data') return;
+      m.imagem = randomMsgImg(m.imagem || '');
+      syncForm(); paint(); status('Imagem trocada', true);
+      return;
+    }
   }
+  if(e.target.closest?.('[data-msg-act],[data-shuffle]')) return;
   const el=e.target.closest?.('[data-upload]'); if(!el) return;
-  if(e.target.closest?.('[data-shuffle]')) return;
   e.preventDefault(); state.uploadPath=el.dataset.upload; $('#file').click();
 });
 
@@ -397,7 +460,16 @@ $('#gerar').onclick=async ()=>{
     pull(); paint(); status('Gerando…');
     const node=document.querySelector('#phone'); if(!node) throw new Error('preview vazio');
     node.querySelectorAll('[data-edit],[data-upload]').forEach(el=>{ el.removeAttribute('contenteditable'); el.style.outline='none'; });
-    node.querySelectorAll('.shuff').forEach(el=>el.remove());
+    node.querySelectorAll('.shuff,.msg-tools').forEach(el=>el.remove());
+    node.querySelectorAll('.media-wrap').forEach(wrap=>{
+      const img = wrap.querySelector('img.media');
+      if(img) wrap.replaceWith(img);
+    });
+    node.querySelectorAll('.row.editable,.date-pill.editable').forEach(el=>{
+      el.classList.remove('editable');
+      el.style.paddingTop = '0';
+      el.style.marginTop = '';
+    });
     const dataUrl=await modernScreenshot.domToPng(node,{ width:390, height:844, scale:3 });
     const a=document.createElement('a');
     a.href=dataUrl; a.download=`${(state.data.contato||'print').replace(/\s+/g,'-').toLowerCase()}.png`;

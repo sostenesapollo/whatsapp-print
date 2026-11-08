@@ -103,12 +103,32 @@ function theme(dark) {
       };
 }
 
-function msgsHtml(list) {
+const ICO = {
+  shuff: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 3h5v5M8 3H3v5M21 3l-7.5 7.5M3 3l7.5 7.5M16 21h5v-5M8 21H3v-5M21 21l-7.5-7.5M3 21l7.5-7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  side: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7H3.5M3.5 7 6 4.5M3.5 7 6 9.5M16 17h4.5m0 0L18 14.5m2.5 2.5L18 19.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  plus: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`,
+  x: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`,
+  date: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+};
+
+function msgTools(i, { date = false } = {}) {
+  const sideBtn = date
+    ? ""
+    : `<button type="button" class="tool" data-msg-act="side" data-i="${i}" title="Trocar lado">${ICO.side}</button>`;
+  return `<div class="msg-tools" contenteditable="false">
+    ${sideBtn}
+    <button type="button" class="tool" data-msg-act="add" data-i="${i}" title="Adicionar mensagem abaixo">${ICO.plus}</button>
+    <button type="button" class="tool" data-msg-act="date" data-i="${i}" title="Inserir data abaixo">${ICO.date}</button>
+    <button type="button" class="tool danger" data-msg-act="del" data-i="${i}" title="Remover">${ICO.x}</button>
+  </div>`;
+}
+
+function msgsHtml(list, edit = false) {
   let html = "";
   for (let i = 0; i < list.length; i++) {
     const m = list[i];
     if (m.tipo === "data") {
-      html += `<div class="date-pill"><span data-edit="mensagens.${i}.texto" contenteditable="true">${esc(m.texto)}</span></div>`;
+      html += `<div class="date-pill${edit ? " editable" : ""}">${edit ? msgTools(i, { date: true }) : ""}<span data-edit="mensagens.${i}.texto" contenteditable="true">${esc(m.texto)}</span></div>`;
       continue;
     }
     const next = list[i + 1], prev = list[i - 1];
@@ -118,15 +138,18 @@ function msgsHtml(list) {
     const last = !next || next.tipo === "data" || next.de !== m.de;
     const meta = `<span class="meta"><span data-edit="mensagens.${i}.hora" contenteditable="true">${esc(m.hora || "")}</span>${mine ? checks(m.status || "lido") : ""}</span>`;
     const text = m.texto ? `<span class="text" data-edit="mensagens.${i}.texto" contenteditable="true">${esc(m.texto)}</span>` : "";
-    const img = m.imagem ? `<img class="media" src="${esc(m.imagem)}" alt="" data-upload="mensagens.${i}.imagem"/>` : "";
-    html += `<div class="row ${side}${first ? " first" : ""}${last ? " tail" : ""}">
+    const img = m.imagem
+      ? edit
+        ? `<div class="media-wrap"><button type="button" class="shuff" data-shuffle="msg-img" data-i="${i}" title="Trocar imagem">${ICO.shuff}</button><img class="media" src="${esc(m.imagem)}" alt="" data-upload="mensagens.${i}.imagem"/></div>`
+        : `<img class="media" src="${esc(m.imagem)}" alt="" data-upload="mensagens.${i}.imagem"/>`
+      : "";
+    html += `<div class="row ${side}${first ? " first" : ""}${last ? " tail" : ""}${edit ? " editable" : ""}">
+      ${edit ? msgTools(i) : ""}
       <div class="bubble ${side}${m.imagem ? " has-img" : ""}">${img}${m.imagem ? `<div class="caption">${text}${meta}</div>` : `${text}${meta}`}</div>
     </div>`;
   }
   return html;
 }
-
-const SHUFF_ICO = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 3h5v5M8 3H3v5M21 3l-7.5 7.5M3 3l7.5 7.5M16 21h5v-5M8 21H3v-5M21 21l-7.5-7.5M3 21l7.5-7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 export function renderPhone(data) {
   const dark = data.tema !== "claro";
@@ -137,58 +160,77 @@ export function renderPhone(data) {
   const showWifi = data.wifi !== false;
   const edit = data.editavel === true;
   const avatarHtml = edit
-    ? `<div class="avatar-wrap"><img class="avatar" src="${esc(foto)}" alt="" data-upload="foto"/><button type="button" class="shuff" data-shuffle="foto" title="Trocar foto">${SHUFF_ICO}</button></div>`
+    ? `<div class="avatar-wrap"><button type="button" class="shuff" data-shuffle="foto" title="Trocar foto">${ICO.shuff}</button><img class="avatar" src="${esc(foto)}" alt="" data-upload="foto"/></div>`
     : `<img class="avatar" src="${esc(foto)}" alt="" style="margin-left:10px"/>`;
   const nameHtml = edit
-    ? `<div class="name-wrap"><div class="name" data-edit="contato" contenteditable="true">${esc(data.contato || "Contato")}</div><button type="button" class="shuff" data-shuffle="nome" title="Trocar nome">${SHUFF_ICO}</button></div>`
+    ? `<div class="name-wrap"><button type="button" class="shuff" data-shuffle="nome" title="Trocar nome">${ICO.shuff}</button><div class="name" data-edit="contato" contenteditable="true">${esc(data.contato || "Contato")}</div></div>`
     : `<div class="name">${esc(data.contato || "Contato")}</div>`;
 
   return `<div class="phone" id="phone" style="width:${W}px;height:${H}px;position:relative;overflow:hidden;background:${t.bg};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
   <style>
     #phone *{box-sizing:border-box;margin:0;padding:0}
     #phone .wallpaper{position:absolute;inset:0;background:${t.bg} url('${t.wallpaper}') center/cover no-repeat;${dark ? "filter:brightness(.72);" : ""}}
-    #phone .fade-top{position:absolute;top:0;left:0;right:0;height:118px;z-index:18;background:linear-gradient(to bottom,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 72%,rgba(${t.fade},0))}
-    #phone .fade-bottom{position:absolute;bottom:0;left:0;right:0;height:92px;z-index:18;background:linear-gradient(to top,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 62%,rgba(${t.fade},0))}
+    #phone .fade-top{position:absolute;top:0;left:0;right:0;height:118px;z-index:18;background:linear-gradient(to bottom,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 72%,rgba(${t.fade},0));pointer-events:none}
+    #phone .fade-bottom{position:absolute;bottom:0;left:0;right:0;height:92px;z-index:18;background:linear-gradient(to top,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 62%,rgba(${t.fade},0));pointer-events:none}
     #phone .glass{background:${t.glass};backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:.5px solid ${t.glassBorder};box-shadow:inset 0 1px 0 ${t.glassHi},0 2px 10px ${t.shadow}}
     #phone .status{position:absolute;top:0;left:0;right:0;width:100%;max-width:none;height:54px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px 14px 0 30px;color:${t.fg};text-align:left;font-size:inherit}
     #phone .time{font-size:16px;font-weight:600;letter-spacing:-.2px;line-height:12px;height:12px;display:block}
     #phone .status-right{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-left:auto;height:12px;line-height:0;flex-shrink:0}
     #phone .status-right .si{display:block;flex-shrink:0;overflow:visible}
-    #phone .header{position:absolute;top:58px;left:0;right:0;height:44px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 16px}
-    #phone .header-left{display:flex;align-items:center;min-width:0;height:44px}
+    #phone .header{position:absolute;top:58px;left:0;right:0;height:44px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 16px;overflow:visible}
+    #phone .header-left{display:flex;align-items:center;min-width:0;height:44px;overflow:visible}
     #phone .back{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
-    #phone .avatar-wrap,#phone .name-wrap{position:relative;display:inline-flex;align-items:center;flex-shrink:0}
-    #phone .avatar-wrap{margin-left:10px}
-    #phone .name-wrap{margin-left:10px;min-width:0;max-width:150px}
+    #phone .avatar-wrap,#phone .name-wrap,#phone .media-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+    #phone .avatar-wrap{margin-left:10px;padding-top:26px;margin-top:-26px}
+    #phone .name-wrap{margin-left:10px;min-width:0;max-width:150px;padding-top:26px;margin-top:-26px;flex-direction:column;align-items:flex-start}
     #phone .avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#C5C9CD;display:block;flex-shrink:0}
     #phone .name{font-size:17px;font-weight:600;letter-spacing:-.3px;color:${t.fg};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;line-height:22px;display:block}
-    #phone .shuff{
-      position:absolute;z-index:40;display:none;align-items:center;justify-content:center;
+    #phone .shuff,#phone .tool{
+      display:inline-flex;align-items:center;justify-content:center;
       width:22px;height:22px;border:0;border-radius:999px;cursor:pointer;
-      background:rgba(15,18,20,.88);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35);
-      padding:0;line-height:0;
+      background:rgba(15,18,20,.92);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35);
+      padding:0;line-height:0;flex-shrink:0;
     }
-    #phone .avatar-wrap .shuff{left:50%;top:50%;transform:translate(-50%,-50%)}
-    #phone .name-wrap .shuff{right:-2px;top:50%;transform:translate(110%,-50%)}
-    #phone .avatar-wrap:hover .shuff,#phone .name-wrap:hover .shuff{display:inline-flex}
-    #phone .shuff:hover{background:#25d366;color:#04210f}
-    #phone .shuff svg{display:block;pointer-events:none}
+    #phone .shuff{
+      position:absolute;z-index:45;top:0;left:50%;transform:translateX(-50%);
+      opacity:0;pointer-events:none;transition:opacity .12s ease;
+    }
+    #phone .avatar-wrap:hover .shuff,#phone .name-wrap:hover .shuff,#phone .media-wrap:hover .shuff,
+    #phone .avatar-wrap:focus-within .shuff,#phone .name-wrap:focus-within .shuff,#phone .media-wrap:focus-within .shuff,
+    #phone .shuff:focus-visible{opacity:1;pointer-events:auto}
+    #phone .shuff:hover,#phone .tool:hover{background:#25d366;color:#04210f}
+    #phone .tool.danger:hover{background:#ff6b6b;color:#2a0606}
+    #phone .shuff svg,#phone .tool svg{display:block;pointer-events:none}
     #phone .actions{height:44px;border-radius:22px;padding:0 16px;display:flex;align-items:center;gap:26px;box-shadow:inset 0 1px 0 ${t.glassHi}}
     #phone .back.glass,#phone .actions.glass{box-shadow:inset 0 1px 0 ${t.glassHi}}
-    #phone .chat{position:absolute;top:112px;bottom:80px;left:0;right:0;overflow:hidden;z-index:5;padding:0 14px 10px 16px;display:flex;flex-direction:column;justify-content:flex-end}
-    #phone .date-pill{align-self:center;margin:10px 0}
+    #phone .chat{position:absolute;top:112px;bottom:80px;left:0;right:0;overflow:hidden;z-index:20;padding:0 14px 10px 16px;display:flex;flex-direction:column;justify-content:flex-end}
+    #phone .date-pill{align-self:center;margin:10px 0;position:relative}
+    #phone .date-pill.editable{padding-top:28px;margin-top:-8px}
     #phone .date-pill span{display:inline-block;background:${t.dateBg};color:${t.dateFg};font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:9px}
-    #phone .row{display:flex;margin-top:2px} #phone .row.first{margin-top:8px}
+    #phone .row{display:flex;margin-top:2px;position:relative;flex-wrap:wrap} #phone .row.first{margin-top:8px}
+    #phone .row.editable{padding-top:28px;margin-top:-4px}
+    #phone .row.editable.first{margin-top:4px}
     #phone .row.out{justify-content:flex-end} #phone .row.in{justify-content:flex-start}
+    #phone .msg-tools{
+      position:absolute;top:0;z-index:40;display:flex;gap:4px;align-items:center;
+      opacity:0;pointer-events:none;transition:opacity .12s ease;
+      padding-bottom:6px;
+    }
+    #phone .row.out .msg-tools{right:0} #phone .row.in .msg-tools{left:0}
+    #phone .date-pill .msg-tools{left:50%;transform:translateX(-50%)}
+    #phone .row.editable:hover .msg-tools,#phone .date-pill.editable:hover .msg-tools,
+    #phone .row.editable:focus-within .msg-tools,#phone .date-pill.editable:focus-within .msg-tools,
+    #phone .msg-tools:focus-within{opacity:1;pointer-events:auto}
     #phone .bubble{position:relative;max-width:80%;padding:7px 11px 7px 12px;border-radius:18px;font-size:17px;line-height:1.3;letter-spacing:-.2px;color:${t.bubbleFg}}
     #phone .bubble.out{background:${t.bubbleOut}} #phone .bubble.in{background:${t.bubbleIn}}
     #phone .row.tail.in .bubble{border-bottom-left-radius:5px} #phone .row.tail.out .bubble{border-bottom-right-radius:5px}
     #phone .text{white-space:pre-wrap;word-break:break-word}
     #phone .meta{float:right;display:inline-flex;align-items:center;gap:4px;margin:8px 0 -4px 12px;color:${t.meta};font-size:12px;line-height:1;position:relative;top:2px}
     #phone .bubble.has-img{padding:4px;max-width:76%}
+    #phone .media-wrap{display:block;width:100%;max-width:262px;padding-top:28px}
     #phone .media{display:block;width:100%;max-width:262px;max-height:330px;object-fit:cover;border-radius:14px}
     #phone .caption{padding:6px 8px 4px 9px}
-    #phone .scroll-hint{position:absolute;right:16px;bottom:96px;z-index:25;width:34px;height:34px;border-radius:50%;display:grid;place-items:center}
+    #phone .scroll-hint{position:absolute;right:16px;bottom:96px;z-index:25;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;pointer-events:none}
     #phone .composer{position:absolute;left:0;right:0;bottom:0;height:80px;z-index:30;padding:0 14px 30px;display:flex;align-items:center;gap:12px}
     #phone .plus,#phone .cam{width:30px;height:30px;display:grid;place-items:center}
     #phone .input{flex:1;height:38px;border-radius:19px;background:${t.inputBg};border:.5px solid ${t.glassBorder};display:flex;align-items:center;justify-content:flex-end;padding:0 12px}
@@ -198,7 +240,7 @@ export function renderPhone(data) {
     #phone [data-upload]{cursor:pointer}
   </style>
   <div class="wallpaper"></div>
-  <div class="chat">${msgsHtml(data.mensagens || [])}</div>
+  <div class="chat">${msgsHtml(data.mensagens || [], edit)}</div>
   <div class="fade-top"></div><div class="fade-bottom"></div>
   <div class="status">
     <div class="time" data-edit="horaStatus" contenteditable="true">${esc(data.horaStatus || "09:14")}</div>

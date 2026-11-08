@@ -159,6 +159,15 @@ export function randomNome({ foto = "", contato = "", modo = "ambos" } = {}) {
   return pickOther(NOMES[genero] || NOMES.mulher, contato);
 }
 
+export const MSG_IMGS = [
+  "media/drive-manual.png",
+  "media/produto-manual.jpg",
+];
+
+export function randomMsgImg(current = "") {
+  return pickOther(MSG_IMGS, current) || MSG_IMGS[0];
+}
+
 function pad(n) {
   return String(n).padStart(2, "0");
 }
