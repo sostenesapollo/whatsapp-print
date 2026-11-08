@@ -300,11 +300,12 @@ export function buildHtml(data, photoSrc, baseDir = __dirname) {
   .status {
     position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 30;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 4px 30px 0 52px;
+    padding: 12px 28px 0 42px;
     color: ${t.fg};
   }
-  .status .time { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
-  .status-right { display: flex; align-items: center; gap: 6px; }
+  .status .time { font-size: 16px; font-weight: 600; letter-spacing: -0.2px; line-height: 1; display: block; }
+  .status-right { display: flex; align-items: center; gap: 7px; height: 12px; line-height: 0; }
+  .status-right svg { display: block; flex-shrink: 0; overflow: visible; }
 
   .header {
     position: absolute; top: 58px; left: 0; right: 0; height: 44px; z-index: 30;

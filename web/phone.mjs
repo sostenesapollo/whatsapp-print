@@ -58,19 +58,31 @@ function checks(status) {
 }
 
 function signal(n, color) {
-  return [4.5, 7, 9.5, 12]
-    .map((h, i) => `<rect x="${i * 4.6}" y="${12 - h}" width="3.2" height="${h}" rx="1" fill="${color}" fill-opacity="${i < n ? 1 : 0.3}"/>`)
+  // 4 barras, baseline comum (viewBox 19×12)
+  return [5, 7.2, 9.4, 11.5]
+    .map((h, i) => {
+      const x = 1 + i * 4.5;
+      const y = 12 - h;
+      const on = i < n;
+      return `<rect x="${x}" y="${y}" width="3.1" height="${h}" rx="0.9" fill="${color}" fill-opacity="${on ? 1 : 0.28}"/>`;
+    })
     .join("");
+}
+
+function wifi(color) {
+  // arco wifi centrado opticamente na mesma faixa 12px
+  return `<path d="M9.5 2.1c2.55 0 4.9.95 6.7 2.55l-1.15 1.15a7.6 7.6 0 0 0-11.1 0L2.8 4.65A9.9 9.9 0 0 1 9.5 2.1Zm0 3.35c1.6 0 3.05.6 4.15 1.6l-1.15 1.15a4.3 4.3 0 0 0-6 0L5.35 7.05a5.9 5.9 0 0 1 4.15-1.6Zm0 3.35c.7 0 1.35.25 1.85.7L9.5 11.3 7.65 9.5c.5-.45 1.15-.7 1.85-.7Z" fill="${color}"/>`;
 }
 
 function battery(pct, color) {
   const low = pct <= 20;
   const fill = low ? "#FF3B30" : color;
-  const w = Math.max(2, (pct / 100) * 19);
-  return `<svg width="28" height="13" viewBox="0 0 28 13">
-    <rect x="0.6" y="0.6" width="23.8" height="11.8" rx="3.6" fill="none" stroke="${color}" stroke-opacity="0.4" stroke-width="1.1"/>
-    <rect x="2.6" y="2.6" width="${w}" height="7.8" rx="2" fill="${fill}"/>
-    <path d="M25.8 4.4v4.2c.8-.3 1.4-1.1 1.4-2.1s-.6-1.8-1.4-2.1Z" fill="${color}" fill-opacity="0.45"/>
+  const w = Math.max(2.2, (pct / 100) * 18.4);
+  // corpo 23×12 + pino — altura total 12, alinhado com sinal/wifi
+  return `<svg class="ico bat" width="27" height="12" viewBox="0 0 27 12" aria-hidden="true">
+    <rect x="0.5" y="0.5" width="22" height="11" rx="3.2" fill="none" stroke="${color}" stroke-opacity="0.45" stroke-width="1"/>
+    <rect x="2" y="2" width="${w.toFixed(2)}" height="8" rx="1.8" fill="${fill}"/>
+    <path d="M23.5 3.6v4.8c1.1-.35 1.1-4.45 0-4.8Z" fill="${color}" fill-opacity="0.45"/>
   </svg>`;
 }
 
@@ -134,15 +146,17 @@ export function renderPhone(data) {
     #phone .fade-top{position:absolute;top:0;left:0;right:0;height:118px;z-index:18;background:linear-gradient(to bottom,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 72%,rgba(${t.fade},0))}
     #phone .fade-bottom{position:absolute;bottom:0;left:0;right:0;height:92px;z-index:18;background:linear-gradient(to top,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 62%,rgba(${t.fade},0))}
     #phone .glass{background:${t.glass};backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:.5px solid ${t.glassBorder};box-shadow:inset 0 1px 0 ${t.glassHi},0 2px 10px ${t.shadow}}
-    #phone .status{position:absolute;top:0;left:0;right:0;height:54px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:4px 30px 0 52px;color:${t.fg}}
-    #phone .time{font-size:17px;font-weight:600;letter-spacing:-.3px}
-    #phone .status-right{display:flex;align-items:center;gap:6px}
+    #phone .status{position:absolute;top:0;left:0;right:0;height:54px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:12px 28px 0 42px;color:${t.fg}}
+    #phone .time{font-size:16px;font-weight:600;letter-spacing:-.2px;line-height:1;display:block}
+    #phone .status-right{display:flex;align-items:center;gap:7px;height:12px;line-height:0}
+    #phone .status-right .ico{display:block;flex-shrink:0;overflow:visible}
     #phone .header{position:absolute;top:58px;left:0;right:0;height:44px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 16px}
-    #phone .header-left{display:flex;align-items:center;min-width:0}
+    #phone .header-left{display:flex;align-items:center;min-width:0;height:44px}
     #phone .back{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
-    #phone .avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#C5C9CD;margin-left:10px}
-    #phone .name{margin-left:10px;font-size:17px;font-weight:600;letter-spacing:-.3px;color:${t.fg};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
-    #phone .actions{height:44px;border-radius:22px;padding:0 16px;display:flex;align-items:center;gap:26px}
+    #phone .avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#C5C9CD;margin-left:10px;display:block;flex-shrink:0}
+    #phone .name{margin-left:10px;font-size:17px;font-weight:600;letter-spacing:-.3px;color:${t.fg};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;line-height:22px;display:block}
+    #phone .actions{height:44px;border-radius:22px;padding:0 16px;display:flex;align-items:center;gap:26px;box-shadow:inset 0 1px 0 ${t.glassHi}}
+    #phone .back.glass,#phone .actions.glass{box-shadow:inset 0 1px 0 ${t.glassHi}}
     #phone .chat{position:absolute;top:112px;bottom:80px;left:0;right:0;overflow:hidden;z-index:5;padding:0 14px 10px 16px;display:flex;flex-direction:column;justify-content:flex-end}
     #phone .date-pill{align-self:center;margin:10px 0}
     #phone .date-pill span{display:inline-block;background:${t.dateBg};color:${t.dateFg};font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:9px}
@@ -171,8 +185,8 @@ export function renderPhone(data) {
   <div class="status">
     <div class="time" data-edit="horaStatus" contenteditable="true">${esc(data.horaStatus || "09:14")}</div>
     <div class="status-right">
-      <svg width="18" height="12" viewBox="0 0 18 12">${signal(sinal, t.fg)}</svg>
-      ${wifi ? `<svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 2.3c2.4 0 4.6.9 6.3 2.5l1.2-1.2A10.6 10.6 0 0 0 8.5.6 10.6 10.6 0 0 0 1 3.6l1.2 1.2a8.9 8.9 0 0 1 6.3-2.5Zm0 3.4c1.5 0 2.9.6 3.9 1.5l1.2-1.2a7.3 7.3 0 0 0-10.2 0l1.2 1.2c1-.9 2.4-1.5 3.9-1.5Zm0 3.4c-.6 0-1.2.3-1.6.7l1.6 1.6 1.6-1.6c-.4-.4-1-.7-1.6-.7Z" fill="${t.fg}"/></svg>` : ""}
+      <svg class="ico" width="19" height="12" viewBox="0 0 19 12" aria-hidden="true">${signal(sinal, t.fg)}</svg>
+      ${wifi ? `<svg class="ico" width="19" height="12" viewBox="0 0 19 12" aria-hidden="true">${wifi(t.fg)}</svg>` : ""}
       ${battery(bateria, t.fg)}
     </div>
   </div>
