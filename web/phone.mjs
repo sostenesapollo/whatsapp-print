@@ -138,6 +138,8 @@ function msgsHtml(list) {
   return html;
 }
 
+const SHUFF_ICO = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 3h5v5M8 3H3v5M21 3l-7.5 7.5M3 3l7.5 7.5M16 21h5v-5M8 21H3v-5M21 21l-7.5-7.5M3 21l7.5-7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
 export function renderPhone(data) {
   const dark = data.tema !== "claro";
   const t = theme(dark);
@@ -145,6 +147,13 @@ export function renderPhone(data) {
   const sinal = Number(data.sinal ?? 4);
   const foto = data.foto || avatarSvg();
   const showWifi = data.wifi !== false;
+  const edit = data.editavel === true;
+  const avatarHtml = edit
+    ? `<div class="avatar-wrap"><img class="avatar" src="${esc(foto)}" alt="" data-upload="foto"/><button type="button" class="shuff" data-shuffle="foto" title="Trocar foto">${SHUFF_ICO}</button></div>`
+    : `<img class="avatar" src="${esc(foto)}" alt="" style="margin-left:10px"/>`;
+  const nameHtml = edit
+    ? `<div class="name-wrap"><div class="name" data-edit="contato" contenteditable="true">${esc(data.contato || "Contato")}</div><button type="button" class="shuff" data-shuffle="nome" title="Trocar nome">${SHUFF_ICO}</button></div>`
+    : `<div class="name">${esc(data.contato || "Contato")}</div>`;
 
   return `<div class="phone" id="phone" style="width:${W}px;height:${H}px;position:relative;overflow:hidden;background:${t.bg};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
   <style>
@@ -160,8 +169,22 @@ export function renderPhone(data) {
     #phone .header{position:absolute;top:58px;left:0;right:0;height:44px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 16px}
     #phone .header-left{display:flex;align-items:center;min-width:0;height:44px}
     #phone .back{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
-    #phone .avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#C5C9CD;margin-left:10px;display:block;flex-shrink:0}
-    #phone .name{margin-left:10px;font-size:17px;font-weight:600;letter-spacing:-.3px;color:${t.fg};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;line-height:22px;display:block}
+    #phone .avatar-wrap,#phone .name-wrap{position:relative;display:inline-flex;align-items:center;flex-shrink:0}
+    #phone .avatar-wrap{margin-left:10px}
+    #phone .name-wrap{margin-left:10px;min-width:0;max-width:150px}
+    #phone .avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#C5C9CD;display:block;flex-shrink:0}
+    #phone .name{font-size:17px;font-weight:600;letter-spacing:-.3px;color:${t.fg};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;line-height:22px;display:block}
+    #phone .shuff{
+      position:absolute;z-index:40;display:none;align-items:center;justify-content:center;
+      width:22px;height:22px;border:0;border-radius:999px;cursor:pointer;
+      background:rgba(15,18,20,.88);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35);
+      padding:0;line-height:0;
+    }
+    #phone .avatar-wrap .shuff{left:50%;top:50%;transform:translate(-50%,-50%)}
+    #phone .name-wrap .shuff{right:-2px;top:50%;transform:translate(110%,-50%)}
+    #phone .avatar-wrap:hover .shuff,#phone .name-wrap:hover .shuff{display:inline-flex}
+    #phone .shuff:hover{background:#25d366;color:#04210f}
+    #phone .shuff svg{display:block;pointer-events:none}
     #phone .actions{height:44px;border-radius:22px;padding:0 16px;display:flex;align-items:center;gap:26px;box-shadow:inset 0 1px 0 ${t.glassHi}}
     #phone .back.glass,#phone .actions.glass{box-shadow:inset 0 1px 0 ${t.glassHi}}
     #phone .chat{position:absolute;top:112px;bottom:80px;left:0;right:0;overflow:hidden;z-index:5;padding:0 14px 10px 16px;display:flex;flex-direction:column;justify-content:flex-end}
@@ -196,8 +219,8 @@ export function renderPhone(data) {
   <div class="header">
     <div class="header-left">
       <div class="back glass"><svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2 2.2 10 10 18" stroke="${t.icon}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <img class="avatar" src="${esc(foto)}" alt="" data-upload="foto"/>
-      <div class="name" data-edit="contato" contenteditable="true">${esc(data.contato || "Contato")}</div>
+      ${avatarHtml}
+      ${nameHtml}
     </div>
     <div class="actions glass">
       <svg width="27" height="20" viewBox="0 0 27 20" fill="none"><rect x="1.2" y="2.2" width="17" height="15.6" rx="3.8" stroke="${t.icon}" stroke-width="2"/><path d="m18.6 8 6.2-3.9v11.8L18.6 12" stroke="${t.icon}" stroke-width="2" stroke-linejoin="round"/></svg>

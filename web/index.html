@@ -183,7 +183,7 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 
 <script type="module">
 import { EXAMPLES, renderPhone } from './phone.mjs';
-import { randomConversation } from './shuffle.mjs';
+import { randomConversation, randomFoto, randomNome } from './shuffle.mjs';
 
 const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null, avatars: { homem: [], mulher: [] } };
 const $ = (s) => document.querySelector(s);
@@ -334,7 +334,24 @@ document.addEventListener('focusout',(e)=>{
   setPath(state.data, el.dataset.edit, el.innerText); syncForm();
 });
 document.addEventListener('click',(e)=>{
+  const shuff=e.target.closest?.('[data-shuffle]');
+  if(shuff){
+    e.preventDefault(); e.stopPropagation();
+    const kind=shuff.dataset.shuffle;
+    if(kind==='foto'){
+      if(!(state.avatars.mulher?.length||state.avatars.homem?.length)){ status('Avatares ainda carregando…', false); return; }
+      state.data.foto=randomFoto({ avatars:state.avatars, foto:state.data.foto, contato:state.data.contato });
+      syncForm(); paint(); status('Foto trocada', true);
+      return;
+    }
+    if(kind==='nome'){
+      state.data.contato=randomNome({ foto:state.data.foto, contato:state.data.contato });
+      syncForm(); paint(); status('Nome trocado', true);
+      return;
+    }
+  }
   const el=e.target.closest?.('[data-upload]'); if(!el) return;
+  if(e.target.closest?.('[data-shuffle]')) return;
   e.preventDefault(); state.uploadPath=el.dataset.upload; $('#file').click();
 });
 
@@ -371,6 +388,7 @@ $('#gerar').onclick=async ()=>{
     pull(); paint(); status('Gerando…');
     const node=document.querySelector('#phone'); if(!node) throw new Error('preview vazio');
     node.querySelectorAll('[data-edit],[data-upload]').forEach(el=>{ el.removeAttribute('contenteditable'); el.style.outline='none'; });
+    node.querySelectorAll('.shuff').forEach(el=>el.remove());
     const dataUrl=await modernScreenshot.domToPng(node,{ width:390, height:844, scale:3 });
     const a=document.createElement('a');
     a.href=dataUrl; a.download=`${(state.data.contato||'print').replace(/\s+/g,'-').toLowerCase()}.png`;

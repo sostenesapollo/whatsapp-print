@@ -126,6 +126,36 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function pickOther(arr, current) {
+  if (!arr?.length) return current || "";
+  if (arr.length === 1) return arr[0];
+  let next = pick(arr);
+  let guard = 0;
+  while (next === current && guard++ < 8) next = pick(arr);
+  return next;
+}
+
+export function guessGenero({ foto = "", contato = "" } = {}) {
+  if (String(foto).includes("/homem/")) return "homem";
+  if (String(foto).includes("/mulher/")) return "mulher";
+  const nome = String(contato || "").trim();
+  if (NOMES.homem.includes(nome)) return "homem";
+  if (NOMES.mulher.includes(nome)) return "mulher";
+  return Math.random() < 0.15 ? "homem" : "mulher";
+}
+
+export function randomFoto({ avatars, foto = "", contato = "" } = {}) {
+  const genero = guessGenero({ foto, contato });
+  const pool = [...(avatars?.mulher || []), ...(avatars?.homem || [])];
+  const same = avatars?.[genero] || [];
+  return pickOther(same.length ? same : pool, foto);
+}
+
+export function randomNome({ foto = "", contato = "" } = {}) {
+  const genero = guessGenero({ foto, contato });
+  return pickOther(NOMES[genero] || NOMES.mulher, contato);
+}
+
 function pad(n) {
   return String(n).padStart(2, "0");
 }
