@@ -1,0 +1,8 @@
+name = "whatsapp-print"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+account_id = "21a34919918fda46cfa60e377b5a9911"
+
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "whatsapp-print"
