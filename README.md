@@ -2,11 +2,11 @@
 
 Gera PNG idêntico ao WhatsApp iOS (claro / escuro). Tem editor **100% no browser**.
 
-## Editor online
+## Editor online (só bucket R2 — sem Worker)
 
-https://whatsapp-print.sostenesapollo25.workers.dev/
+https://pub-1201b8b15bf3455ab30396aa22245d5f.r2.dev/index.html
 
-(Arquivos no R2 `whatsapp-print`; Worker na frente porque o `*.r2.dev` não serve `/` → `index.html`.)
+O `*.r2.dev` não redireciona `/` → `index.html`, então o link precisa terminar em `/index.html`. Sem Worker, custo ≈ zero (só storage mínimo).
 
 Dois exemplos no site: **escuro** e **claro**. Clique no texto/foto pra editar, escolha o tema, gere o PNG (baixa e abre numa aba).
 
@@ -62,18 +62,15 @@ python3 -m http.server 5173
 { "de": "ela", "texto": "E aí", "hora": "09:11", "imagem": "./foto.png" }
 ```
 
-## Deploy do editor (R2 + Worker)
+## Deploy do editor (só R2)
 
 ```fish
-# 1) sobe os arquivos estáticos
-# (STORAGE_* do giftsqr .env — account 21a349…)
+# STORAGE_* do giftsqr .env (account 21a349…)
 cd web
 aws s3 sync . s3://whatsapp-print/ --endpoint-url https://21a34919918fda46cfa60e377b5a9911.r2.cloudflarestorage.com
-
-# 2) Worker com index fallback
-cd ../worker
-set -x CLOUDFLARE_API_TOKEN (cat ~/.config/cloudflare/workers_api_token)
-npx wrangler@4 deploy
+aws s3 cp index.html s3://whatsapp-print/index.html --endpoint-url https://21a34919918fda46cfa60e377b5a9911.r2.cloudflarestorage.com --content-type "text/html; charset=utf-8"
 ```
 
-URL pública: https://whatsapp-print.sostenesapollo25.workers.dev/
+URL: https://pub-1201b8b15bf3455ab30396aa22245d5f.r2.dev/index.html
+
+Worker é opcional (só se quiser `/` limpo). Para gastar quase nada, use o bucket + `/index.html`.
