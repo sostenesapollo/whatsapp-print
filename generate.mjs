@@ -299,13 +299,13 @@ export function buildHtml(data, photoSrc, baseDir = __dirname) {
   }
 
   .status {
-    position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 30;
+    position: absolute; top: 0; left: 0; right: 0; width: 100%; max-width: none; height: 54px; z-index: 30;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 16px 0 32px;
+    padding: 14px 14px 0 32px;
     color: ${t.fg};
   }
   .status .time { font-size: 16px; font-weight: 600; letter-spacing: -0.2px; line-height: 13px; height: 13px; display: block; }
-  .status-right { display: flex; align-items: center; justify-content: flex-end; margin-left: auto; height: 13px; line-height: 0; }
+  .status-right { display: flex; align-items: center; justify-content: flex-end; margin-left: auto; height: 13px; line-height: 0; flex-shrink: 0; }
   .status-icons { display: block; flex-shrink: 0; }
 
   .header {

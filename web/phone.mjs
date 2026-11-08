@@ -150,9 +150,9 @@ export function renderPhone(data) {
     #phone .fade-top{position:absolute;top:0;left:0;right:0;height:118px;z-index:18;background:linear-gradient(to bottom,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 72%,rgba(${t.fade},0))}
     #phone .fade-bottom{position:absolute;bottom:0;left:0;right:0;height:92px;z-index:18;background:linear-gradient(to top,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 62%,rgba(${t.fade},0))}
     #phone .glass{background:${t.glass};backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:.5px solid ${t.glassBorder};box-shadow:inset 0 1px 0 ${t.glassHi},0 2px 10px ${t.shadow}}
-    #phone .status{position:absolute;top:0;left:0;right:0;height:54px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px 18px 0 30px;color:${t.fg}}
+    #phone .status{position:absolute;top:0;left:0;right:0;width:100%;max-width:none;height:54px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px 14px 0 30px;color:${t.fg};text-align:left;font-size:inherit}
     #phone .time{font-size:16px;font-weight:600;letter-spacing:-.2px;line-height:12px;height:12px;display:block}
-    #phone .status-right{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-left:auto;height:12px;line-height:0}
+    #phone .status-right{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-left:auto;height:12px;line-height:0;flex-shrink:0}
     #phone .status-right .si{display:block;flex-shrink:0;overflow:visible}
     #phone .header{position:absolute;top:58px;left:0;right:0;height:44px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 16px}
     #phone .header-left{display:flex;align-items:center;min-width:0;height:44px}

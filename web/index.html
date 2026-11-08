@@ -85,8 +85,8 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
   position:absolute;inset:0 auto auto 0;
   will-change:transform;
 }
-.hint,.status{color:var(--muted);font-size:11px;text-align:center;max-width:280px}
-.status.ok{color:var(--accent)}.status.err{color:#ff6b6b}
+.hint,.flash{color:var(--muted);font-size:11px;text-align:center;max-width:280px}
+.flash.ok{color:var(--accent)}.flash.err{color:#ff6b6b}
 
 #msgs{flex:1;overflow:auto;min-height:0;padding-bottom:8px}
 .msg{
@@ -152,7 +152,7 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
     <button class="btn" type="button" id="addMsg">+ mensagem</button>
     <button class="btn" type="button" id="addData">+ data</button>
   </div>
-  <p class="status" id="status" style="margin-top:10px;text-align:left"></p>
+  <p class="flash" id="status" style="margin-top:10px;text-align:left"></p>
 </aside>
 
 <main class="center">
@@ -194,7 +194,7 @@ import { randomConversation, randomFoto, randomNome } from './shuffle.mjs';
 
 const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null, avatars: { homem: [], mulher: [] } };
 const $ = (s) => document.querySelector(s);
-const status = (m, ok) => { const el=$('#status'); el.textContent=m||''; el.className='status '+(ok===true?'ok':ok===false?'err':''); };
+const status = (m, ok) => { const el=$('#status'); el.textContent=m||''; el.className='flash '+(ok===true?'ok':ok===false?'err':''); };
 const generoModo = () => $('#generoModo')?.value || 'ambos';
 
 $('#thumbEscuro').src = 'examples/escuro.png';
