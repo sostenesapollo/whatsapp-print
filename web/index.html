@@ -526,13 +526,7 @@ $('#gerar').onclick=async ()=>{
       const img = wrap.querySelector('img.media');
       if(img) wrap.replaceWith(img);
     });
-    node.querySelectorAll('.row.editable,.date-pill.editable').forEach(el=>{
-      el.classList.remove('editable');
-      el.style.paddingTop = '0';
-      el.style.paddingBottom = '0';
-      el.style.marginTop = '';
-      el.style.marginBottom = '';
-    });
+    node.querySelectorAll('.row.editable,.date-pill.editable').forEach(el=>el.classList.remove('editable'));
     const dataUrl=await modernScreenshot.domToPng(node,{ width:390, height:844, scale:3 });
     const a=document.createElement('a');
     a.href=dataUrl; a.download=`${(state.data.contato||'print').replace(/\s+/g,'-').toLowerCase()}.png`;

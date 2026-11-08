@@ -338,13 +338,13 @@ export function buildHtml(data, photoSrc, baseDir = __dirname) {
     padding: 0 14px 10px 16px;
     display: flex; flex-direction: column; justify-content: flex-end;
   }
-  .date-pill { align-self: center; margin: 10px 0 10px; }
+  .date-pill { align-self: center; margin: 8px 0; }
   .date-pill span {
     display: inline-block; background: ${t.dateBg}; color: ${t.dateFg};
     font-size: 12.5px; font-weight: 500; padding: 5px 11px; border-radius: 9px;
   }
   .row { display: flex; margin-top: 2px; }
-  .row.first { margin-top: 8px; }
+  .row.first { margin-top: 6px; }
   .row.out { justify-content: flex-end; }
   .row.in { justify-content: flex-start; }
   .bubble {

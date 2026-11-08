@@ -214,22 +214,20 @@ export function renderPhone(data) {
     #phone .actions{height:44px;border-radius:22px;padding:0 16px;display:flex;align-items:center;gap:26px;box-shadow:inset 0 1px 0 ${t.glassHi}}
     #phone .back.glass,#phone .actions.glass{box-shadow:inset 0 1px 0 ${t.glassHi}}
     #phone .chat{position:absolute;top:112px;bottom:80px;left:0;right:0;overflow:hidden;z-index:20;padding:0 14px 10px 16px;display:flex;flex-direction:column;justify-content:flex-end}
-    #phone .date-pill{align-self:center;margin:10px 0;position:relative}
-    #phone .date-pill.editable{padding-top:26px;padding-bottom:26px;margin-top:2px;margin-bottom:2px}
+    #phone .date-pill{align-self:center;margin:8px 0;position:relative}
     #phone .date-pill span{display:inline-block;background:${t.dateBg};color:${t.dateFg};font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:9px}
-    #phone .row{display:flex;margin-top:2px;position:relative;flex-wrap:wrap} #phone .row.first{margin-top:8px}
-    #phone .row.editable{padding-top:26px;padding-bottom:26px;margin-top:2px}
-    #phone .row.editable.first{margin-top:6px}
+    #phone .row{display:flex;margin-top:2px;position:relative;flex-wrap:wrap;overflow:visible}
+    #phone .row.first{margin-top:6px}
     #phone .row.out{justify-content:flex-end} #phone .row.in{justify-content:flex-start}
     #phone .msg-top,#phone .msg-bottom{
       position:absolute;z-index:40;display:flex;gap:4px;align-items:center;
       opacity:0;pointer-events:none;transition:opacity .12s ease;
     }
-    #phone .msg-top{top:0;width:100%;left:0;right:0;justify-content:space-between;padding:0 0 6px}
+    #phone .msg-top{top:-24px;width:100%;left:0;right:0;justify-content:space-between;padding-bottom:4px}
     #phone .msg-top .tool.side{margin-right:auto}
     #phone .msg-top .tool.danger{margin-left:auto}
-    #phone .date-pill .msg-top{justify-content:flex-end}
-    #phone .msg-bottom{bottom:0;left:50%;transform:translateX(-50%);padding-top:6px}
+    #phone .date-pill .msg-top{top:-24px;justify-content:flex-end}
+    #phone .msg-bottom{top:auto;bottom:-24px;left:50%;transform:translateX(-50%);padding-top:4px}
     #phone .row.editable:hover .msg-top,#phone .row.editable:hover .msg-bottom,
     #phone .date-pill.editable:hover .msg-top,#phone .date-pill.editable:hover .msg-bottom,
     #phone .row.editable:focus-within .msg-top,#phone .row.editable:focus-within .msg-bottom,
