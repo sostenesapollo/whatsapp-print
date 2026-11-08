@@ -223,10 +223,8 @@ export function renderPhone(data) {
       position:absolute;z-index:40;display:flex;gap:4px;align-items:center;
       opacity:0;pointer-events:none;transition:opacity .12s ease;
     }
-    #phone .msg-top{top:-24px;width:100%;left:0;right:0;justify-content:space-between;padding-bottom:4px}
-    #phone .msg-top .tool.side{margin-right:auto}
-    #phone .msg-top .tool.danger{margin-left:auto}
-    #phone .date-pill .msg-top{top:-24px;justify-content:flex-end}
+    #phone .msg-top{top:-24px;right:0;left:auto;justify-content:flex-end;padding-bottom:4px}
+    #phone .date-pill .msg-top{top:-24px}
     #phone .msg-bottom{top:auto;bottom:-24px;left:50%;transform:translateX(-50%);padding-top:4px}
     #phone .row.editable:hover .msg-top,#phone .row.editable:hover .msg-bottom,
     #phone .date-pill.editable:hover .msg-top,#phone .date-pill.editable:hover .msg-bottom,
