@@ -19,35 +19,16 @@ const AVATAR_SVG = `data:image/svg+xml,${encodeURIComponent(`
 `)}`;
 
 function wallpaperDataUri(tema = "claro") {
-  const dark = tema === "escuro";
-  const icons = [];
-  const shapes = [
-    `M5 8h3l1.5-2h5L16 8h3v10H5z M12 13m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0`,
-    `M5 14a3 3 0 1 0 0.1 0 M17 14a3 3 0 1 0 0.1 0 M5 14h4l2-5h4l2 5 M11 9v5`,
-    `M4 10a7 7 0 0 1 14 0v5h-3v-5a4 4 0 0 0-8 0v5H4z`,
-    `M9 3a5 5 0 0 1 3 9v3H9v-3a5 5 0 0 1 0-9z M9 16h5 M9 18h5`,
-    `M5 7h10v8a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4z M15 9h2a2 2 0 0 1 0 4h-2 M8 4c1 1 1 2 0 3 M11 4c1 1 1 2 0 3`,
-    `M3 5h14v10H3z M1 15h18v2H1z`,
-    `M8 5v10a2.5 2.5 0 1 1-1.5-2.3V8l8-2v7a2.5 2.5 0 1 1-1.5-2.3V5z`,
-    `M2 11l18-8-6 9 1 6-4-3-5 2 2-6z`,
-    `M10 17s-7-4.5-7-9a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 4.5-7 9-7 9z`,
-    `M3 4h14v10H8l-4 4V4z`,
-  ];
-  let i = 0;
-  for (let y = 12; y < 640; y += 52) {
-    for (let x = 8; x < 360; x += 58) {
-      const ox = x + ((y / 52) % 2 === 0 ? 0 : 18);
-      const s = shapes[i % shapes.length];
-      icons.push(`<g transform="translate(${ox},${y}) scale(0.85)" fill="none" stroke="${dark ? "#2A3942" : "#C9BFB4"}" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"><path d="${s}"/></g>`);
-      i++;
-    }
+  const file =
+    tema === "escuro"
+      ? resolve(__dirname, "assets/wallpaper-escuro.jpg")
+      : resolve(__dirname, "assets/wallpaper-claro.jpg");
+  const uri = fileToDataUri(file, null);
+  if (!uri) {
+    console.warn(`Wallpaper não encontrado: ${file}`);
+    return "";
   }
-  const bg = dark ? "#0B141A" : "#E5DDD5";
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="640" viewBox="0 0 360 640">
-  <rect width="360" height="640" fill="${bg}"/>
-  <g opacity="${dark ? "0.85" : "0.7"}">${icons.join("\n")}</g>
-</svg>`;
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  return uri;
 }
 
 function checksSvg(status) {
@@ -72,25 +53,28 @@ function esc(s) {
 }
 
 function signalBars(n = 4, color = "#000") {
-  const heights = [4, 6, 8, 10];
+  const heights = [4.5, 7, 9.5, 12];
   return heights
     .map((h, i) => {
       const on = i < n;
-      return `<rect x="${i * 4}" y="${10 - h}" width="2.5" height="${h}" rx="0.6" fill="${on ? color : color + "33"}"/>`;
+      return `<rect x="${i * 4.6}" y="${12 - h}" width="3.2" height="${h}" rx="1" fill="${color}" fill-opacity="${on ? 1 : 0.3}"/>`;
     })
     .join("");
 }
 
+function wifiSvg(color = "#000") {
+  return `<svg width="17" height="12" viewBox="0 0 17 12"><path d="M8.5 2.3c2.4 0 4.6.9 6.3 2.5l1.2-1.2A10.6 10.6 0 0 0 8.5.6 10.6 10.6 0 0 0 1 3.6l1.2 1.2a8.9 8.9 0 0 1 6.3-2.5Zm0 3.4c1.5 0 2.9.6 3.9 1.5l1.2-1.2a7.3 7.3 0 0 0-10.2 0l1.2 1.2c1-.9 2.4-1.5 3.9-1.5Zm0 3.4c-.6 0-1.2.3-1.6.7l1.6 1.6 1.6-1.6c-.4-.4-1-.7-1.6-.7Z" fill="${color}"/></svg>`;
+}
+
 function batterySvg(pct, color = "#000") {
   const low = pct <= 20;
-  const fill = low ? "#FF3B30" : "#34C759";
-  const w = Math.max(1.5, (pct / 100) * 18);
+  const fill = low ? "#FF3B30" : color;
+  const w = Math.max(2, (pct / 100) * 19);
   return `
-  <svg width="27" height="13" viewBox="0 0 27 13">
-    <rect x="0.5" y="0.5" width="23" height="12" rx="2.5" fill="none" stroke="${color}" stroke-opacity="0.35" stroke-width="1"/>
-    <rect x="2" y="2" width="${w}" height="9" rx="1.2" fill="${fill}"/>
-    <path d="M24.5 4h1.2c.7 0 1.3.6 1.3 1.3v2.4c0 .7-.6 1.3-1.3 1.3H24.5" fill="${color}" fill-opacity="0.35"/>
-    ${low ? `<text x="11.5" y="9.5" text-anchor="middle" font-size="8" font-family="-apple-system,system-ui,sans-serif" font-weight="600" fill="#fff">${pct}</text>` : ""}
+  <svg width="28" height="13" viewBox="0 0 28 13">
+    <rect x="0.6" y="0.6" width="23.8" height="11.8" rx="3.6" fill="none" stroke="${color}" stroke-opacity="0.4" stroke-width="1.1"/>
+    <rect x="2.6" y="2.6" width="${w}" height="7.8" rx="2" fill="${fill}"/>
+    <path d="M25.8 4.4v4.2c.8-.3 1.4-1.1 1.4-2.1s-.6-1.8-1.4-2.1Z" fill="${color}" fill-opacity="0.45"/>
   </svg>`;
 }
 
@@ -118,40 +102,43 @@ function resolveMedia(pathOrEmpty, baseDir) {
 
 function renderMessages(mensagens, baseDir) {
   let html = "";
-  let prevFrom = null;
+  const list = mensagens || [];
 
-  for (const m of mensagens) {
+  for (let i = 0; i < list.length; i++) {
+    const m = list[i];
     if (m.tipo === "data") {
       html += `<div class="date-pill"><span>${esc(m.texto)}</span></div>`;
-      prevFrom = null;
       continue;
     }
 
+    const next = list[i + 1];
+    const prev = list[i - 1];
     const mine = m.de === "eu";
     const side = mine ? "out" : "in";
-    const grouped = prevFrom === m.de;
+    const firstOfGroup = !prev || prev.tipo === "data" || prev.de !== m.de;
+    const lastOfGroup = !next || next.tipo === "data" || next.de !== m.de;
     const status = m.status || "lido";
-    const meta = mine
-      ? `<span class="meta">${esc(m.hora)}${checksSvg(status)}</span>`
-      : `<span class="meta">${esc(m.hora)}</span>`;
+    const meta = `<span class="meta">${esc(m.hora)}${mine ? checksSvg(status) : ""}</span>`;
 
     const mediaSrc = resolveMedia(m.imagem, baseDir);
     const hasImg = Boolean(mediaSrc);
-    const textHtml = m.texto
-      ? `<span class="text">${esc(m.texto)}</span>`
-      : "";
-    const imgHtml = hasImg
-      ? `<img class="media" src="${mediaSrc}" alt=""/>`
-      : "";
+    const textHtml = m.texto ? `<span class="text">${esc(m.texto)}</span>` : "";
+    const imgHtml = hasImg ? `<img class="media" src="${mediaSrc}" alt=""/>` : "";
+
+    const cls = [
+      "row",
+      side,
+      firstOfGroup ? "first" : "",
+      lastOfGroup ? "tail" : "",
+    ].filter(Boolean).join(" ");
 
     html += `
-      <div class="row ${side}${grouped ? " grouped" : ""}">
+      <div class="${cls}">
         <div class="bubble ${side}${hasImg ? " has-img" : ""}">
           ${imgHtml}
-          ${hasImg && textHtml ? `<div class="caption">${textHtml}${meta}</div>` : `${textHtml}${meta}`}
+          ${hasImg ? `<div class="caption">${textHtml}${meta}</div>` : `${textHtml}${meta}`}
         </div>
       </div>`;
-    prevFrom = m.de;
   }
   return html;
 }
@@ -195,49 +182,45 @@ function buildHtml(data, photoSrc, baseDir = __dirname) {
 
   const t = dark
     ? {
-        phoneBg: "#0B141A",
-        statusFg: "#E9EDEF",
-        icon: "#E9EDEF",
-        headerBg: "rgba(31,44,52,0.95)",
-        headerBorder: "rgba(255,255,255,0.08)",
-        accent: "#53BDEB",
-        name: "#E9EDEF",
-        bubbleOut: "#005C4B",
-        bubbleIn: "#202C33",
-        bubbleFg: "#E9EDEF",
-        meta: "#8696A0",
-        dateBg: "#182229",
-        dateFg: "#8696A0",
-        scrollBg: "#1F2C34",
-        scrollFg: "#8696A0",
-        plusBg: "#1F2C34",
-        inputBg: "#1F2C34",
-        cam: "#AEBAC1",
-        home: "#E9EDEF",
-        tickUnread: "#8696A0",
+        bg: "#0B0B0B",
+        fg: "#FFFFFF",
+        glass: "rgba(38,38,40,0.72)",
+        glassBorder: "rgba(255,255,255,0.10)",
+        glassHi: "rgba(255,255,255,0.07)",
+        bubbleOut: "#144D37",
+        bubbleIn: "#242626",
+        bubbleFg: "#FFFFFF",
+        meta: "rgba(255,255,255,0.58)",
+        dateBg: "#1D1F1F",
+        dateFg: "rgba(255,255,255,0.62)",
+        inputBg: "rgba(38,38,40,0.85)",
+        icon: "#FFFFFF",
+        iconSoft: "#FFFFFF",
+        micBg: "#FFFFFF",
+        micFg: "#000000",
+        shadow: "rgba(0,0,0,0.35)",
       }
     : {
-        phoneBg: "#E5DDD5",
-        statusFg: "#000",
-        icon: "#000",
-        headerBg: "rgba(247,247,247,0.92)",
-        headerBorder: "rgba(0,0,0,0.12)",
-        accent: "#007AFF",
-        name: "#000",
-        bubbleOut: "#DCF8C6",
-        bubbleIn: "#fff",
-        bubbleFg: "#111",
+        bg: "#F5F1EB",
+        fg: "#000000",
+        glass: "rgba(255,255,255,0.78)",
+        glassBorder: "rgba(0,0,0,0.06)",
+        glassHi: "rgba(255,255,255,0.9)",
+        bubbleOut: "#D9FDD3",
+        bubbleIn: "#FFFFFF",
+        bubbleFg: "#111B21",
         meta: "#667781",
-        dateBg: "rgba(255,255,255,0.95)",
+        dateBg: "#FFFFFF",
         dateFg: "#54656F",
-        scrollBg: "#fff",
-        scrollFg: "#54656F",
-        plusBg: "#fff",
-        inputBg: "#fff",
-        cam: "#111",
-        home: "#000",
-        tickUnread: "#9AA3A9",
+        inputBg: "rgba(255,255,255,0.92)",
+        icon: "#000000",
+        iconSoft: "#111B21",
+        micBg: "#000000",
+        micFg: "#FFFFFF",
+        shadow: "rgba(0,0,0,0.10)",
       };
+
+  const fade = dark ? "11,11,11" : "245,241,235";
 
   return `<!doctype html>
 <html lang="pt-BR">
@@ -247,232 +230,140 @@ function buildHtml(data, photoSrc, baseDir = __dirname) {
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body {
-    width: ${WIDTH}px;
-    height: ${HEIGHT}px;
-    overflow: hidden;
+    width: ${WIDTH}px; height: ${HEIGHT}px; overflow: hidden;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
-    background: #000;
+    background: ${t.bg};
   }
-  .phone {
-    width: ${WIDTH}px;
-    height: ${HEIGHT}px;
-    position: relative;
-    background: ${t.phoneBg};
-    overflow: hidden;
-  }
+  .phone { width: ${WIDTH}px; height: ${HEIGHT}px; position: relative; overflow: hidden; background: ${t.bg}; }
   .wallpaper {
     position: absolute; inset: 0;
-    background: ${t.phoneBg} url("${wallpaperDataUri(tema)}") repeat;
-    background-size: 180px 320px;
-    opacity: 1;
+    background: ${t.bg} url("${wallpaperDataUri(tema)}") center / cover no-repeat;
+    ${dark ? "filter: brightness(0.72);" : ""}
   }
+  .fade-top {
+    position: absolute; top: 0; left: 0; right: 0; height: 118px; z-index: 18;
+    background: linear-gradient(to bottom, rgba(${fade},1) 0%, rgba(${fade},1) 72%, rgba(${fade},0) 100%);
+  }
+  .fade-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 92px; z-index: 18;
+    background: linear-gradient(to top, rgba(${fade},1) 0%, rgba(${fade},1) 62%, rgba(${fade},0) 100%);
+  }
+  .glass {
+    background: ${t.glass};
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 0.5px solid ${t.glassBorder};
+    box-shadow: inset 0 1px 0 ${t.glassHi}, 0 2px 10px ${t.shadow};
+  }
+
   .status {
-    position: absolute; top: 0; left: 0; right: 0;
-    height: 47px;
-    padding: 14px 22px 0;
+    position: absolute; top: 0; left: 0; right: 0; height: 54px; z-index: 30;
     display: flex; align-items: center; justify-content: space-between;
-    z-index: 20;
-    color: ${t.statusFg};
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: -0.2px;
+    padding: 4px 30px 0 52px;
+    color: ${t.fg};
   }
+  .status .time { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
   .status-right { display: flex; align-items: center; gap: 6px; }
+
   .header {
-    position: absolute; top: 47px; left: 0; right: 0;
-    height: 52px;
-    background: ${t.headerBg};
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 0.5px solid ${t.headerBorder};
+    position: absolute; top: 58px; left: 0; right: 0; height: 44px; z-index: 30;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 10px 0 4px;
-    z-index: 20;
+    padding: 0 14px 0 16px;
   }
-  .header-left { display: flex; align-items: center; gap: 2px; min-width: 0; }
+  .header-left { display: flex; align-items: center; min-width: 0; }
   .back {
-    width: 28px; height: 44px;
-    display: grid; place-items: center;
-    color: ${t.accent};
+    width: 44px; height: 44px; border-radius: 50%;
+    display: grid; place-items: center; flex-shrink: 0;
   }
-  .back svg { width: 12px; height: 20px; }
   .avatar {
-    width: 36px; height: 36px; border-radius: 50%;
+    width: 38px; height: 38px; border-radius: 50%;
     object-fit: cover; background: #C5C9CD; flex-shrink: 0;
+    margin-left: 10px;
   }
   .name {
-    margin-left: 8px;
-    font-size: 16px; font-weight: 600;
-    color: ${t.name}; letter-spacing: -0.2px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    max-width: 180px;
+    margin-left: 10px; font-size: 17px; font-weight: 600; letter-spacing: -0.3px;
+    color: ${t.fg}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;
   }
-  .header-right {
-    display: flex; align-items: center; gap: 18px;
-    color: ${t.accent}; padding-right: 6px;
+  .actions {
+    height: 44px; border-radius: 22px; padding: 0 16px;
+    display: flex; align-items: center; gap: 26px;
   }
-  .header-right svg { width: 24px; height: 24px; }
+
   .chat {
-    position: absolute;
-    top: 99px; bottom: 90px; left: 0; right: 0;
-    overflow: hidden;
-    padding: 8px 8px 12px;
+    position: absolute; top: 112px; bottom: 80px; left: 0; right: 0;
+    overflow: hidden; z-index: 5;
+    padding: 0 14px 10px 16px;
     display: flex; flex-direction: column; justify-content: flex-end;
-    gap: 2px;
-    z-index: 5;
   }
-  .date-pill {
-    align-self: center;
-    margin: 8px 0 10px;
-  }
+  .date-pill { align-self: center; margin: 10px 0 10px; }
   .date-pill span {
-    display: inline-block;
-    background: ${t.dateBg};
-    color: ${t.dateFg};
-    font-size: 12px;
-    font-weight: 500;
-    padding: 5px 10px;
-    border-radius: 8px;
-    box-shadow: 0 1px 1px rgba(0,0,0,${dark ? "0.25" : "0.06"});
+    display: inline-block; background: ${t.dateBg}; color: ${t.dateFg};
+    font-size: 12.5px; font-weight: 500; padding: 5px 11px; border-radius: 9px;
   }
-  .row {
-    display: flex;
-    margin-bottom: 2px;
-  }
-  .row.grouped { margin-top: -1px; }
+  .row { display: flex; margin-top: 2px; }
+  .row.first { margin-top: 8px; }
   .row.out { justify-content: flex-end; }
   .row.in { justify-content: flex-start; }
   .bubble {
-    position: relative;
-    max-width: 78%;
-    padding: 6px 7px 8px 9px;
-    border-radius: 8px;
-    font-size: 16px;
-    line-height: 1.28;
+    position: relative; max-width: 80%;
+    padding: 7px 11px 7px 12px;
+    border-radius: 18px;
+    font-size: 17px; line-height: 1.3; letter-spacing: -0.2px;
     color: ${t.bubbleFg};
-    box-shadow: 0 1px 0.5px rgba(0,0,0,${dark ? "0.35" : "0.13"});
   }
-  .bubble.out {
-    background: ${t.bubbleOut};
-    border-top-right-radius: 0;
-    margin-right: 6px;
+  .bubble.out { background: ${t.bubbleOut}; }
+  .bubble.in { background: ${t.bubbleIn}; }
+  .row.tail.in .bubble { border-bottom-left-radius: 5px; }
+  .row.tail.out .bubble { border-bottom-right-radius: 5px; }
+  .row.tail.in .bubble::after, .row.tail.out .bubble::after {
+    content: ""; position: absolute; bottom: 0; width: 12px; height: 14px;
   }
-  .bubble.in {
-    background: ${t.bubbleIn};
-    border-top-left-radius: 0;
-    margin-left: 6px;
+  .row.tail.in .bubble::after {
+    left: -5px;
+    background: radial-gradient(circle at 0 0, transparent 9px, ${t.bubbleIn} 9.5px);
+    clip-path: polygon(0 100%, 100% 0, 100% 100%);
   }
-  .row.grouped .bubble.out { border-top-right-radius: 8px; }
-  .row.grouped .bubble.in { border-top-left-radius: 8px; }
-  .row.out:not(.grouped) .bubble::before {
-    content: "";
-    position: absolute;
-    top: 0; right: -6px;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 0 0 10px 8px;
-    border-color: transparent transparent transparent ${t.bubbleOut};
-    background: none;
+  .row.tail.out .bubble::after {
+    right: -5px;
+    background: radial-gradient(circle at 100% 0, transparent 9px, ${t.bubbleOut} 9.5px);
+    clip-path: polygon(0 0, 100% 100%, 0 100%);
   }
-  .row.in:not(.grouped) .bubble::before {
-    content: "";
-    position: absolute;
-    top: 0; left: -6px;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 0 8px 10px 0;
-    border-color: transparent ${t.bubbleIn} transparent transparent;
-  }
-  .bubble .text {
-    white-space: pre-wrap;
-    word-break: break-word;
-    padding-right: 2px;
-  }
-  .bubble.has-img {
-    padding: 3px;
-    max-width: 72%;
-    overflow: hidden;
-  }
-  .bubble .media {
-    display: block;
-    width: 100%;
-    max-width: 240px;
-    max-height: 280px;
-    object-fit: cover;
-    border-radius: 6px;
-  }
-  .bubble .caption {
-    padding: 4px 6px 6px 7px;
-  }
+  .bubble .text { white-space: pre-wrap; word-break: break-word; }
   .meta {
-    float: right;
-    display: inline-flex;
-    align-items: center;
-    gap: 3px;
-    margin: 4px 0 -2px 10px;
-    color: ${t.meta};
-    font-size: 11px;
-    line-height: 1;
-    position: relative;
-    top: 4px;
+    float: right; display: inline-flex; align-items: center; gap: 4px;
+    margin: 8px 0 -4px 12px; color: ${t.meta};
+    font-size: 12px; line-height: 1; position: relative; top: 2px;
   }
   .ticks { display: block; }
+  .bubble.has-img { padding: 4px; max-width: 76%; }
+  .bubble .media {
+    display: block; width: 100%; max-width: 262px; max-height: 330px;
+    object-fit: cover; border-radius: 14px;
+  }
+  .bubble .caption { padding: 6px 8px 4px 9px; }
+
   .scroll-hint {
-    position: absolute;
-    right: 12px; bottom: 102px;
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: ${t.scrollBg};
-    box-shadow: 0 1px 4px rgba(0,0,0,${dark ? "0.4" : "0.18"});
+    position: absolute; right: 16px; bottom: 96px; z-index: 25;
+    width: 34px; height: 34px; border-radius: 50%;
     display: grid; place-items: center;
-    z-index: 15;
-    color: ${t.scrollFg};
   }
+
   .composer {
-    position: absolute; left: 0; right: 0; bottom: 0;
-    height: 90px;
-    padding: 8px 10px 30px;
-    background: transparent;
-    display: flex; align-items: center; gap: 10px;
-    z-index: 20;
+    position: absolute; left: 0; right: 0; bottom: 0; height: 80px; z-index: 30;
+    padding: 0 14px 30px 14px;
+    display: flex; align-items: center; gap: 12px;
   }
-  .plus {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    background: ${t.plusBg};
-    box-shadow: 0 1px 2px rgba(0,0,0,${dark ? "0.3" : "0.08"});
-    display: grid; place-items: center;
-    flex-shrink: 0;
-  }
-  .cam, .mic {
-    width: 34px; height: 34px;
-    display: grid; place-items: center;
-    flex-shrink: 0;
-    color: ${t.cam};
-  }
+  .plus, .cam { width: 30px; height: 30px; display: grid; place-items: center; flex-shrink: 0; }
   .input {
-    flex: 1;
-    height: 36px;
-    border-radius: 20px;
+    flex: 1; height: 38px; border-radius: 19px;
     background: ${t.inputBg};
-    border: none;
-    box-shadow: 0 1px 2px rgba(0,0,0,${dark ? "0.3" : "0.06"});
-    display: flex; align-items: center;
-    padding: 0 10px 0 14px;
-    gap: 8px;
+    border: 0.5px solid ${t.glassBorder};
+    display: flex; align-items: center; justify-content: flex-end; padding: 0 12px;
   }
-  .input-sticker {
-    margin-left: auto;
-    display: grid; place-items: center;
-    color: ${t.meta};
-  }
-  .home-bar {
-    position: absolute; bottom: 8px; left: 50%;
-    transform: translateX(-50%);
-    width: 134px; height: 5px;
-    background: ${t.home}; border-radius: 100px;
-    z-index: 30;
+  .mic {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: ${t.micBg}; display: grid; place-items: center; flex-shrink: 0;
   }
 </style>
 </head>
@@ -480,66 +371,57 @@ function buildHtml(data, photoSrc, baseDir = __dirname) {
   <div class="phone" id="phone">
     <div class="wallpaper"></div>
 
+    <div class="chat">
+      ${renderMessages(data.mensagens || [], baseDir)}
+    </div>
+
+    <div class="fade-top"></div>
+    <div class="fade-bottom"></div>
+
     <div class="status">
-      <div>${esc(horaStatus)}</div>
+      <div class="time">${esc(horaStatus)}</div>
       <div class="status-right">
-        <svg width="17" height="11" viewBox="0 0 17 11">${signalBars(sinal, t.icon)}</svg>
-        ${
-          wifi
-            ? `<svg width="16" height="12" viewBox="0 0 16 12"><path d="M8 9.8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm0-3.4c1.7 0 3.2.7 4.3 1.8l-1.4 1.4A4.1 4.1 0 0 0 8 8.4c-1.1 0-2.1.4-2.9 1.2L3.7 8.2A5.9 5.9 0 0 1 8 6.4Zm0-3.5c2.7 0 5.1 1.1 6.9 2.8L13.5 7A7.7 7.7 0 0 0 8 4.6 7.7 7.7 0 0 0 2.5 7L1.1 5.7A9.9 9.9 0 0 1 8 2.9Z" fill="${t.icon}"/></svg>`
-            : ""
-        }
-        ${batterySvg(bateria, t.icon)}
+        <svg width="18" height="12" viewBox="0 0 18 12">${signalBars(sinal, t.fg)}</svg>
+        ${wifi ? wifiSvg(t.fg) : ""}
+        ${batterySvg(bateria, t.fg)}
       </div>
     </div>
 
     <div class="header">
       <div class="header-left">
-        <div class="back">
-          <svg viewBox="0 0 12 20" fill="none"><path d="M10.5 1.5 2 10l8.5 8.5" stroke="${t.accent}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="back glass">
+          <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2 2.2 10 10 18" stroke="${t.icon}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <img class="avatar" src="${photoSrc}" alt=""/>
         <div class="name">${esc(data.contato || "Contato")}</div>
       </div>
-      <div class="header-right">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M15.5 8.5v-2A1.5 1.5 0 0 0 14 5H4.5A1.5 1.5 0 0 0 3 6.5v11A1.5 1.5 0 0 0 4.5 19H14a1.5 1.5 0 0 0 1.5-1.5v-2l5 3.2V5.3l-5 3.2Z" fill="${t.accent}"/></svg>
-        <svg viewBox="0 0 24 24" fill="none"><path d="M7.2 3.8c.4-.4 1.1-.5 1.6-.2l2.3 1.5c.5.3.7.9.5 1.4L10.5 9c-.1.4 0 .8.3 1.1l3.1 3.1c.3.3.7.4 1.1.3l2.5-1.1c.5-.2 1.1 0 1.4.5l1.5 2.3c.3.5.2 1.2-.2 1.6l-1.4 1.4c-.7.7-1.7 1-2.7.8-2.5-.5-5.3-2.5-7.9-5.1S4.5 8.6 4 6.1c-.2-1 .1-2 .8-2.7l1.4-1.4Z" fill="${t.accent}"/></svg>
+      <div class="actions glass">
+        <svg width="27" height="20" viewBox="0 0 27 20" fill="none"><rect x="1.2" y="2.2" width="17" height="15.6" rx="3.8" stroke="${t.icon}" stroke-width="2"/><path d="m18.6 8 6.2-3.9v11.8L18.6 12" stroke="${t.icon}" stroke-width="2" stroke-linejoin="round"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6.6 2.8c.5-.4 1.2-.4 1.6.1l2.4 2.9c.4.5.4 1.2 0 1.7L9.3 9.1a.9.9 0 0 0-.1 1c1.1 2 2.7 3.6 4.7 4.7.3.2.7.2 1-.1l1.6-1.3c.5-.4 1.2-.4 1.7 0l2.9 2.4c.5.4.5 1.1.1 1.6l-1.6 1.9c-.8.9-2 1.3-3.2 1-3.2-.8-6.1-2.6-8.4-4.9S4 10.3 3.2 7.1c-.3-1.2.1-2.4 1-3.2l2.4-1.1Z" stroke="${t.icon}" stroke-width="1.9" stroke-linejoin="round"/></svg>
       </div>
     </div>
 
-    <div class="chat">
-      ${renderMessages(data.mensagens || [], baseDir)}
-    </div>
-
-    <div class="scroll-hint">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="${t.scrollFg}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="scroll-hint glass">
+      <svg width="14" height="9" viewBox="0 0 14 9" fill="none"><path d="M1.5 1.5 7 7l5.5-5.5" stroke="${t.icon}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
 
     <div class="composer">
       <div class="plus" aria-hidden="true">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="#25D366" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2v18M2 11h18" stroke="${t.icon}" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
       <div class="input">
-        <div style="flex:1"></div>
-        <div class="input-sticker" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-            <path d="M5 3.5h10.2L20.5 8.8V19a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 19V5A1.5 1.5 0 0 1 5 3.5Z" stroke="${t.meta}" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M15 3.6V8a.8.8 0 0 0 .8.8h4.4" stroke="${t.meta}" stroke-width="1.6" stroke-linejoin="round"/>
-            <circle cx="9" cy="12.2" r="1.05" fill="${t.meta}"/>
-            <circle cx="14.2" cy="12.2" r="1.05" fill="${t.meta}"/>
-            <path d="M9.2 15.4c.9.8 1.9 1.2 2.9 1.2s2-.4 2.9-1.2" stroke="${t.meta}" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </div>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M20.5 12.5V7a3.5 3.5 0 0 0-3.5-3.5H7A3.5 3.5 0 0 0 3.5 7v10A3.5 3.5 0 0 0 7 20.5h5.5l8-8Z" stroke="${t.iconSoft}" stroke-width="1.7" stroke-linejoin="round"/>
+          <path d="M12.5 20.5v-4.5a3.5 3.5 0 0 1 3.5-3.5h4.5" stroke="${t.iconSoft}" stroke-width="1.7" stroke-linejoin="round"/>
+        </svg>
       </div>
       <div class="cam" aria-hidden="true">
-        <svg width="22" height="20" viewBox="0 0 22 20" fill="none"><path d="M8 3.5h6l1.2 1.5H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h3.8L8 3.5Z" stroke="${t.cam}" stroke-width="1.6"/><circle cx="11" cy="11" r="3.4" stroke="${t.cam}" stroke-width="1.6"/></svg>
+        <svg width="26" height="22" viewBox="0 0 26 22" fill="none"><path d="M9.3 2.5h7.4l1.6 2.3h3.4a2.8 2.8 0 0 1 2.8 2.8v9.6a2.8 2.8 0 0 1-2.8 2.8H4.3a2.8 2.8 0 0 1-2.8-2.8V7.6a2.8 2.8 0 0 1 2.8-2.8h3.4l1.6-2.3Z" stroke="${t.icon}" stroke-width="1.9" stroke-linejoin="round"/><circle cx="13" cy="12" r="4.2" stroke="${t.icon}" stroke-width="1.9"/></svg>
       </div>
       <div class="mic" aria-hidden="true">
-        <svg width="14" height="22" viewBox="0 0 14 22" fill="none"><rect x="4" y="1" width="6" height="12" rx="3" stroke="${t.cam}" stroke-width="1.7"/><path d="M1.5 10.5a5.5 5.5 0 0 0 11 0M7 16v4" stroke="${t.cam}" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <svg width="14" height="21" viewBox="0 0 14 21" fill="none"><rect x="3.6" y="1" width="6.8" height="12" rx="3.4" fill="${t.micFg}"/><path d="M1.2 9.8a5.8 5.8 0 0 0 11.6 0M7 15.8V20" stroke="${t.micFg}" stroke-width="1.8" stroke-linecap="round"/></svg>
       </div>
     </div>
-
-    <div class="home-bar"></div>
   </div>
 </body>
 </html>`;

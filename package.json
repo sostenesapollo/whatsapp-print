@@ -6,6 +6,7 @@
   "scripts": {
     "generate": "node generate.mjs",
     "exemplo": "node generate.mjs conversa.exemplo.json",
+    "exemplos": "node gerar-exemplos.mjs",
     "gestante": "node gerar-gestante.mjs"
   },
   "dependencies": {
