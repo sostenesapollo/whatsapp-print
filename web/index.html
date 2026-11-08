@@ -349,9 +349,9 @@ $('#gerar').onclick=async ()=>{
     node.querySelectorAll('[data-edit],[data-upload]').forEach(el=>{ el.removeAttribute('contenteditable'); el.style.outline='none'; });
     const dataUrl=await modernScreenshot.domToPng(node,{ width:390, height:844, scale:3 });
     const a=document.createElement('a');
-    a.href=dataUrl; a.download=`${(state.data.contato||'print').replace(/\s+/g,'-').toLowerCase()}.png`; a.click();
-    window.open(dataUrl,'_blank');
-    status('PNG gerado', true); paint();
+    a.href=dataUrl; a.download=`${(state.data.contato||'print').replace(/\s+/g,'-').toLowerCase()}.png`;
+    a.rel='noopener'; a.click();
+    status('Baixado', true); paint();
   }catch(e){ status(String(e.message||e), false); }
 };
 
