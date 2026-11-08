@@ -1,0 +1,71 @@
+{
+  "contato": "Fernanda Queiroz Dias",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a6.webp",
+  "tema": "escuro",
+  "horaStatus": "18:44",
+  "bateria": 72,
+  "sinal": 3,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "30 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce, me ajuda a organizar as perguntas da consulta",
+      "hora": "16:40"
+    },
+    {
+      "de": "ela",
+      "texto": "e sempre saio achando q incomodei",
+      "hora": "16:41"
+    },
+    {
+      "de": "ela",
+      "texto": "minha médica é bem objetiva e eu travo na hora de perguntar",
+      "hora": "16:42"
+    },
+    {
+      "de": "ela",
+      "texto": "saio da consulta com dúvida e vontade de chorar",
+      "hora": "16:43"
+    },
+    {
+      "de": "eu",
+      "texto": "anota em tópicos, tipo o modelo do guia",
+      "hora": "16:44",
+      "status": "lido"
+    },
+    {
+      "tipo": "data",
+      "texto": "8 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "levei anotado na consulta de hj",
+      "hora": "16:48"
+    },
+    {
+      "de": "ela",
+      "texto": "saí com tudo respondido, sem vergonha de perguntar",
+      "hora": "16:49"
+    },
+    {
+      "de": "eu",
+      "texto": "e foi tranquilo?",
+      "hora": "16:50",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "foi. organizei em tópicos, do jeito q o manual sugere",
+      "hora": "16:51"
+    },
+    {
+      "de": "ela",
+      "texto": "o de nutrição mostrou q eu tava comendo errado tb",
+      "hora": "16:52"
+    }
+  ]
+}

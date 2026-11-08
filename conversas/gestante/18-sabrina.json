@@ -1,0 +1,66 @@
+{
+  "contato": "Sabrina Leal Monteiro",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a4.webp",
+  "tema": "escuro",
+  "horaStatus": "16:51",
+  "bateria": 14,
+  "sinal": 4,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "29 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce, a lista de enxoval inteligente me fez cortar 26 itens",
+      "hora": "10:05"
+    },
+    {
+      "de": "ela",
+      "texto": "minha irmã me deu 3 carrinhos de recém nascido",
+      "hora": "10:06"
+    },
+    {
+      "de": "ela",
+      "texto": "não usei nem metade até agora",
+      "hora": "10:07"
+    },
+    {
+      "de": "ela",
+      "texto": "usei a lista inteira, só comprei o essencial",
+      "hora": "10:08"
+    },
+    {
+      "de": "ela",
+      "texto": "tinha coisa pra 6 meses q o guia manda comprar só depois",
+      "hora": "10:09"
+    },
+    {
+      "de": "ela",
+      "texto": "e eu achando q precisava de tudo antes do berço chegar",
+      "hora": "10:10"
+    },
+    {
+      "tipo": "data",
+      "texto": "7 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "deu 310 de diferença e sobrou pro berço",
+      "hora": "10:13",
+      "imagem": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/p4.webp"
+    },
+    {
+      "de": "eu",
+      "texto": "aí sim, sem peso de dívida",
+      "hora": "10:14",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "sem peso. obrigada de vdd",
+      "hora": "10:15"
+    }
+  ]
+}

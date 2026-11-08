@@ -1,0 +1,76 @@
+{
+  "contato": "Bruna Teixeira Alves",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a6.webp",
+  "tema": "escuro",
+  "horaStatus": "06:18",
+  "bateria": 52,
+  "sinal": 4,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "18 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce, o bebê nasceu e a pega ta doendo mto",
+      "hora": "06:02"
+    },
+    {
+      "de": "ela",
+      "texto": "ele tem 9 dias e eu to chorando de dor",
+      "hora": "06:03"
+    },
+    {
+      "de": "ela",
+      "texto": "o bico ta rachado",
+      "hora": "06:04"
+    },
+    {
+      "de": "ela",
+      "texto": "a doula falou q o selinho é o q mais importa",
+      "hora": "06:05"
+    },
+    {
+      "de": "ela",
+      "texto": "mas tá difícil de acertar sozinha",
+      "hora": "06:06"
+    },
+    {
+      "de": "ela",
+      "texto": "todo mundo fala q é só pegar jeito",
+      "hora": "06:07"
+    },
+    {
+      "tipo": "data",
+      "texto": "7 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "segui o passo a passo do cap 5",
+      "hora": "06:12"
+    },
+    {
+      "de": "eu",
+      "texto": "e hj?",
+      "hora": "06:13",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "parou de doer em 3 dias e ele ganhou 180g na pesagem",
+      "hora": "06:14"
+    },
+    {
+      "de": "ela",
+      "texto": "eu ia desistir no primeiro dia, chorei quando virou",
+      "hora": "06:15"
+    },
+    {
+      "de": "eu",
+      "texto": "parabéns mãe ❤️ me chama se apertar de novo",
+      "hora": "06:16",
+      "status": "lido"
+    }
+  ]
+}

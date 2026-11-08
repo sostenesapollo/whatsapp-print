@@ -1,0 +1,76 @@
+{
+  "contato": "Kelly Andrade Souza",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a9.webp",
+  "tema": "escuro",
+  "horaStatus": "21:03",
+  "bateria": 48,
+  "sinal": 4,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "31 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce, 3ª gestação e eu achando q já sabia tudo kkk",
+      "hora": "18:30"
+    },
+    {
+      "de": "ela",
+      "texto": "na segunda gestação eu não sabia nem q podia levar acompanhante",
+      "hora": "18:31"
+    },
+    {
+      "de": "ela",
+      "texto": "minhas 2 primeiras gestações foram no susto, sem plano",
+      "hora": "18:32"
+    },
+    {
+      "de": "ela",
+      "texto": "agora quero chegar preparada",
+      "hora": "18:33"
+    },
+    {
+      "de": "ela",
+      "texto": "to lendo o guia de direitos com calma",
+      "hora": "18:34"
+    },
+    {
+      "de": "ela",
+      "texto": "mas descobri direito q nem sabia q existia, tipo acompanhante",
+      "hora": "18:35"
+    },
+    {
+      "tipo": "data",
+      "texto": "8 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "preenchi o plano de parto",
+      "hora": "18:38"
+    },
+    {
+      "de": "ela",
+      "texto": "a maternidade leu sem discutir",
+      "hora": "18:39"
+    },
+    {
+      "de": "eu",
+      "texto": "e o parto foi como vc quis?",
+      "hora": "18:40",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "foi, com a sala do jeito q pedi",
+      "hora": "18:41"
+    },
+    {
+      "de": "eu",
+      "texto": "que vitória, kelly",
+      "hora": "18:42",
+      "status": "lido"
+    }
+  ]
+}

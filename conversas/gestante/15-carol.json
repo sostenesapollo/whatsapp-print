@@ -1,0 +1,72 @@
+{
+  "contato": "Carol Lamach",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a15.webp",
+  "tema": "escuro",
+  "horaStatus": "20:06",
+  "bateria": 55,
+  "sinal": 3,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "26 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce, minha sogra quer comprar berço, carrinho e tudo em dobro",
+      "hora": "15:30"
+    },
+    {
+      "de": "ela",
+      "texto": "por causa do quarto dele na casa dela",
+      "hora": "15:31"
+    },
+    {
+      "de": "eu",
+      "texto": "se ele vai dormir lá com frequência, faz sentido",
+      "hora": "15:32",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "vai, toda semana",
+      "hora": "15:33"
+    },
+    {
+      "tipo": "data",
+      "texto": "4 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "resolvi o dobro só do básico, o resto fica aqui",
+      "hora": "10:12"
+    },
+    {
+      "de": "ela",
+      "texto": "e cortei 14 itens q ela tinha mandado",
+      "hora": "10:13"
+    },
+    {
+      "de": "eu",
+      "texto": "boa, sem duplicar o q não usa",
+      "hora": "10:14",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "deu 300 reais de economia kkk",
+      "hora": "10:15"
+    },
+    {
+      "de": "eu",
+      "texto": "aí sim. e a sogra?",
+      "hora": "10:16",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "entendeu, até elogiou o checklist",
+      "hora": "10:17"
+    }
+  ]
+}

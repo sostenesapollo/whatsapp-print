@@ -1,0 +1,66 @@
+{
+  "contato": "Camila Ferreira Rocha",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a1.webp",
+  "tema": "escuro",
+  "horaStatus": "08:14",
+  "bateria": 12,
+  "sinal": 3,
+  "wifi": false,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "4 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "oi joyce, comprei o manual ontem",
+      "hora": "18:41"
+    },
+    {
+      "de": "ela",
+      "texto": "já baixei tudo no celular, obrigada por responder",
+      "hora": "18:42"
+    },
+    {
+      "de": "ela",
+      "texto": "e eu tinha comprado 3 macacões RN já, voltei e troquei por maior",
+      "hora": "18:43"
+    },
+    {
+      "tipo": "data",
+      "texto": "2 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "bom dia joyce, terminei a lista do enxoval",
+      "hora": "09:12"
+    },
+    {
+      "de": "ela",
+      "texto": "cortei 18 itens q iam ficar encostados",
+      "hora": "09:13"
+    },
+    {
+      "de": "ela",
+      "texto": "imprimi e fui riscando com calma",
+      "hora": "09:14",
+      "imagem": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/cover-1.webp"
+    },
+    {
+      "de": "eu",
+      "texto": "marcou tudo? rs",
+      "hora": "09:15",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "só o da primeira semana. deu 240 a menos do q eu tinha planejado",
+      "hora": "09:16"
+    },
+    {
+      "de": "ela",
+      "texto": "obrigada de vdd 🙏",
+      "hora": "09:17"
+    }
+  ]
+}

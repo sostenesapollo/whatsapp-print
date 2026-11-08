@@ -4,7 +4,7 @@
  * Datas remapeadas para out–nov/2026; baterias e horas do status variadas.
  */
 import { chromium } from "playwright";
-import { mkdirSync } from "fs";
+import { mkdirSync, writeFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 import { gerarPrint } from "./generate.mjs";
@@ -750,7 +750,24 @@ function toConversa(dep, meta, index, tema) {
   };
 }
 
+function exportJson() {
+  const dir = resolve(__dirname, "conversas/gestante");
+  mkdirSync(dir, { recursive: true });
+  for (let i = 0; i < DEP.length; i++) {
+    const data = toConversa(DEP[i], META[i], i, "escuro");
+    delete data.saida;
+    const id = `${String(i + 1).padStart(2, "0")}-${firstSlug(DEP[i].name)}`;
+    writeFileSync(resolve(dir, `${id}.json`), JSON.stringify(data, null, 2) + "\n");
+  }
+  console.log(`OK → ${DEP.length} JSONs em conversas/gestante/`);
+}
+
 async function main() {
+  if (process.argv.includes("--export-json")) {
+    exportJson();
+    return;
+  }
+
   for (const tema of TEMAS) mkdirSync(resolve(OUT, tema), { recursive: true });
   const browser = await chromium.launch({ headless: true });
   const total = DEP.length * TEMAS.length;

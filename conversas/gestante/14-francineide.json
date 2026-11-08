@@ -1,0 +1,72 @@
+{
+  "contato": "Francineide Alves da Silva",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a11.webp",
+  "tema": "escuro",
+  "horaStatus": "15:10",
+  "bateria": 27,
+  "sinal": 4,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "25 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce vou ser sincera, achei caro de primeira",
+      "hora": "12:37"
+    },
+    {
+      "de": "ela",
+      "texto": "tenho 2 filhos, no primeiro saí comprando tudo q aparecia",
+      "hora": "12:38"
+    },
+    {
+      "de": "ela",
+      "texto": "e no segundo ele já reclamava de gasto",
+      "hora": "12:39"
+    },
+    {
+      "de": "ela",
+      "texto": "meu marido falou q é dinheiro jogado fora",
+      "hora": "12:40"
+    },
+    {
+      "de": "ela",
+      "texto": "mostrei a conta da primeira gestação e ele calou",
+      "hora": "12:41"
+    },
+    {
+      "de": "eu",
+      "texto": "kkkk homens",
+      "hora": "12:42",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "né",
+      "hora": "12:43"
+    },
+    {
+      "de": "ela",
+      "texto": "só a lista de enxoval cortou 240 reais da conta",
+      "hora": "12:44"
+    },
+    {
+      "de": "eu",
+      "texto": "kk é essa a conta q importa",
+      "hora": "12:45",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "e a parte de direito eu nem sabia q existia",
+      "hora": "12:46"
+    },
+    {
+      "de": "ela",
+      "texto": "obrigada por responder sem pressa, viu",
+      "hora": "12:47"
+    }
+  ]
+}

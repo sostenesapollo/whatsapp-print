@@ -1,0 +1,68 @@
+{
+  "contato": "Rafaela Duarte Lima",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a3.webp",
+  "tema": "escuro",
+  "horaStatus": "16:48",
+  "bateria": 61,
+  "sinal": 4,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "11 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce, baixei o plano de parto pra preencher com meu marido",
+      "hora": "21:14"
+    },
+    {
+      "de": "eu",
+      "texto": "faz junto sim, é bom vcs conversarem",
+      "hora": "21:15",
+      "status": "lido"
+    },
+    {
+      "tipo": "data",
+      "texto": "5 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "preenchi com ele hj",
+      "hora": "16:22"
+    },
+    {
+      "de": "ela",
+      "texto": "tinha campo q a gente nem sabia q existia kkk",
+      "hora": "16:23"
+    },
+    {
+      "de": "ela",
+      "texto": "32 semanas e tudo pronto",
+      "hora": "16:24",
+      "imagem": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/p3.webp"
+    },
+    {
+      "de": "eu",
+      "texto": "e ficou do jeito q vcs querem?",
+      "hora": "16:25",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "ficou. vou levar impresso na maternidade",
+      "hora": "16:26"
+    },
+    {
+      "de": "ela",
+      "texto": "a obstetra leu e disse q tava completo",
+      "hora": "16:27"
+    },
+    {
+      "de": "eu",
+      "texto": "fico feliz demais 🥲",
+      "hora": "16:28",
+      "status": "lido"
+    }
+  ]
+}

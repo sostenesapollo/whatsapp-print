@@ -1,0 +1,72 @@
+{
+  "contato": "Rafaela Victoria",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a16.webp",
+  "tema": "escuro",
+  "horaStatus": "10:42",
+  "bateria": 39,
+  "sinal": 3,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "28 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "oi joyce, primeira gestação, 30 semanas",
+      "hora": "19:40"
+    },
+    {
+      "de": "ela",
+      "texto": "meu convênio não cobre doula, dá pra levar alguém?",
+      "hora": "19:41"
+    },
+    {
+      "de": "eu",
+      "texto": "acompanhante é direito. doula varia por contrato, confere no seu",
+      "hora": "19:42",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "vou conferir e pedir por escrito",
+      "hora": "19:43"
+    },
+    {
+      "tipo": "data",
+      "texto": "6 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "conferi, a doula tá liberada mas precisa de autorização",
+      "hora": "11:02"
+    },
+    {
+      "de": "ela",
+      "texto": "pedi e saiu na hora",
+      "hora": "11:03"
+    },
+    {
+      "de": "eu",
+      "texto": "q bom! e o plano de parto?",
+      "hora": "11:04",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "já preenchi, vou entregar na internação",
+      "hora": "11:05"
+    },
+    {
+      "de": "eu",
+      "texto": "vai dar certo, viu",
+      "hora": "11:06",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "obrigada por me deixar segura",
+      "hora": "11:07"
+    }
+  ]
+}

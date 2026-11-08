@@ -1,5 +1,7 @@
 node_modules/
 out/
+uploads/
 .DS_Store
 .tmp/
 *.preview-*.html
+.export-bridge.mjs

@@ -1,0 +1,58 @@
+{
+  "contato": "Thaís Moreira Campos",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a7.webp",
+  "tema": "escuro",
+  "horaStatus": "11:55",
+  "bateria": 91,
+  "sinal": 3,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "20 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce to montando o cantinho de amamentação do quarto",
+      "hora": "11:40"
+    },
+    {
+      "de": "ela",
+      "texto": "a cadeira já ficou do jeito q o guia mostra",
+      "hora": "11:41"
+    },
+    {
+      "de": "ela",
+      "texto": "o quarto é pequeno e o berço fica do lado da cama, cabe?",
+      "hora": "11:42"
+    },
+    {
+      "de": "ela",
+      "texto": "usei esse checklist: agua, lanche e a almofada na cadeira do lado",
+      "hora": "11:43",
+      "imagem": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/cover-6.webp"
+    },
+    {
+      "de": "eu",
+      "texto": "tudo no seu alcance?",
+      "hora": "11:44",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "tudo. meu marido falou q ficou mais fácil de noite",
+      "hora": "11:45"
+    },
+    {
+      "de": "ela",
+      "texto": "o guia 6 tb me deixou menos perdida com o pós",
+      "hora": "11:46"
+    },
+    {
+      "de": "eu",
+      "texto": "boa sorte no parto, viu",
+      "hora": "11:47",
+      "status": "lido"
+    }
+  ]
+}

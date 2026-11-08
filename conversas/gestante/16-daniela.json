@@ -1,0 +1,67 @@
+{
+  "contato": "Daniela Vieira Castro",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a2.webp",
+  "tema": "escuro",
+  "horaStatus": "11:19",
+  "bateria": 93,
+  "sinal": 4,
+  "wifi": false,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "27 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "comprei pra mim e meu marido acabou lendo mais q eu kkk",
+      "hora": "20:00"
+    },
+    {
+      "de": "ela",
+      "texto": "tô de 30 semanas e a gente começou o plano de parto",
+      "hora": "20:01"
+    },
+    {
+      "de": "ela",
+      "texto": "obrigada por responder no domingo, viu",
+      "hora": "20:02"
+    },
+    {
+      "de": "eu",
+      "texto": "eu q agradeço, de vdd",
+      "hora": "20:03",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "eu tava insegura com o parto e o guia ajudou nós dois",
+      "hora": "20:04"
+    },
+    {
+      "de": "ela",
+      "texto": "a parte de direitos do acompanhante deixou ele seguro pra ir comigo",
+      "hora": "20:05"
+    },
+    {
+      "de": "ela",
+      "texto": "ele me acompanha em todas as consultas desde então",
+      "hora": "20:06"
+    },
+    {
+      "de": "ela",
+      "texto": "e a gente já preencheu o plano junto, a obstetra leu e achou certo",
+      "hora": "20:07"
+    },
+    {
+      "de": "eu",
+      "texto": "que parceiro! manda um beijo pra ele",
+      "hora": "20:08",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "agradecemos nós dois. virou leitura obrigatória aqui em casa",
+      "hora": "20:09"
+    }
+  ]
+}

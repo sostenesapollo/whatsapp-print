@@ -16,7 +16,16 @@ bun install
 bunx playwright install chromium
 ```
 
-## Uso
+## Editor visual
+
+Lista os prints existentes, preview ao vivo, clique no texto pra editar, clique na foto/imagem pra trocar, seletor de tema, gera PNG:
+
+```fish
+bun run export-json   # uma vez: cria conversas/gestante/*.json
+bun run editor        # http://127.0.0.1:3847
+```
+
+## Uso (CLI)
 
 1. Copia o exemplo e edita:
 

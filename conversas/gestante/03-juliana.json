@@ -1,0 +1,76 @@
+{
+  "contato": "Juliana Prado Mattos",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a2.webp",
+  "tema": "escuro",
+  "horaStatus": "13:22",
+  "bateria": 34,
+  "sinal": 3,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "9 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "oi joyce, to de 16 semanas e o enjoo ta me derrubando",
+      "hora": "13:02"
+    },
+    {
+      "de": "ela",
+      "texto": "desde a 6 semanas é assim, não para",
+      "hora": "13:03"
+    },
+    {
+      "de": "ela",
+      "texto": "nem água eu conseguir tomar",
+      "hora": "13:04"
+    },
+    {
+      "de": "ela",
+      "texto": "a médica só mandou comer bolacha e ficar de repouso",
+      "hora": "13:05"
+    },
+    {
+      "de": "ela",
+      "texto": "já tentei de tudo e nada desce",
+      "hora": "13:06"
+    },
+    {
+      "de": "ela",
+      "texto": "e ainda tenho q trabalhar em pé",
+      "hora": "13:07"
+    },
+    {
+      "tipo": "data",
+      "texto": "4 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "voltei pra falar q o suco de gengibre do guia 2 funcionou",
+      "hora": "13:20"
+    },
+    {
+      "de": "eu",
+      "texto": "que bom!! consegue comer algo sólido?",
+      "hora": "13:21",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "arroz, frango e abóbora. e o quadro de ferro me fez procurar a médica",
+      "hora": "13:22"
+    },
+    {
+      "de": "ela",
+      "texto": "descobri anemia, já to tratando",
+      "hora": "13:23"
+    },
+    {
+      "de": "eu",
+      "texto": "ainda bem q vc levou isso pra consulta",
+      "hora": "13:24",
+      "status": "lido"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "contato": "Patrícia Nogueira Salles",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a4.webp",
+  "tema": "escuro",
+  "horaStatus": "10:05",
+  "bateria": 23,
+  "sinal": 3,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "14 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce, tenho consulta quinta e quero levar o capítulo dos direitos",
+      "hora": "08:52"
+    },
+    {
+      "de": "ela",
+      "texto": "a empresa já começou a me escalar pra fechar caixa até tarde",
+      "hora": "08:53"
+    },
+    {
+      "de": "ela",
+      "texto": "e eu fico com medo de falar",
+      "hora": "08:54"
+    },
+    {
+      "de": "ela",
+      "texto": "eu trabalho de carteira assinada, tenho direito de mudar de função?",
+      "hora": "08:55"
+    },
+    {
+      "de": "ela",
+      "texto": "não sabia q podia pedir isso",
+      "hora": "08:56"
+    },
+    {
+      "de": "eu",
+      "texto": "leva sim, e marca antes o que te interessa",
+      "hora": "08:57",
+      "status": "lido"
+    },
+    {
+      "tipo": "data",
+      "texto": "5 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "levei impresso na consulta",
+      "hora": "10:41"
+    },
+    {
+      "de": "ela",
+      "texto": "ela respeitou tudo e ainda anotou o atestado q eu tinha direito",
+      "hora": "10:42"
+    },
+    {
+      "de": "eu",
+      "texto": "sério?",
+      "hora": "10:43",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "sem o manual eu ia aceitar o q viesse",
+      "hora": "10:44"
+    },
+    {
+      "de": "ela",
+      "texto": "a parte de licença é bem explicada, com a lei citada",
+      "hora": "10:45"
+    }
+  ]
+}

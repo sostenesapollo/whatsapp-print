@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>WhatsApp Print — Editor</title>
+<style>
+  :root {
+    --bg: #0f1214;
+    --panel: #171b1e;
+    --line: #2a3136;
+    --text: #e8eef2;
+    --muted: #8b979f;
+    --accent: #25d366;
+    --accent-2: #53bdeb;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    display: grid; grid-template-columns: 280px 1fr 360px; min-height: 100vh;
+  }
+  aside, main, .side {
+    min-height: 100vh; border-right: 1px solid var(--line);
+  }
+  .side { border-right: 0; border-left: 1px solid var(--line); }
+  aside { background: var(--panel); display: flex; flex-direction: column; }
+  header.bar {
+    padding: 16px 16px 12px; border-bottom: 1px solid var(--line);
+  }
+  header.bar h1 { font-size: 15px; margin: 0 0 4px; font-weight: 650; }
+  header.bar p { margin: 0; color: var(--muted); font-size: 12px; }
+  #list { overflow: auto; flex: 1; padding: 8px; }
+  .item {
+    display: grid; grid-template-columns: 48px 1fr; gap: 10px; align-items: center;
+    padding: 8px; border-radius: 12px; cursor: pointer; border: 1px solid transparent;
+  }
+  .item:hover { background: #1d2328; }
+  .item.on { background: #1d2a24; border-color: #2f5a40; }
+  .item img {
+    width: 48px; height: 48px; object-fit: cover; border-radius: 10px; background: #000;
+  }
+  .item .ph {
+    width: 48px; height: 48px; border-radius: 10px; background: #101416;
+    display: grid; place-items: center; color: var(--muted); font-size: 11px;
+  }
+  .item b { display: block; font-size: 13px; font-weight: 600; }
+  .item span { color: var(--muted); font-size: 11px; }
+
+  main {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 14px; padding: 20px; background:
+      radial-gradient(ellipse at 50% 0%, #1a2228, var(--bg) 55%);
+  }
+  .toolbar {
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap; justify-content: center;
+  }
+  .toolbar label { font-size: 12px; color: var(--muted); }
+  select, button, input[type="number"] {
+    background: #1c2226; color: var(--text); border: 1px solid var(--line);
+    border-radius: 10px; padding: 8px 12px; font: inherit; font-size: 13px;
+  }
+  button { cursor: pointer; }
+  button.primary { background: var(--accent); color: #04210f; border-color: transparent; font-weight: 700; }
+  button.ghost:hover { border-color: var(--accent-2); }
+  #frame-wrap {
+    width: 390px; height: 844px; border-radius: 28px; overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,.55); background: #000; position: relative;
+  }
+  #frame { width: 390px; height: 844px; border: 0; display: block; background: #000; }
+  .hint { color: var(--muted); font-size: 12px; text-align: center; max-width: 420px; line-height: 1.4; }
+
+  .side { background: var(--panel); padding: 16px; overflow: auto; }
+  .side h2 { font-size: 13px; margin: 0 0 12px; color: var(--muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .field { margin-bottom: 12px; }
+  .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .field input, .field textarea, .field select {
+    width: 100%; background: #12161a; border: 1px solid var(--line); color: var(--text);
+    border-radius: 10px; padding: 9px 10px; font: inherit; font-size: 13px;
+  }
+  .field textarea { min-height: 70px; resize: vertical; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .msg-card {
+    border: 1px solid var(--line); border-radius: 12px; padding: 10px; margin-bottom: 8px; background: #12161a;
+  }
+  .msg-card .top { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 6px; font-size: 11px; color: var(--muted); }
+  .status { font-size: 12px; color: var(--muted); min-height: 18px; margin-top: 8px; }
+  .status.ok { color: var(--accent); }
+  .status.err { color: #ff6b6b; }
+  #filePick { display: none; }
+  @media (max-width: 1100px) {
+    body { grid-template-columns: 220px 1fr; }
+    .side { display: none; }
+  }
+</style>
+</head>
+<body>
+<aside>
+  <header class="bar">
+    <h1>WhatsApp Print</h1>
+    <p>Clique num print pra editar</p>
+  </header>
+  <div id="list"></div>
+</aside>
+
+<main>
+  <div class="toolbar">
+    <label>Tema</label>
+    <select id="tema">
+      <option value="escuro">Escuro</option>
+      <option value="claro">Claro</option>
+    </select>
+    <button class="ghost" id="btnPreview" type="button">Atualizar preview</button>
+    <button class="primary" id="btnSave" type="button">Salvar + gerar PNG</button>
+    <button class="ghost" id="btnBoth" type="button">Gerar claro e escuro</button>
+  </div>
+  <div id="frame-wrap"><iframe id="frame" title="Preview"></iframe></div>
+  <p class="hint">Clique no texto pra editar · clique na foto ou imagem da conversa pra trocar · Enter confirma o texto</p>
+  <div class="status" id="status"></div>
+</main>
+
+<section class="side">
+  <h2>Detalhes</h2>
+  <div class="field"><label>Contato</label><input id="contato" /></div>
+  <div class="row2">
+    <div class="field"><label>Hora status</label><input id="horaStatus" /></div>
+    <div class="field"><label>Bateria %</label><input id="bateria" type="number" min="0" max="100" /></div>
+  </div>
+  <div class="field"><label>Foto (caminho)</label><input id="foto" /></div>
+  <h2 style="margin-top:18px">Mensagens</h2>
+  <div id="msgs"></div>
+</section>
+
+<input id="filePick" type="file" accept="image/*" />
+
+<script>
+const state = { id: null, data: null, uploadPath: null };
+
+const $ = (s) => document.querySelector(s);
+const status = (msg, ok) => {
+  const el = $("#status");
+  el.textContent = msg || "";
+  el.className = "status " + (ok === true ? "ok" : ok === false ? "err" : "");
+};
+
+async function api(path, opts = {}) {
+  const res = await fetch(path, {
+    headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
+    ...opts,
+  });
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); } catch { data = { raw: text }; }
+  if (!res.ok) throw new Error(data.error || text || res.statusText);
+  return data;
+}
+
+async function loadList() {
+  const { items } = await api("/api/list");
+  const box = $("#list");
+  box.innerHTML = items.map((it) => `
+    <div class="item ${state.id === it.id ? "on" : ""}" data-id="${it.id}">
+      ${it.thumb ? `<img src="${it.thumb}" alt="">` : `<div class="ph">PNG</div>`}
+      <div><b>${escapeHtml(it.contato)}</b><span>${it.id} · ${it.tema} · ${it.msgs} msgs</span></div>
+    </div>`).join("");
+  box.querySelectorAll(".item").forEach((el) => {
+    el.addEventListener("click", () => openConversa(el.dataset.id));
+  });
+}
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c]));
+}
+
+async function openConversa(id) {
+  const { data } = await api("/api/conversa/" + encodeURIComponent(id));
+  state.id = id;
+  state.data = data;
+  syncForm();
+  await refreshPreview();
+  loadList();
+  status(`Abriu ${id}`, true);
+}
+
+function syncForm() {
+  const d = state.data;
+  $("#contato").value = d.contato || "";
+  $("#horaStatus").value = d.horaStatus || "";
+  $("#bateria").value = d.bateria ?? "";
+  $("#foto").value = d.foto || "";
+  $("#tema").value = d.tema === "claro" ? "claro" : "escuro";
+  const msgs = $("#msgs");
+  msgs.innerHTML = (d.mensagens || []).map((m, i) => {
+    if (m.tipo === "data") {
+      return `<div class="msg-card" data-i="${i}">
+        <div class="top"><span>DATA</span><span>#${i}</span></div>
+        <input data-k="texto" value="${escapeHtml(m.texto || "")}" />
+      </div>`;
+    }
+    return `<div class="msg-card" data-i="${i}">
+      <div class="top">
+        <span>${m.de === "eu" ? "EU (verde)" : "ELA/ELE"}</span>
+        <span>#${i}</span>
+      </div>
+      <div class="row2" style="margin-bottom:6px">
+        <select data-k="de">
+          <option value="ela" ${m.de !== "eu" ? "selected" : ""}>ela/ele</option>
+          <option value="eu" ${m.de === "eu" ? "selected" : ""}>eu</option>
+        </select>
+        <input data-k="hora" value="${escapeHtml(m.hora || "")}" placeholder="hora" />
+      </div>
+      <textarea data-k="texto">${escapeHtml(m.texto || "")}</textarea>
+      ${m.imagem ? `<div class="field" style="margin:6px 0 0"><label>imagem</label><input data-k="imagem" value="${escapeHtml(m.imagem)}" /></div>` : ""}
+    </div>`;
+  }).join("");
+
+  msgs.querySelectorAll(".msg-card").forEach((card) => {
+    card.querySelectorAll("[data-k]").forEach((inp) => {
+      inp.addEventListener("change", () => {
+        const i = Number(card.dataset.i);
+        const k = inp.dataset.k;
+        state.data.mensagens[i][k] = inp.value;
+        refreshPreview();
+      });
+    });
+  });
+}
+
+function pullForm() {
+  if (!state.data) return;
+  state.data.contato = $("#contato").value;
+  state.data.horaStatus = $("#horaStatus").value;
+  state.data.bateria = Number($("#bateria").value);
+  state.data.foto = $("#foto").value;
+  state.data.tema = $("#tema").value;
+}
+
+async function refreshPreview() {
+  if (!state.data) return;
+  pullForm();
+  const html = await fetch("/api/preview", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(state.data),
+  }).then((r) => r.text());
+  const doc = $("#frame").contentDocument;
+  doc.open();
+  doc.write(html);
+  doc.close();
+}
+
+function setByPath(obj, path, value) {
+  const parts = path.split(".");
+  let cur = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    const key = Number.isNaN(Number(parts[i])) ? parts[i] : Number(parts[i]);
+    cur = cur[key];
+  }
+  const last = parts[parts.length - 1];
+  const lastKey = Number.isNaN(Number(last)) ? last : Number(last);
+  cur[lastKey] = value;
+}
+
+window.addEventListener("message", async (ev) => {
+  const msg = ev.data;
+  if (!msg || msg.source !== "wa-print" || !state.data) return;
+  if (msg.type === "edit") {
+    setByPath(state.data, msg.path, msg.value);
+    syncForm();
+  }
+  if (msg.type === "upload") {
+    state.uploadPath = msg.path;
+    $("#filePick").click();
+  }
+});
+
+$("#filePick").addEventListener("change", async () => {
+  const file = $("#filePick").files?.[0];
+  if (!file || !state.uploadPath || !state.data) return;
+  const dataUrl = await new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(fr.result);
+    fr.onerror = reject;
+    fr.readAsDataURL(file);
+  });
+  status("Enviando foto…");
+  const up = await api("/api/upload", {
+    method: "POST",
+    body: JSON.stringify({ dataUrl, name: file.name }),
+  });
+  setByPath(state.data, state.uploadPath, up.path);
+  if (state.uploadPath === "foto") $("#foto").value = up.path;
+  state.uploadPath = null;
+  $("#filePick").value = "";
+  syncForm();
+  await refreshPreview();
+  status("Foto atualizada", true);
+});
+
+["contato", "horaStatus", "bateria", "foto"].forEach((id) => {
+  $(`#${id}`).addEventListener("change", () => { pullForm(); refreshPreview(); });
+});
+$("#tema").addEventListener("change", () => { pullForm(); refreshPreview(); });
+$("#btnPreview").addEventListener("click", () => refreshPreview());
+
+$("#btnSave").addEventListener("click", async () => {
+  try {
+    pullForm();
+    status("Gerando PNG…");
+    const out = await api("/api/gerar", {
+      method: "POST",
+      body: JSON.stringify({ id: state.id, data: state.data }),
+    });
+    status(`Salvo: ${out.path}`, true);
+    loadList();
+  } catch (e) {
+    status(String(e.message || e), false);
+  }
+});
+
+$("#btnBoth").addEventListener("click", async () => {
+  try {
+    pullForm();
+    status("Gerando claro + escuro…");
+    await api("/api/gerar-ambos", {
+      method: "POST",
+      body: JSON.stringify({ id: state.id, data: state.data }),
+    });
+    status("Gerou claro e escuro", true);
+    loadList();
+  } catch (e) {
+    status(String(e.message || e), false);
+  }
+});
+
+(async () => {
+  await loadList();
+  const first = document.querySelector("#list .item");
+  if (first) openConversa(first.dataset.id);
+})();
+</script>
+</body>
+</html>

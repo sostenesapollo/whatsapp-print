@@ -107,7 +107,7 @@ function renderMessages(mensagens, baseDir) {
   for (let i = 0; i < list.length; i++) {
     const m = list[i];
     if (m.tipo === "data") {
-      html += `<div class="date-pill"><span>${esc(m.texto)}</span></div>`;
+      html += `<div class="date-pill"><span data-edit="mensagens.${i}.texto">${esc(m.texto)}</span></div>`;
       continue;
     }
 
@@ -118,12 +118,16 @@ function renderMessages(mensagens, baseDir) {
     const firstOfGroup = !prev || prev.tipo === "data" || prev.de !== m.de;
     const lastOfGroup = !next || next.tipo === "data" || next.de !== m.de;
     const status = m.status || "lido";
-    const meta = `<span class="meta">${esc(m.hora)}${mine ? checksSvg(status) : ""}</span>`;
+    const meta = `<span class="meta"><span data-edit="mensagens.${i}.hora">${esc(m.hora)}</span>${mine ? checksSvg(status) : ""}</span>`;
 
     const mediaSrc = resolveMedia(m.imagem, baseDir);
     const hasImg = Boolean(mediaSrc);
-    const textHtml = m.texto ? `<span class="text">${esc(m.texto)}</span>` : "";
-    const imgHtml = hasImg ? `<img class="media" src="${mediaSrc}" alt=""/>` : "";
+    const textHtml = m.texto
+      ? `<span class="text" data-edit="mensagens.${i}.texto">${esc(m.texto)}</span>`
+      : "";
+    const imgHtml = hasImg
+      ? `<img class="media" src="${mediaSrc}" alt="" data-upload="mensagens.${i}.imagem"/>`
+      : "";
 
     const cls = [
       "row",
@@ -163,13 +167,49 @@ function expandPath(p) {
   return p;
 }
 
-function resolveTema(data) {
+
+function editScript() {
+  return `<script>
+(function () {
+  function send(type, payload) {
+    parent.postMessage({ source: "wa-print", type, ...payload }, "*");
+  }
+  document.querySelectorAll("[data-edit]").forEach((el) => {
+    el.contentEditable = "true";
+    el.spellcheck = false;
+    el.addEventListener("focus", () => el.classList.add("editing"));
+    el.addEventListener("blur", () => {
+      el.classList.remove("editing");
+      send("edit", { path: el.dataset.edit, value: el.innerText });
+    });
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); el.blur(); }
+    });
+  });
+  document.querySelectorAll("[data-upload]").forEach((el) => {
+    el.style.cursor = "pointer";
+    el.addEventListener("click", () => send("upload", { path: el.dataset.upload }));
+  });
+  document.querySelectorAll(".bubble .text, .date-pill span, .name, .meta, .status .time").forEach((el) => {
+    if (!el.dataset.edit) return;
+    el.style.outline = "none";
+  });
+})();
+</script>
+<style>
+  [data-edit]:hover, [data-upload]:hover { outline: 1.5px dashed #53BDEB; outline-offset: 2px; border-radius: 4px; }
+  [data-edit].editing { outline: 2px solid #53BDEB; outline-offset: 2px; }
+  [data-upload] { cursor: pointer !important; }
+</style>`;
+}
+
+export function resolveTema(data) {
   const raw = String(data.tema || data.theme || "claro").toLowerCase();
   if (raw === "escuro" || raw === "dark" || raw === "dark-mode") return "escuro";
   return "claro";
 }
 
-function buildHtml(data, photoSrc, baseDir = __dirname) {
+export function buildHtml(data, photoSrc, baseDir = __dirname) {
   const tema = resolveTema(data);
   const dark = tema === "escuro";
   const bateria =
@@ -379,7 +419,7 @@ function buildHtml(data, photoSrc, baseDir = __dirname) {
     <div class="fade-bottom"></div>
 
     <div class="status">
-      <div class="time">${esc(horaStatus)}</div>
+      <div class="time" data-edit="horaStatus">${esc(horaStatus)}</div>
       <div class="status-right">
         <svg width="18" height="12" viewBox="0 0 18 12">${signalBars(sinal, t.fg)}</svg>
         ${wifi ? wifiSvg(t.fg) : ""}
@@ -392,8 +432,8 @@ function buildHtml(data, photoSrc, baseDir = __dirname) {
         <div class="back glass">
           <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2 2.2 10 10 18" stroke="${t.icon}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
-        <img class="avatar" src="${photoSrc}" alt=""/>
-        <div class="name">${esc(data.contato || "Contato")}</div>
+        <img class="avatar" src="${photoSrc}" alt="" data-upload="foto"/>
+        <div class="name" data-edit="contato">${esc(data.contato || "Contato")}</div>
       </div>
       <div class="actions glass">
         <svg width="27" height="20" viewBox="0 0 27 20" fill="none"><rect x="1.2" y="2.2" width="17" height="15.6" rx="3.8" stroke="${t.icon}" stroke-width="2"/><path d="m18.6 8 6.2-3.9v11.8L18.6 12" stroke="${t.icon}" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -423,11 +463,12 @@ function buildHtml(data, photoSrc, baseDir = __dirname) {
       </div>
     </div>
   </div>
+  ${data.editavel ? editScript() : ""}
 </body>
 </html>`;
 }
 
-function loadPhotoDataUri(fotoPath, baseDir) {
+export function loadPhotoDataUri(fotoPath, baseDir) {
   if (!fotoPath) return AVATAR_SVG;
   const expanded = expandPath(String(fotoPath).trim());
   const abs = isAbsolute(expanded) ? expanded : resolve(baseDir, expanded);

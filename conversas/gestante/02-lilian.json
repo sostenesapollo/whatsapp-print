@@ -1,0 +1,78 @@
+{
+  "contato": "Lilian Alves Nazar de Paula",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a12.webp",
+  "tema": "escuro",
+  "horaStatus": "09:41",
+  "bateria": 87,
+  "sinal": 4,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "7 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "oi",
+      "hora": "08:02"
+    },
+    {
+      "de": "ela",
+      "texto": "bom dia",
+      "hora": "08:03"
+    },
+    {
+      "de": "eu",
+      "texto": "oi lilian, bom dia! tudo bem?",
+      "hora": "08:04",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "é do manual?",
+      "hora": "08:05"
+    },
+    {
+      "de": "eu",
+      "texto": "é sim",
+      "hora": "08:06",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "eu comprei com vocês e to amando",
+      "hora": "08:07"
+    },
+    {
+      "de": "ela",
+      "texto": "já li o de enxoval e o de nutrição",
+      "hora": "08:08"
+    },
+    {
+      "tipo": "data",
+      "texto": "3 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "o cardápio da semana 2 salvou meus enjoos, sério",
+      "hora": "08:07"
+    },
+    {
+      "de": "ela",
+      "texto": "to seguindo as receitas",
+      "hora": "08:08",
+      "imagem": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/cover-2.webp"
+    },
+    {
+      "de": "eu",
+      "texto": "ai que bom!! obrigada por voltar aqui",
+      "hora": "08:09",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "que isso, obrigada eu 🙂",
+      "hora": "08:10"
+    }
+  ]
+}

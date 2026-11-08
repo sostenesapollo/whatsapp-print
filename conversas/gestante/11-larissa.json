@@ -1,0 +1,75 @@
+{
+  "contato": "Larissa Fonseca Pires",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a9.webp",
+  "tema": "escuro",
+  "horaStatus": "14:33",
+  "bateria": 45,
+  "sinal": 3,
+  "wifi": false,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "22 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "oi joyce, primeira gestação, 22 anos e perdida",
+      "hora": "14:00"
+    },
+    {
+      "de": "ela",
+      "texto": "minha tia tb fala q tanto exame é exagero",
+      "hora": "14:01"
+    },
+    {
+      "de": "ela",
+      "texto": "nem sei o q perguntar na consulta",
+      "hora": "14:02"
+    },
+    {
+      "de": "ela",
+      "texto": "minha mãe fala q eu exagero indo em toda consulta",
+      "hora": "14:03"
+    },
+    {
+      "de": "ela",
+      "texto": "e eu fico na dúvida se ela tem razão",
+      "hora": "14:04"
+    },
+    {
+      "de": "ela",
+      "texto": "obrigada por responder viu",
+      "hora": "14:05"
+    },
+    {
+      "tipo": "data",
+      "texto": "8 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "li o guia inteiro em 2 dias",
+      "hora": "14:07"
+    },
+    {
+      "de": "ela",
+      "texto": "parei de googlar coisa e ficar assustada",
+      "hora": "14:08"
+    },
+    {
+      "de": "eu",
+      "texto": "o q mais te abriu o olho?",
+      "hora": "14:09",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "os exames certos em cada mês. eu tava pulando consulta e nem via",
+      "hora": "14:10"
+    },
+    {
+      "de": "ela",
+      "texto": "chego segunda com tudo anotado",
+      "hora": "14:11"
+    }
+  ]
+}

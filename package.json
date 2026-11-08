@@ -7,7 +7,9 @@
     "generate": "node generate.mjs",
     "exemplo": "node generate.mjs conversa.exemplo.json",
     "exemplos": "node gerar-exemplos.mjs",
-    "gestante": "node gerar-gestante.mjs"
+    "gestante": "node gerar-gestante.mjs",
+    "export-json": "node gerar-gestante.mjs --export-json",
+    "editor": "node editor/server.mjs"
   },
   "dependencies": {
     "playwright": "^1.56.1"

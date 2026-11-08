@@ -1,0 +1,62 @@
+{
+  "contato": "Michele Barbosa Reis",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a10.webp",
+  "tema": "escuro",
+  "horaStatus": "07:29",
+  "bateria": 68,
+  "sinal": 4,
+  "wifi": true,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "23 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce, o checklist da mala é o q eu preciso",
+      "hora": "07:10"
+    },
+    {
+      "de": "ela",
+      "texto": "tenho 36 semanas já, tô correndo",
+      "hora": "07:11"
+    },
+    {
+      "de": "eu",
+      "texto": "imprime e vai marcando, sem pressa",
+      "hora": "07:12",
+      "status": "lido"
+    },
+    {
+      "tipo": "data",
+      "texto": "1 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "imprimi e colei na geladeira",
+      "hora": "07:26"
+    },
+    {
+      "de": "ela",
+      "texto": "fui marcando durante a semana, sem deixar pra véspera",
+      "hora": "07:27",
+      "imagem": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/p10.webp"
+    },
+    {
+      "de": "eu",
+      "texto": "nos intervalos do trabalho?",
+      "hora": "07:28",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "sim, no ônibus eu leio no celular",
+      "hora": "07:29"
+    },
+    {
+      "de": "ela",
+      "texto": "meu marido é meu acompanhante. tá tudo marcado, obrigada",
+      "hora": "07:30"
+    }
+  ]
+}

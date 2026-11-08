@@ -1,0 +1,62 @@
+{
+  "contato": "Aline Cordeiro Marques",
+  "foto": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/chat/a5.webp",
+  "tema": "escuro",
+  "horaStatus": "19:37",
+  "bateria": 74,
+  "sinal": 4,
+  "wifi": false,
+  "mensagens": [
+    {
+      "tipo": "data",
+      "texto": "15 de out. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "joyce, o chá de bebê é sábado e eu to perdida com a lista",
+      "hora": "19:02"
+    },
+    {
+      "de": "eu",
+      "texto": "usa os textos do guia 4, resolve isso em 10 min",
+      "hora": "19:03",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "vou usar sim, obrigada",
+      "hora": "19:04"
+    },
+    {
+      "tipo": "data",
+      "texto": "6 de nov. de 2026"
+    },
+    {
+      "de": "ela",
+      "texto": "fiz o chá no sábado com os textos",
+      "hora": "19:30"
+    },
+    {
+      "de": "ela",
+      "texto": "a lista é essa, imprimi e deixei na mesa",
+      "hora": "19:31",
+      "imagem": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/cover-4.webp"
+    },
+    {
+      "de": "eu",
+      "texto": "q mesa! repetiu alguma coisa?",
+      "hora": "19:32",
+      "status": "lido"
+    },
+    {
+      "de": "ela",
+      "texto": "nenhuma haha todo mundo foi na lista",
+      "hora": "19:33"
+    },
+    {
+      "de": "ela",
+      "texto": "e consegui curtir a festa até 🥰",
+      "hora": "19:34"
+    }
+  ]
+}
