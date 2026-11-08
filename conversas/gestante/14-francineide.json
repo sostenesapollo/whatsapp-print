@@ -17,39 +17,12 @@
       "hora": "12:37"
     },
     {
-      "de": "ela",
-      "texto": "tenho 2 filhos, no primeiro saí comprando tudo q aparecia",
-      "hora": "12:38"
+      "tipo": "data",
+      "texto": "3 de nov. de 2026"
     },
     {
       "de": "ela",
-      "texto": "e no segundo ele já reclamava de gasto",
-      "hora": "12:39"
-    },
-    {
-      "de": "ela",
-      "texto": "meu marido falou q é dinheiro jogado fora",
-      "hora": "12:40"
-    },
-    {
-      "de": "ela",
-      "texto": "mostrei a conta da primeira gestação e ele calou",
-      "hora": "12:41"
-    },
-    {
-      "de": "eu",
-      "texto": "kkkk homens",
-      "hora": "12:42",
-      "status": "lido"
-    },
-    {
-      "de": "ela",
-      "texto": "né",
-      "hora": "12:43"
-    },
-    {
-      "de": "ela",
-      "texto": "só a lista de enxoval cortou 240 reais da conta",
+      "texto": "só a lista de enxoval cortou 240 reais",
       "hora": "12:44"
     },
     {
@@ -61,7 +34,8 @@
     {
       "de": "ela",
       "texto": "e a parte de direito eu nem sabia q existia",
-      "hora": "12:46"
+      "hora": "12:46",
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/produto-manual.jpg"
     },
     {
       "de": "ela",

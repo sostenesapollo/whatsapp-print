@@ -13,29 +13,14 @@
     },
     {
       "de": "ela",
-      "texto": "joyce, oi, tudo bem? meu chefe quer me tirar do caixa",
+      "texto": "joyce, meu chefe quer me tirar do caixa",
       "hora": "17:20"
     },
     {
-      "de": "ela",
-      "texto": "falou q grávida não pode ficar muito tempo sentada",
-      "hora": "17:21"
-    },
-    {
       "de": "eu",
-      "texto": "pode sim. ele pode te remanejar se precisar, mas não te prejudicar",
+      "texto": "pode te remanejar, mas não te prejudicar",
       "hora": "17:22",
       "status": "lido"
-    },
-    {
-      "de": "ela",
-      "texto": "não sabia q era direito",
-      "hora": "17:23"
-    },
-    {
-      "de": "ela",
-      "texto": "vou levar o capítulo pra ele",
-      "hora": "17:24"
     },
     {
       "tipo": "data",
@@ -49,7 +34,8 @@
     {
       "de": "ela",
       "texto": "até pediu desculpa",
-      "hora": "09:41"
+      "hora": "09:41",
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/drive-manual.png"
     },
     {
       "de": "eu",
@@ -61,12 +47,6 @@
       "de": "ela",
       "texto": "pedi no RH, já mandaram",
       "hora": "09:43"
-    },
-    {
-      "de": "eu",
-      "texto": "perfeito, agora fica guardado",
-      "hora": "09:44",
-      "status": "lido"
     }
   ]
 }

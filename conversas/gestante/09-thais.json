@@ -13,24 +13,18 @@
     },
     {
       "de": "ela",
-      "texto": "joyce to montando o cantinho de amamentação do quarto",
+      "texto": "joyce to montando o cantinho de amamentação",
       "hora": "11:40"
     },
     {
-      "de": "ela",
-      "texto": "a cadeira já ficou do jeito q o guia mostra",
-      "hora": "11:41"
+      "tipo": "data",
+      "texto": "7 de nov. de 2026"
     },
     {
       "de": "ela",
-      "texto": "o quarto é pequeno e o berço fica do lado da cama, cabe?",
-      "hora": "11:42"
-    },
-    {
-      "de": "ela",
-      "texto": "usei esse checklist: agua, lanche e a almofada na cadeira do lado",
+      "texto": "usei esse checklist: agua, lanche e almofada",
       "hora": "11:43",
-      "imagem": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/cover-6.webp"
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/drive-manual.png"
     },
     {
       "de": "eu",
@@ -42,11 +36,6 @@
       "de": "ela",
       "texto": "tudo. meu marido falou q ficou mais fácil de noite",
       "hora": "11:45"
-    },
-    {
-      "de": "ela",
-      "texto": "o guia 6 tb me deixou menos perdida com o pós",
-      "hora": "11:46"
     },
     {
       "de": "eu",

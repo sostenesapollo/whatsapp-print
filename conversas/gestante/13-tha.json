@@ -17,25 +17,9 @@
       "hora": "12:10"
     },
     {
-      "de": "ela",
-      "texto": "to tirando leite no banheiro da empresa",
-      "hora": "12:11"
-    },
-    {
       "de": "eu",
       "texto": "a empresa tem sala de apoio à amamentação?",
       "hora": "12:12",
-      "status": "lido"
-    },
-    {
-      "de": "ela",
-      "texto": "tem, mas a chave fica com o gerente",
-      "hora": "12:13"
-    },
-    {
-      "de": "eu",
-      "texto": "isso é obrigação deles. pede por escrito",
-      "hora": "12:14",
       "status": "lido"
     },
     {
@@ -50,23 +34,14 @@
     {
       "de": "ela",
       "texto": "levei o guia e mostrei a lei pro RH",
-      "hora": "13:03"
-    },
-    {
-      "de": "ela",
-      "texto": "e comprei o potinho térmico q vc indica",
-      "hora": "13:04"
+      "hora": "13:03",
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/drive-manual.png"
     },
     {
       "de": "eu",
       "texto": "q vitória! agora é manter o estoque",
       "hora": "13:05",
       "status": "lido"
-    },
-    {
-      "de": "ela",
-      "texto": "obrigada, sério",
-      "hora": "13:06"
     }
   ]
 }

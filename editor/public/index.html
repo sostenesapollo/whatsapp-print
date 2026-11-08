@@ -73,13 +73,19 @@
 
   .side { background: var(--panel); padding: 16px; overflow: auto; }
   .side h2 { font-size: 13px; margin: 0 0 12px; color: var(--muted); font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-  .field { margin-bottom: 12px; }
-  .field label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-  .field input, .field textarea, .field select {
-    width: 100%; background: #12161a; border: 1px solid var(--line); color: var(--text);
-    border-radius: 10px; padding: 9px 10px; font: inherit; font-size: 13px;
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 11px; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px; font-weight: 600;
   }
-  .field textarea { min-height: 70px; resize: vertical; }
+  .field input, .field textarea, .field select {
+    width: 100%; background: #0f1316; border: 1px solid var(--line); color: var(--text);
+    border-radius: 12px; padding: 11px 12px; font: inherit; font-size: 14px; line-height: 1.4;
+  }
+  .field textarea { min-height: 88px; resize: vertical; }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    outline: none; border-color: #3d8f5f; box-shadow: 0 0 0 3px rgba(37,211,102,.15);
+  }
   .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .msg-card {
     border: 1px solid var(--line); border-radius: 12px; padding: 10px; margin-bottom: 8px; background: #12161a;
@@ -313,6 +319,7 @@ $("#btnSave").addEventListener("click", async () => {
       body: JSON.stringify({ id: state.id, data: state.data }),
     });
     status(`Salvo: ${out.path}`, true);
+    if (out.thumb) window.open(out.thumb, "_blank");
     loadList();
   } catch (e) {
     status(String(e.message || e), false);
@@ -323,11 +330,14 @@ $("#btnBoth").addEventListener("click", async () => {
   try {
     pullForm();
     status("Gerando claro + escuro…");
-    await api("/api/gerar-ambos", {
+    const out = await api("/api/gerar-ambos", {
       method: "POST",
       body: JSON.stringify({ id: state.id, data: state.data }),
     });
     status("Gerou claro e escuro", true);
+    const tema = state.data?.tema === "claro" ? "claro" : "escuro";
+    const url = out.thumbs?.[tema] || out.thumbs?.escuro || out.thumbs?.claro;
+    if (url) window.open(url, "_blank");
     loadList();
   } catch (e) {
     status(String(e.message || e), false);

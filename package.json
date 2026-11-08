@@ -8,6 +8,7 @@
     "exemplo": "node generate.mjs conversa.exemplo.json",
     "exemplos": "node gerar-exemplos.mjs",
     "gestante": "node gerar-gestante.mjs",
+    "from-json": "node gerar-from-json.mjs",
     "export-json": "node gerar-gestante.mjs --export-json",
     "editor": "node editor/server.mjs"
   },

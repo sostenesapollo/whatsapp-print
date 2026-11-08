@@ -17,39 +17,12 @@
       "hora": "20:00"
     },
     {
-      "de": "ela",
-      "texto": "tô de 30 semanas e a gente começou o plano de parto",
-      "hora": "20:01"
+      "tipo": "data",
+      "texto": "5 de nov. de 2026"
     },
     {
       "de": "ela",
-      "texto": "obrigada por responder no domingo, viu",
-      "hora": "20:02"
-    },
-    {
-      "de": "eu",
-      "texto": "eu q agradeço, de vdd",
-      "hora": "20:03",
-      "status": "lido"
-    },
-    {
-      "de": "ela",
-      "texto": "eu tava insegura com o parto e o guia ajudou nós dois",
-      "hora": "20:04"
-    },
-    {
-      "de": "ela",
-      "texto": "a parte de direitos do acompanhante deixou ele seguro pra ir comigo",
-      "hora": "20:05"
-    },
-    {
-      "de": "ela",
-      "texto": "ele me acompanha em todas as consultas desde então",
-      "hora": "20:06"
-    },
-    {
-      "de": "ela",
-      "texto": "e a gente já preencheu o plano junto, a obstetra leu e achou certo",
+      "texto": "a gente já preencheu o plano junto",
       "hora": "20:07"
     },
     {
@@ -60,8 +33,9 @@
     },
     {
       "de": "ela",
-      "texto": "agradecemos nós dois. virou leitura obrigatória aqui em casa",
-      "hora": "20:09"
+      "texto": "virou leitura obrigatória aqui em casa",
+      "hora": "20:09",
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/produto-manual.jpg"
     }
   ]
 }

@@ -17,21 +17,6 @@
       "hora": "16:40"
     },
     {
-      "de": "ela",
-      "texto": "e sempre saio achando q incomodei",
-      "hora": "16:41"
-    },
-    {
-      "de": "ela",
-      "texto": "minha médica é bem objetiva e eu travo na hora de perguntar",
-      "hora": "16:42"
-    },
-    {
-      "de": "ela",
-      "texto": "saio da consulta com dúvida e vontade de chorar",
-      "hora": "16:43"
-    },
-    {
       "de": "eu",
       "texto": "anota em tópicos, tipo o modelo do guia",
       "hora": "16:44",
@@ -48,8 +33,9 @@
     },
     {
       "de": "ela",
-      "texto": "saí com tudo respondido, sem vergonha de perguntar",
-      "hora": "16:49"
+      "texto": "saí com tudo respondido, sem vergonha",
+      "hora": "16:49",
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/drive-manual.png"
     },
     {
       "de": "eu",
@@ -59,13 +45,8 @@
     },
     {
       "de": "ela",
-      "texto": "foi. organizei em tópicos, do jeito q o manual sugere",
+      "texto": "foi. organizei em tópicos do jeito do manual",
       "hora": "16:51"
-    },
-    {
-      "de": "ela",
-      "texto": "o de nutrição mostrou q eu tava comendo errado tb",
-      "hora": "16:52"
     }
   ]
 }

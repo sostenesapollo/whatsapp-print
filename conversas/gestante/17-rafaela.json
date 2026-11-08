@@ -23,14 +23,9 @@
     },
     {
       "de": "eu",
-      "texto": "acompanhante é direito. doula varia por contrato, confere no seu",
+      "texto": "acompanhante é direito. confere no seu contrato",
       "hora": "19:42",
       "status": "lido"
-    },
-    {
-      "de": "ela",
-      "texto": "vou conferir e pedir por escrito",
-      "hora": "19:43"
     },
     {
       "tipo": "data",
@@ -38,35 +33,20 @@
     },
     {
       "de": "ela",
-      "texto": "conferi, a doula tá liberada mas precisa de autorização",
-      "hora": "11:02"
-    },
-    {
-      "de": "ela",
       "texto": "pedi e saiu na hora",
       "hora": "11:03"
     },
     {
-      "de": "eu",
-      "texto": "q bom! e o plano de parto?",
-      "hora": "11:04",
-      "status": "lido"
-    },
-    {
       "de": "ela",
-      "texto": "já preenchi, vou entregar na internação",
-      "hora": "11:05"
+      "texto": "já preenchi o plano, vou entregar na internação",
+      "hora": "11:05",
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/drive-manual.png"
     },
     {
       "de": "eu",
       "texto": "vai dar certo, viu",
       "hora": "11:06",
       "status": "lido"
-    },
-    {
-      "de": "ela",
-      "texto": "obrigada por me deixar segura",
-      "hora": "11:07"
     }
   ]
 }

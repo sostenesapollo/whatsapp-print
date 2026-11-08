@@ -17,31 +17,6 @@
       "hora": "18:30"
     },
     {
-      "de": "ela",
-      "texto": "na segunda gestação eu não sabia nem q podia levar acompanhante",
-      "hora": "18:31"
-    },
-    {
-      "de": "ela",
-      "texto": "minhas 2 primeiras gestações foram no susto, sem plano",
-      "hora": "18:32"
-    },
-    {
-      "de": "ela",
-      "texto": "agora quero chegar preparada",
-      "hora": "18:33"
-    },
-    {
-      "de": "ela",
-      "texto": "to lendo o guia de direitos com calma",
-      "hora": "18:34"
-    },
-    {
-      "de": "ela",
-      "texto": "mas descobri direito q nem sabia q existia, tipo acompanhante",
-      "hora": "18:35"
-    },
-    {
       "tipo": "data",
       "texto": "8 de nov. de 2026"
     },
@@ -53,7 +28,8 @@
     {
       "de": "ela",
       "texto": "a maternidade leu sem discutir",
-      "hora": "18:39"
+      "hora": "18:39",
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/produto-manual.jpg"
     },
     {
       "de": "eu",
@@ -65,12 +41,6 @@
       "de": "ela",
       "texto": "foi, com a sala do jeito q pedi",
       "hora": "18:41"
-    },
-    {
-      "de": "eu",
-      "texto": "que vitória, kelly",
-      "hora": "18:42",
-      "status": "lido"
     }
   ]
 }

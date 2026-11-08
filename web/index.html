@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>WhatsApp Print — editor no browser</title>
+<script src="https://cdn.jsdelivr.net/npm/modern-screenshot@4.6.0/dist/index.js"></script>
+<style>
+:root{
+  --bg:#0e1113; --panel:#161a1d; --line:#2a3136; --text:#eef3f6; --muted:#8b979f;
+  --accent:#25d366; --blue:#53bdeb; --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif}
+body{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:100vh}
+a{color:var(--blue)}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:18px;overflow:auto}
+aside h1{font-size:16px;margin:0 0 4px}
+aside .sub{color:var(--muted);font-size:12px;margin:0 0 16px;line-height:1.4}
+.ex{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.ex button{appearance:none;border:1px solid var(--line);background:#101416;border-radius:12px;padding:8px;cursor:pointer;color:var(--text)}
+.ex button.on{border-color:#2f5a40;background:#1a2820}
+.ex img{width:100%;border-radius:8px;display:block;background:#000}
+.field{margin:0 0 12px}
+.field label{display:block;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.field input,.field textarea,.field select{
+  width:100%;background:#0f1316;border:1px solid var(--line);color:var(--text);
+  border-radius:12px;padding:11px 12px;font:inherit;font-size:14px;line-height:1.35}
+.field textarea{min-height:88px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.msg{border:1px solid var(--line);border-radius:12px;padding:10px;margin:0 0 8px;background:#101416}
+.msg .top{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:11px;margin-bottom:6px}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button.btn{appearance:none;border:1px solid var(--line);background:#1c2226;color:var(--text);
+  border-radius:11px;padding:10px 14px;font:inherit;font-size:13px;cursor:pointer}
+button.btn.primary{background:var(--accent);color:#04210f;border-color:transparent;font-weight:700}
+main{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;gap:14px;
+  background:radial-gradient(ellipse at 50% 0%,#1a2228,var(--bg) 55%)}
+#stage{
+  width:390px;height:844px;border-radius:28px;overflow:hidden;background:#000;
+  box-shadow:0 30px 80px rgba(0,0,0,.55); position:relative
+}
+#phone-host{width:390px;height:844px}
+.hint{color:var(--muted);font-size:12px;text-align:center;max-width:420px;line-height:1.45}
+.status{font-size:12px;color:var(--muted);min-height:16px}
+.status.ok{color:var(--accent)}.status.err{color:#ff6b6b}
+#file{display:none}
+@media(max-width:900px){body{grid-template-columns:1fr} aside{border-right:0;border-bottom:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<aside>
+  <h1>WhatsApp Print</h1>
+  <p class="sub">Roda 100% no browser. Clique no texto/foto do preview pra editar. Baixe o PNG ou abra numa aba.</p>
+
+  <div class="ex">
+    <button type="button" id="exEscuro" class="on">
+      <img id="thumbEscuro" alt="exemplo escuro">
+      <div style="margin-top:6px;font-size:12px">Escuro</div>
+    </button>
+    <button type="button" id="exClaro">
+      <img id="thumbClaro" alt="exemplo claro">
+      <div style="margin-top:6px;font-size:12px">Claro</div>
+    </button>
+  </div>
+
+  <div class="field"><label>Tema</label>
+    <select id="tema"><option value="escuro">Escuro</option><option value="claro">Claro</option></select>
+  </div>
+  <div class="field"><label>Contato</label><input id="contato"></div>
+  <div class="row2">
+    <div class="field"><label>Hora</label><input id="horaStatus"></div>
+    <div class="field"><label>Bateria %</label><input id="bateria" type="number" min="0" max="100"></div>
+  </div>
+  <div class="field"><label>Foto do contato (URL ou upload no preview)</label><input id="foto" placeholder="https://… ou data:"></div>
+
+  <div class="field"><label>Mensagens</label></div>
+  <div id="msgs"></div>
+  <div class="actions">
+    <button class="btn" type="button" id="addMsg">+ mensagem</button>
+    <button class="btn" type="button" id="addData">+ data</button>
+    <button class="btn primary" type="button" id="gerar">Gerar PNG</button>
+  </div>
+  <p class="status" id="status"></p>
+</aside>
+
+<main>
+  <div id="stage"><div id="phone-host"></div></div>
+  <p class="hint">Clique no nome, hora, bolha ou imagem do celular pra editar. Upload de foto: clique no avatar ou na imagem da conversa.</p>
+</main>
+<input id="file" type="file" accept="image/*">
+
+<script type="module">
+import { EXAMPLES, renderPhone } from './phone.mjs';
+
+const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null };
+const $ = (s) => document.querySelector(s);
+const status = (m, ok) => { const el=$('#status'); el.textContent=m||''; el.className='status '+(ok===true?'ok':ok===false?'err':''); };
+
+$('#thumbEscuro').src = EXAMPLES.escuro._preview || 'examples/escuro.png';
+$('#thumbClaro').src = EXAMPLES.claro._preview || 'examples/claro.png';
+
+function syncForm() {
+  const d = state.data;
+  $('#tema').value = d.tema === 'claro' ? 'claro' : 'escuro';
+  $('#contato').value = d.contato || '';
+  $('#horaStatus').value = d.horaStatus || '';
+  $('#bateria').value = d.bateria ?? 80;
+  $('#foto').value = d.foto || '';
+  const box = $('#msgs');
+  box.innerHTML = (d.mensagens||[]).map((m,i)=>{
+    if (m.tipo==='data') return `<div class="msg" data-i="${i}"><div class="top"><span>DATA</span><button type="button" data-del>remover</button></div>
+      <textarea data-k="texto">${esc(m.texto||'')}</textarea></div>`;
+    return `<div class="msg" data-i="${i}">
+      <div class="top"><span>${m.de==='eu'?'EU':'ELA/ELE'}</span><button type="button" data-del>remover</button></div>
+      <div class="row2" style="margin-bottom:6px">
+        <select data-k="de"><option value="ela" ${m.de!=='eu'?'selected':''}>ela/ele</option><option value="eu" ${m.de==='eu'?'selected':''}>eu</option></select>
+        <input data-k="hora" value="${esc(m.hora||'')}" placeholder="09:14">
+      </div>
+      <textarea data-k="texto" placeholder="mensagem">${esc(m.texto||'')}</textarea>
+      <div class="field" style="margin-top:8px;margin-bottom:0"><label>Imagem (URL)</label><input data-k="imagem" value="${esc(m.imagem||'')}" placeholder="opcional"></div>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('.msg').forEach(card=>{
+    card.querySelectorAll('[data-k]').forEach(inp=>{
+      inp.addEventListener('change', ()=>{
+        const i=+card.dataset.i, k=inp.dataset.k;
+        if (state.data.mensagens[i].tipo==='data') state.data.mensagens[i].texto = inp.value;
+        else {
+          state.data.mensagens[i][k]=inp.value;
+          if (k==='de' && inp.value==='eu') state.data.mensagens[i].status='lido';
+        }
+        paint();
+      });
+    });
+    card.querySelector('[data-del]')?.addEventListener('click', ()=>{
+      state.data.mensagens.splice(+card.dataset.i,1); syncForm(); paint();
+    });
+  });
+}
+
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));}
+
+function pull() {
+  state.data.tema = $('#tema').value;
+  state.data.contato = $('#contato').value;
+  state.data.horaStatus = $('#horaStatus').value;
+  state.data.bateria = Number($('#bateria').value||80);
+  state.data.foto = $('#foto').value;
+}
+
+function paint() {
+  pull();
+  $('#phone-host').innerHTML = renderPhone({ ...state.data, editavel: true });
+  $('#exEscuro').classList.toggle('on', state.data.tema==='escuro');
+  $('#exClaro').classList.toggle('on', state.data.tema==='claro');
+}
+
+function setPath(obj, path, value) {
+  const parts = path.split('.');
+  let cur = obj;
+  for (let i=0;i<parts.length-1;i++){
+    const key = Number.isNaN(Number(parts[i])) ? parts[i] : Number(parts[i]);
+    cur = cur[key];
+  }
+  const last = parts.at(-1);
+  cur[Number.isNaN(Number(last))?last:Number(last)] = value;
+}
+
+window.addEventListener('message', async (ev)=>{
+  const msg = ev.data;
+  if (!msg || msg.source!=='wa-print') return;
+  if (msg.type==='edit'){ setPath(state.data, msg.path, msg.value); syncForm(); }
+  if (msg.type==='upload'){ state.uploadPath = msg.path; $('#file').click(); }
+});
+
+// edits come from contenteditable inside same document — bind after paint
+document.addEventListener('focusout', (e)=>{
+  const el = e.target.closest?.('[data-edit]');
+  if (!el) return;
+  setPath(state.data, el.dataset.edit, el.innerText);
+  syncForm();
+});
+document.addEventListener('click', (e)=>{
+  const el = e.target.closest?.('[data-upload]');
+  if (!el) return;
+  e.preventDefault();
+  state.uploadPath = el.dataset.upload;
+  $('#file').click();
+});
+
+$('#file').addEventListener('change', async ()=>{
+  const file = $('#file').files?.[0];
+  if (!file || !state.uploadPath) return;
+  const dataUrl = await new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(file); });
+  setPath(state.data, state.uploadPath, dataUrl);
+  if (state.uploadPath==='foto') $('#foto').value = dataUrl;
+  state.uploadPath=null; $('#file').value='';
+  syncForm(); paint();
+  status('Imagem atualizada', true);
+});
+
+['tema','contato','horaStatus','bateria','foto'].forEach(id=>{
+  $(`#${id}`).addEventListener('change', ()=>{ pull(); paint(); });
+});
+
+$('#exEscuro').onclick = ()=>{ state.data = structuredClone(EXAMPLES.escuro); syncForm(); paint(); };
+$('#exClaro').onclick = ()=>{ state.data = structuredClone(EXAMPLES.claro); syncForm(); paint(); };
+
+$('#addMsg').onclick = ()=>{
+  state.data.mensagens.push({ de:'ela', texto:'nova mensagem', hora:'12:00' });
+  syncForm(); paint();
+};
+$('#addData').onclick = ()=>{
+  state.data.mensagens.push({ tipo:'data', texto:'hoje' });
+  syncForm(); paint();
+};
+
+$('#gerar').onclick = async ()=>{
+  try{
+    pull(); paint();
+    status('Gerando…');
+    const node = document.querySelector('#phone');
+    if (!node) throw new Error('preview vazio');
+    // turn off edit outlines
+    node.querySelectorAll('[data-edit],[data-upload]').forEach(el=>{ el.removeAttribute('contenteditable'); el.style.outline='none'; });
+    const dataUrl = await modernScreenshot.domToPng(node, { width:390, height:844, scale:3 });
+    const a = document.createElement('a');
+    a.href = dataUrl; a.download = `${(state.data.contato||'print').replace(/\s+/g,'-').toLowerCase()}.png`;
+    a.click();
+    window.open(dataUrl, '_blank');
+    status('PNG gerado e aberto numa aba', true);
+    paint();
+  }catch(e){ status(String(e.message||e), false); }
+};
+
+syncForm(); paint();
+</script>
+</body>
+</html>

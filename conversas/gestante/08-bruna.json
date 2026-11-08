@@ -17,31 +17,6 @@
       "hora": "06:02"
     },
     {
-      "de": "ela",
-      "texto": "ele tem 9 dias e eu to chorando de dor",
-      "hora": "06:03"
-    },
-    {
-      "de": "ela",
-      "texto": "o bico ta rachado",
-      "hora": "06:04"
-    },
-    {
-      "de": "ela",
-      "texto": "a doula falou q o selinho é o q mais importa",
-      "hora": "06:05"
-    },
-    {
-      "de": "ela",
-      "texto": "mas tá difícil de acertar sozinha",
-      "hora": "06:06"
-    },
-    {
-      "de": "ela",
-      "texto": "todo mundo fala q é só pegar jeito",
-      "hora": "06:07"
-    },
-    {
       "tipo": "data",
       "texto": "7 de nov. de 2026"
     },
@@ -58,17 +33,13 @@
     },
     {
       "de": "ela",
-      "texto": "parou de doer em 3 dias e ele ganhou 180g na pesagem",
-      "hora": "06:14"
-    },
-    {
-      "de": "ela",
-      "texto": "eu ia desistir no primeiro dia, chorei quando virou",
-      "hora": "06:15"
+      "texto": "parou de doer em 3 dias e ele ganhou 180g",
+      "hora": "06:14",
+      "imagem": "/Users/sostenesapollo/dev/manual-gestante-tranquila/site/imagens/cover-5.webp"
     },
     {
       "de": "eu",
-      "texto": "parabéns mãe ❤️ me chama se apertar de novo",
+      "texto": "parabéns mãe ❤️",
       "hora": "06:16",
       "status": "lido"
     }

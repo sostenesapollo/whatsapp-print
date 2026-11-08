@@ -17,31 +17,6 @@
       "hora": "22:30"
     },
     {
-      "de": "ela",
-      "texto": "a cada semana é exame novo",
-      "hora": "22:31"
-    },
-    {
-      "de": "ela",
-      "texto": "e eu quase não durmo",
-      "hora": "22:32"
-    },
-    {
-      "de": "ela",
-      "texto": "minha pressão subiu e a médica mandou repouso",
-      "hora": "22:33"
-    },
-    {
-      "de": "ela",
-      "texto": "aí fico só com o celular mesmo",
-      "hora": "22:34"
-    },
-    {
-      "de": "ela",
-      "texto": "tenho medo de perguntar as coisas pra médica e ela achar bobagem",
-      "hora": "22:35"
-    },
-    {
       "tipo": "data",
       "texto": "8 de nov. de 2026"
     },
@@ -52,8 +27,9 @@
     },
     {
       "de": "ela",
-      "texto": "cada dúvida tem a fonte oficial do lado, parei de ir no google",
-      "hora": "03:15"
+      "texto": "cada dúvida tem a fonte oficial do lado",
+      "hora": "03:15",
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/drive-manual.png"
     },
     {
       "de": "eu",
@@ -65,11 +41,6 @@
       "de": "ela",
       "texto": "levei, já com a lista pronta",
       "hora": "03:17"
-    },
-    {
-      "de": "ela",
-      "texto": "e a parte de direitos me deu coragem pra exigir acompanhante no parto",
-      "hora": "03:18"
     }
   ]
 }

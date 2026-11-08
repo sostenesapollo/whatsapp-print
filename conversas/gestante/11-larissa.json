@@ -17,31 +17,6 @@
       "hora": "14:00"
     },
     {
-      "de": "ela",
-      "texto": "minha tia tb fala q tanto exame é exagero",
-      "hora": "14:01"
-    },
-    {
-      "de": "ela",
-      "texto": "nem sei o q perguntar na consulta",
-      "hora": "14:02"
-    },
-    {
-      "de": "ela",
-      "texto": "minha mãe fala q eu exagero indo em toda consulta",
-      "hora": "14:03"
-    },
-    {
-      "de": "ela",
-      "texto": "e eu fico na dúvida se ela tem razão",
-      "hora": "14:04"
-    },
-    {
-      "de": "ela",
-      "texto": "obrigada por responder viu",
-      "hora": "14:05"
-    },
-    {
       "tipo": "data",
       "texto": "8 de nov. de 2026"
     },
@@ -63,13 +38,9 @@
     },
     {
       "de": "ela",
-      "texto": "os exames certos em cada mês. eu tava pulando consulta e nem via",
-      "hora": "14:10"
-    },
-    {
-      "de": "ela",
-      "texto": "chego segunda com tudo anotado",
-      "hora": "14:11"
+      "texto": "os exames certos em cada mês",
+      "hora": "14:10",
+      "imagem": "/Users/sostenesapollo/dev/whatsapp-print/assets/media/produto-manual.jpg"
     }
   ]
 }

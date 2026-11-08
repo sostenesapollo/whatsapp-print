@@ -17,31 +17,6 @@
       "hora": "13:02"
     },
     {
-      "de": "ela",
-      "texto": "desde a 6 semanas é assim, não para",
-      "hora": "13:03"
-    },
-    {
-      "de": "ela",
-      "texto": "nem água eu conseguir tomar",
-      "hora": "13:04"
-    },
-    {
-      "de": "ela",
-      "texto": "a médica só mandou comer bolacha e ficar de repouso",
-      "hora": "13:05"
-    },
-    {
-      "de": "ela",
-      "texto": "já tentei de tudo e nada desce",
-      "hora": "13:06"
-    },
-    {
-      "de": "ela",
-      "texto": "e ainda tenho q trabalhar em pé",
-      "hora": "13:07"
-    },
-    {
       "tipo": "data",
       "texto": "4 de nov. de 2026"
     },
@@ -58,18 +33,13 @@
     },
     {
       "de": "ela",
-      "texto": "arroz, frango e abóbora. e o quadro de ferro me fez procurar a médica",
+      "texto": "arroz, frango e abóbora. e descobri anemia no quadro de ferro",
       "hora": "13:22"
-    },
-    {
-      "de": "ela",
-      "texto": "descobri anemia, já to tratando",
-      "hora": "13:23"
     },
     {
       "de": "eu",
       "texto": "ainda bem q vc levou isso pra consulta",
-      "hora": "13:24",
+      "hora": "13:23",
       "status": "lido"
     }
   ]

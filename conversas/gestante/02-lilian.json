@@ -13,33 +13,6 @@
     },
     {
       "de": "ela",
-      "texto": "oi",
-      "hora": "08:02"
-    },
-    {
-      "de": "ela",
-      "texto": "bom dia",
-      "hora": "08:03"
-    },
-    {
-      "de": "eu",
-      "texto": "oi lilian, bom dia! tudo bem?",
-      "hora": "08:04",
-      "status": "lido"
-    },
-    {
-      "de": "ela",
-      "texto": "é do manual?",
-      "hora": "08:05"
-    },
-    {
-      "de": "eu",
-      "texto": "é sim",
-      "hora": "08:06",
-      "status": "lido"
-    },
-    {
-      "de": "ela",
       "texto": "eu comprei com vocês e to amando",
       "hora": "08:07"
     },
@@ -54,7 +27,7 @@
     },
     {
       "de": "ela",
-      "texto": "o cardápio da semana 2 salvou meus enjoos, sério",
+      "texto": "o cardápio da semana 2 salvou meus enjoos",
       "hora": "08:07"
     },
     {
