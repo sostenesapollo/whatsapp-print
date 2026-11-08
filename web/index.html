@@ -8,26 +8,29 @@
 <style>
 :root{
   --bg:#0c0f11; --panel:#14181b; --card:#1a1f23; --line:#2c343a;
-  --text:#eef3f6; --muted:#8a959c; --accent:#25d366; --blue:#53bdeb;
+  --text:#eef3f6; --muted:#8a959c; --accent:#25d366; --blue:#53bdeb; --danger:#ff6b6b;
 }
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
   font:13px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif}
-body{display:grid;grid-template-columns:240px minmax(0,1fr) 280px;height:100vh;overflow:hidden}
+body{display:grid;grid-template-columns:240px minmax(0,1fr) 300px;height:100vh;overflow:hidden}
 button,input,select,textarea{font:inherit;color:var(--text)}
 button{cursor:pointer}
 
 .panel{background:var(--panel);overflow:auto;min-height:0}
 .left{border-right:1px solid var(--line);padding:12px}
-.right{border-left:1px solid var(--line);padding:12px}
+.right{border-left:1px solid var(--line);padding:12px;display:flex;flex-direction:column;min-height:0}
 .center{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  padding:12px;min-width:0;background:radial-gradient(ellipse at 50% 0%,#182028,var(--bg) 60%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  padding:16px 12px;min-width:0;min-height:0;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 0%,#182028,var(--bg) 60%);
 }
 
 h1{font-size:14px;margin:0 0 2px;font-weight:650}
 .sub{color:var(--muted);font-size:11px;margin:0 0 12px;line-height:1.35}
 h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px;font-weight:700}
+.right>h2{margin-top:0;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.right>h2 .tools{display:flex;gap:4px}
 
 .ex{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
 .ex button{appearance:none;border:1px solid var(--line);background:#101416;border-radius:10px;padding:5px;color:var(--text)}
@@ -52,22 +55,41 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 .actions{display:grid;gap:6px;margin-top:10px}
 .btn{appearance:none;border:1px solid var(--line);background:#1c2226;border-radius:9px;padding:8px 10px;font-size:12px}
 .btn.primary{background:var(--accent);color:#04210f;border-color:transparent;font-weight:700}
+.btn.sm{padding:4px 8px;font-size:11px;border-radius:7px;line-height:1.2}
+.btn.danger{color:var(--danger);border-color:#4a2a2a;background:#1a1212}
+.btn.icon{width:28px;height:28px;padding:0;display:inline-grid;place-items:center;font-size:14px;font-weight:700}
+
+.download-bar{display:flex;gap:8px;align-items:center;justify-content:center}
+.download-bar .btn{min-width:140px}
 
 .stage-wrap{
-  width:min(280px, calc((100vh - 56px) * 390 / 844));
-  height:min(calc(100vh - 56px), calc(280px * 844 / 390));
-  display:grid;place-items:start center;overflow:hidden;
+  position:relative;
+  flex:0 0 auto;
+  width:260px;height:562px; /* fallback; JS seta o size real */
+  overflow:hidden;
+  border-radius:18px;
+  box-shadow:0 18px 50px rgba(0,0,0,.5);
+  background:#000;
 }
 #stage{
-  width:390px;height:844px;border-radius:24px;overflow:hidden;background:#000;
-  box-shadow:0 18px 50px rgba(0,0,0,.5);
-  transform-origin:top center;
+  width:390px;height:844px;overflow:hidden;background:#000;
+  transform-origin:0 0;
+  position:absolute;inset:0 auto auto 0;
+  will-change:transform;
 }
 .hint,.status{color:var(--muted);font-size:11px;text-align:center;max-width:280px}
 .status.ok{color:var(--accent)}.status.err{color:#ff6b6b}
 
-.msg{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;margin:0 0 7px;display:grid;gap:6px}
+#msgs{flex:1;overflow:auto;min-height:0;padding-bottom:8px}
+.msg{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;margin:0 0 7px;
+  display:grid;gap:6px;cursor:grab;touch-action:none;
+}
+.msg.dragging{opacity:.45;cursor:grabbing}
+.msg.drag-over{border-color:var(--accent);box-shadow:0 0 0 1px rgba(37,211,102,.35)}
 .msg-head{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.msg-head .leftish{display:flex;align-items:center;gap:6px;min-width:0}
+.handle{color:var(--muted);font-size:12px;letter-spacing:-1px;user-select:none;cursor:grab;padding:0 2px}
 .badge{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:#22282d;color:var(--muted)}
 .badge.in{background:rgba(61,139,253,.14);color:#9ec5ff}
 .badge.out{background:rgba(37,211,102,.14);color:#7dffa8}
@@ -80,9 +102,10 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 #file{display:none}
 
 @media(max-width:980px){
-  body{grid-template-columns:1fr;grid-template-rows:auto 1fr auto;height:auto;overflow:auto}
-  .left,.right{border:0;max-height:40vh}
-  .stage-wrap{width:min(240px,70vw);height:auto}
+  body{grid-template-columns:1fr;grid-template-rows:auto auto 1fr;height:auto;overflow:auto}
+  .left,.right{border:0;max-height:none}
+  .stage-wrap{width:min(240px,70vw);max-height:none}
+  #stage{position:relative}
 }
 </style>
 </head>
@@ -111,7 +134,6 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
   <div class="field"><label>Foto (URL)</label><input id="foto" placeholder="https://… ou clique no avatar"></div>
 
   <div class="actions">
-    <button class="btn primary" type="button" id="gerar">Gerar PNG</button>
     <button class="btn" type="button" id="addMsg">+ mensagem</button>
     <button class="btn" type="button" id="addData">+ data</button>
   </div>
@@ -119,12 +141,21 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 </aside>
 
 <main class="center">
+  <div class="download-bar">
+    <button class="btn primary" type="button" id="gerar">Baixar PNG</button>
+  </div>
   <div class="stage-wrap"><div id="stage"><div id="phone-host"></div></div></div>
   <p class="hint">Clique no texto/foto do celular pra editar</p>
 </main>
 
 <aside class="panel right">
-  <h2>Chats</h2>
+  <h2>
+    <span>Chats</span>
+    <span class="tools">
+      <button class="btn sm icon" type="button" id="addMsgSide" title="Adicionar mensagem">+</button>
+      <button class="btn sm" type="button" id="addDataSide" title="Adicionar data">data</button>
+    </span>
+  </h2>
   <div id="msgs"></div>
 </aside>
 
@@ -133,7 +164,7 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 <script type="module">
 import { EXAMPLES, renderPhone } from './phone.mjs';
 
-const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null };
+const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null };
 const $ = (s) => document.querySelector(s);
 const status = (m, ok) => { const el=$('#status'); el.textContent=m||''; el.className='status '+(ok===true?'ok':ok===false?'err':''); };
 
@@ -143,12 +174,18 @@ $('#thumbClaro').src = 'examples/claro.png';
 function fitPhone() {
   const wrap = document.querySelector('.stage-wrap');
   const stage = $('#stage');
-  const availH = wrap.clientHeight || (window.innerHeight - 56);
-  const availW = wrap.clientWidth || 280;
+  const center = document.querySelector('.center');
+  if (!wrap || !stage || !center) return;
+  // reserva espaço pro botão Baixar + hint
+  const chrome = 96;
+  const availW = Math.max(160, center.clientWidth - 24);
+  const availH = Math.max(220, center.clientHeight - chrome);
   const s = Math.min(availW / 390, availH / 844, 1);
+  const w = Math.round(390 * s);
+  const h = Math.round(844 * s);
+  wrap.style.width = `${w}px`;
+  wrap.style.height = `${h}px`;
   stage.style.transform = `scale(${s})`;
-  wrap.style.height = `${844 * s}px`;
-  wrap.style.width = `${390 * s}px`;
 }
 
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));}
@@ -162,13 +199,19 @@ function syncForm() {
   $('#batPct').textContent = `${$('#bateria').value}%`;
   $('#foto').value = d.foto || '';
   $('#msgs').innerHTML = (d.mensagens||[]).map((m,i)=>{
-    if (m.tipo==='data') return `<article class="msg" data-i="${i}">
-      <div class="msg-head"><span class="badge date">Data</span><span class="idx">#${i+1}</span></div>
+    if (m.tipo==='data') return `<article class="msg" draggable="true" data-i="${i}">
+      <div class="msg-head">
+        <div class="leftish"><span class="handle" title="Arrastar">⠿</span><span class="badge date">Data</span><span class="idx">#${i+1}</span></div>
+        <button class="btn sm danger" type="button" data-del="${i}" title="Remover">✕</button>
+      </div>
       <div class="field"><label>Texto</label><input data-k="texto" value="${esc(m.texto||'')}"></div>
     </article>`;
     const mine = m.de==='eu';
-    return `<article class="msg" data-i="${i}">
-      <div class="msg-head"><span class="badge ${mine?'out':'in'}">${mine?'Enviada':'Recebida'}</span><span class="idx">#${i+1}</span></div>
+    return `<article class="msg" draggable="true" data-i="${i}">
+      <div class="msg-head">
+        <div class="leftish"><span class="handle" title="Arrastar">⠿</span><span class="badge ${mine?'out':'in'}">${mine?'Enviada':'Recebida'}</span><span class="idx">#${i+1}</span></div>
+        <button class="btn sm danger" type="button" data-del="${i}" title="Remover">✕</button>
+      </div>
       <div class="row2">
         <div class="field"><label>De</label>
           <select data-k="de"><option value="ela" ${!mine?'selected':''}>Contato</option><option value="eu" ${mine?'selected':''}>Você</option></select>
@@ -179,6 +222,7 @@ function syncForm() {
       <div class="field"><label>Imagem</label><input data-k="imagem" value="${esc(m.imagem||'')}" placeholder="opcional"></div>
     </article>`;
   }).join('');
+
   $('#msgs').querySelectorAll('.msg').forEach(card=>{
     card.querySelectorAll('[data-k]').forEach(inp=>{
       const go=()=>{
@@ -189,6 +233,47 @@ function syncForm() {
       };
       inp.addEventListener('change', go);
       if(inp.tagName==='TEXTAREA') inp.addEventListener('blur', go);
+      // avoid starting drag when editing fields
+      inp.addEventListener('mousedown', e => e.stopPropagation());
+      inp.addEventListener('pointerdown', e => e.stopPropagation());
+    });
+
+    card.addEventListener('dragstart', (e)=>{
+      if (e.target.closest('input,textarea,select,button')) { e.preventDefault(); return; }
+      state.dragFrom = +card.dataset.i;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(state.dragFrom));
+    });
+    card.addEventListener('dragend', ()=>{
+      state.dragFrom = null;
+      $('#msgs').querySelectorAll('.msg').forEach(el=>el.classList.remove('dragging','drag-over'));
+    });
+    card.addEventListener('dragover', (e)=>{
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('dragleave', ()=> card.classList.remove('drag-over'));
+    card.addEventListener('drop', (e)=>{
+      e.preventDefault();
+      card.classList.remove('drag-over');
+      const from = state.dragFrom ?? Number(e.dataTransfer.getData('text/plain'));
+      const to = +card.dataset.i;
+      if (!Number.isInteger(from) || from === to) return;
+      const list = state.data.mensagens;
+      const [item] = list.splice(from, 1);
+      list.splice(to, 0, item);
+      syncForm(); paint();
+    });
+  });
+
+  $('#msgs').querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault(); e.stopPropagation();
+      const i = +btn.dataset.del;
+      state.data.mensagens.splice(i, 1);
+      syncForm(); paint();
     });
   });
 }
@@ -215,6 +300,9 @@ function setPath(obj, path, value){
   const last=parts.at(-1); cur[Number.isNaN(Number(last))?last:Number(last)]=value;
 }
 
+function addMsg(){ state.data.mensagens.push({de:'ela',texto:'nova mensagem',hora:'12:00'}); syncForm(); paint(); }
+function addData(){ state.data.mensagens.push({tipo:'data',texto:'hoje'}); syncForm(); paint(); }
+
 document.addEventListener('focusout',(e)=>{
   const el=e.target.closest?.('[data-edit]'); if(!el) return;
   setPath(state.data, el.dataset.edit, el.innerText); syncForm();
@@ -236,15 +324,16 @@ $('#bateria').addEventListener('input', ()=>{ $('#batPct').textContent=`${$('#ba
 ['tema','contato','horaStatus','foto'].forEach(id=>$(`#${id}`).addEventListener('change',()=>{ pull(); paint(); }));
 $('#exEscuro').onclick=()=>{ state.data=structuredClone(EXAMPLES.escuro); syncForm(); paint(); };
 $('#exClaro').onclick=()=>{ state.data=structuredClone(EXAMPLES.claro); syncForm(); paint(); };
-$('#addMsg').onclick=()=>{ state.data.mensagens.push({de:'ela',texto:'nova mensagem',hora:'12:00'}); syncForm(); paint(); };
-$('#addData').onclick=()=>{ state.data.mensagens.push({tipo:'data',texto:'hoje'}); syncForm(); paint(); };
+$('#addMsg').onclick=addMsg;
+$('#addData').onclick=addData;
+$('#addMsgSide').onclick=addMsg;
+$('#addDataSide').onclick=addData;
 
 $('#gerar').onclick=async ()=>{
   try{
     pull(); paint(); status('Gerando…');
     const node=document.querySelector('#phone'); if(!node) throw new Error('preview vazio');
     node.querySelectorAll('[data-edit],[data-upload]').forEach(el=>{ el.removeAttribute('contenteditable'); el.style.outline='none'; });
-    // generate at full size regardless of CSS scale
     const dataUrl=await modernScreenshot.domToPng(node,{ width:390, height:844, scale:3 });
     const a=document.createElement('a');
     a.href=dataUrl; a.download=`${(state.data.contato||'print').replace(/\s+/g,'-').toLowerCase()}.png`; a.click();
