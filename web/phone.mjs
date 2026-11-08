@@ -57,40 +57,28 @@ function checks(status) {
   </svg>`;
 }
 
-/** Status icons as ONE svg so signal/wifi/battery share the same baseline. */
+/** iOS-like status icons: same 12px box, shared bottom baseline. */
 function statusIcons({ sinal = 4, wifi = true, bateria = 80, color = "#fff" }) {
   const pct = Math.min(100, Math.max(0, Number(bateria) || 0));
-  const low = pct <= 20;
-  const fill = low ? "#FF3B30" : color;
-  const bodyW = 22;
-  const innerMax = 17.5;
-  const innerW = Math.max(2.4, (pct / 100) * innerMax);
+  const fill = pct <= 20 ? "#FF3B30" : color;
+  const innerW = Math.max(2.2, (pct / 100) * 16.2);
 
-  // Shared mid-line y=6.5 in a 13-tall strip. All icons sit on that.
-  const bars = [4.6, 6.6, 8.6, 10.6]
+  const bars = [4.2, 6.4, 8.6, 10.8]
     .map((h, i) => {
-      const x = 0.5 + i * 4.35;
-      const y = 12.2 - h;
+      const x = i * 4.45;
+      const y = 12 - h;
       const on = i < sinal;
-      return `<rect x="${x}" y="${y}" width="2.9" height="${h}" rx="0.85" fill="${color}" fill-opacity="${on ? 1 : 0.28}"/>`;
+      return `<rect x="${x}" y="${y}" width="3" height="${h}" rx="0.7" fill="${color}" fill-opacity="${on ? 1 : 0.28}"/>`;
     })
     .join("");
 
-  const wifiPath = wifi
-    ? `<g transform="translate(20.5,0)">
-        <path d="M8.2 1.9c2.3 0 4.4.85 6 2.3l-1.05 1.05a7 7 0 0 0-9.9 0L2.2 4.2a8.9 8.9 0 0 1 6-2.3Zm0 3.15c1.45 0 2.75.55 3.75 1.45L10.9 7.55a3.9 3.9 0 0 0-5.4 0L4.45 6.5A5.35 5.35 0 0 1 8.2 5.05Zm0 3.15c.65 0 1.25.25 1.7.65L8.2 11.05 6.5 8.85c.45-.4 1.05-.65 1.7-.65Z" fill="${color}"/>
-      </g>`
+  const signalSvg = `<svg class="si" width="17" height="12" viewBox="0 0 17 12" aria-hidden="true">${bars}</svg>`;
+  const wifiSvg = wifi
+    ? `<svg class="si" width="16" height="12" viewBox="0 0 16 12" aria-hidden="true"><path fill="${color}" d="M8 12 5.55 9.3a3.4 3.4 0 0 1 4.9 0Zm-3.95-4.2a5.7 5.7 0 0 1 7.9 0L10.7 9.1a3.95 3.95 0 0 0-5.4 0Zm-2.45-2.7A9 9 0 0 1 14.4 5.1L13.15 6.5a7.15 7.15 0 0 0-10.3 0Z"/></svg>`
     : "";
+  const batSvg = `<svg class="si" width="27" height="12" viewBox="0 0 27 12" aria-hidden="true"><rect x="0.55" y="1.55" width="22" height="9.4" rx="2.6" fill="none" stroke="${color}" stroke-opacity="0.4" stroke-width="1.1"/><rect x="2.25" y="3.2" width="${innerW.toFixed(2)}" height="6.1" rx="1.5" fill="${fill}"/><path d="M23.4 3.9v4.7c1.25-.35 1.25-4.35 0-4.7Z" fill="${color}" fill-opacity="0.5"/></svg>`;
 
-  const batX = wifi ? 40.5 : 21;
-  const battery = `<g transform="translate(${batX},0.5)">
-      <rect x="0.5" y="0.5" width="${bodyW}" height="11" rx="3" fill="none" stroke="${color}" stroke-opacity="0.4" stroke-width="1"/>
-      <rect x="2.1" y="2.1" width="${innerW.toFixed(2)}" height="7.8" rx="1.7" fill="${fill}"/>
-      <rect x="${bodyW + 0.5}" y="3.6" width="2.2" height="4.8" rx="1" fill="${color}" fill-opacity="0.45"/>
-    </g>`;
-
-  const totalW = batX + bodyW + 4;
-  return `<svg class="status-icons" width="${totalW}" height="13" viewBox="0 0 ${totalW} 13" aria-hidden="true">${bars}${wifiPath}${battery}</svg>`;
+  return `${signalSvg}${wifiSvg}${batSvg}`;
 }
 
 function avatarSvg() {
@@ -162,10 +150,10 @@ export function renderPhone(data) {
     #phone .fade-top{position:absolute;top:0;left:0;right:0;height:118px;z-index:18;background:linear-gradient(to bottom,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 72%,rgba(${t.fade},0))}
     #phone .fade-bottom{position:absolute;bottom:0;left:0;right:0;height:92px;z-index:18;background:linear-gradient(to top,rgba(${t.fade},1) 0%,rgba(${t.fade},1) 62%,rgba(${t.fade},0))}
     #phone .glass{background:${t.glass};backdrop-filter:blur(24px) saturate(160%);-webkit-backdrop-filter:blur(24px) saturate(160%);border:.5px solid ${t.glassBorder};box-shadow:inset 0 1px 0 ${t.glassHi},0 2px 10px ${t.shadow}}
-    #phone .status{position:absolute;top:0;left:0;right:0;height:54px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:14px 16px 0 32px;color:${t.fg}}
-    #phone .time{font-size:16px;font-weight:600;letter-spacing:-.2px;line-height:13px;height:13px;display:block}
-    #phone .status-right{display:flex;align-items:center;justify-content:flex-end;margin-left:auto;height:13px;line-height:0}
-    #phone .status-icons{display:block;flex-shrink:0}
+    #phone .status{position:absolute;top:0;left:0;right:0;height:54px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:16px 18px 0 30px;color:${t.fg}}
+    #phone .time{font-size:16px;font-weight:600;letter-spacing:-.2px;line-height:12px;height:12px;display:block}
+    #phone .status-right{display:flex;align-items:center;justify-content:flex-end;gap:6px;margin-left:auto;height:12px;line-height:0}
+    #phone .status-right .si{display:block;flex-shrink:0;overflow:visible}
     #phone .header{position:absolute;top:58px;left:0;right:0;height:44px;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:0 14px 0 16px}
     #phone .header-left{display:flex;align-items:center;min-width:0;height:44px}
     #phone .back{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}

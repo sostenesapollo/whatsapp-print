@@ -131,6 +131,13 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
   <div class="field"><label>Tema</label>
     <select id="tema"><option value="escuro">Escuro</option><option value="claro">Claro</option></select>
   </div>
+  <div class="field"><label>Aleatório</label>
+    <select id="generoModo">
+      <option value="mulher">Só mulheres</option>
+      <option value="homem">Só homens</option>
+      <option value="ambos" selected>Ambos</option>
+    </select>
+  </div>
   <div class="field"><label>Contato</label><input id="contato" placeholder="Nome"></div>
   <div class="field"><label>Hora</label><input id="horaStatus" placeholder="16:48"></div>
   <div class="field"><label>Bateria</label>
@@ -188,6 +195,7 @@ import { randomConversation, randomFoto, randomNome } from './shuffle.mjs';
 const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null, avatars: { homem: [], mulher: [] } };
 const $ = (s) => document.querySelector(s);
 const status = (m, ok) => { const el=$('#status'); el.textContent=m||''; el.className='status '+(ok===true?'ok':ok===false?'err':''); };
+const generoModo = () => $('#generoModo')?.value || 'ambos';
 
 $('#thumbEscuro').src = 'examples/escuro.png';
 $('#thumbClaro').src = 'examples/claro.png';
@@ -340,12 +348,12 @@ document.addEventListener('click',(e)=>{
     const kind=shuff.dataset.shuffle;
     if(kind==='foto'){
       if(!(state.avatars.mulher?.length||state.avatars.homem?.length)){ status('Avatares ainda carregando…', false); return; }
-      state.data.foto=randomFoto({ avatars:state.avatars, foto:state.data.foto, contato:state.data.contato });
+      state.data.foto=randomFoto({ avatars:state.avatars, foto:state.data.foto, contato:state.data.contato, modo:generoModo() });
       syncForm(); paint(); status('Foto trocada', true);
       return;
     }
     if(kind==='nome'){
-      state.data.contato=randomNome({ foto:state.data.foto, contato:state.data.contato });
+      state.data.contato=randomNome({ foto:state.data.foto, contato:state.data.contato, modo:generoModo() });
       syncForm(); paint(); status('Nome trocado', true);
       return;
     }
@@ -374,11 +382,12 @@ $('#addDataSide').onclick=addData;
 
 $('#aleatorio').onclick=()=>{
   const tema = $('#tema').value || state.data.tema || 'escuro';
+  const modo = generoModo();
   if (!(state.avatars.mulher?.length || state.avatars.homem?.length)) {
     status('Avatares ainda carregando…', false);
     return;
   }
-  state.data = randomConversation({ tema, avatars: state.avatars });
+  state.data = randomConversation({ tema, modo, avatars: state.avatars });
   syncForm(); paint();
   status('Aleatório ok', true);
 };

@@ -135,24 +135,27 @@ function pickOther(arr, current) {
   return next;
 }
 
-export function guessGenero({ foto = "", contato = "" } = {}) {
+/** @param {'mulher'|'homem'|'ambos'} modo */
+export function pickGenero(modo = "ambos", { foto = "", contato = "" } = {}) {
+  if (modo === "homem" || modo === "mulher") return modo;
+  // ambos: tenta manter o gênero atual; senão 50/50
   if (String(foto).includes("/homem/")) return "homem";
   if (String(foto).includes("/mulher/")) return "mulher";
   const nome = String(contato || "").trim();
   if (NOMES.homem.includes(nome)) return "homem";
   if (NOMES.mulher.includes(nome)) return "mulher";
-  return Math.random() < 0.15 ? "homem" : "mulher";
+  return Math.random() < 0.5 ? "homem" : "mulher";
 }
 
-export function randomFoto({ avatars, foto = "", contato = "" } = {}) {
-  const genero = guessGenero({ foto, contato });
-  const pool = [...(avatars?.mulher || []), ...(avatars?.homem || [])];
+export function randomFoto({ avatars, foto = "", contato = "", modo = "ambos" } = {}) {
+  const genero = pickGenero(modo, { foto, contato });
   const same = avatars?.[genero] || [];
+  const pool = [...(avatars?.mulher || []), ...(avatars?.homem || [])];
   return pickOther(same.length ? same : pool, foto);
 }
 
-export function randomNome({ foto = "", contato = "" } = {}) {
-  const genero = guessGenero({ foto, contato });
+export function randomNome({ foto = "", contato = "", modo = "ambos" } = {}) {
+  const genero = pickGenero(modo, { foto, contato });
   return pickOther(NOMES[genero] || NOMES.mulher, contato);
 }
 
@@ -178,11 +181,10 @@ function buildDates() {
 }
 
 /**
- * @param {{ tema?: string, avatars: { homem: string[], mulher: string[] } }} opts
+ * @param {{ tema?: string, modo?: 'mulher'|'homem'|'ambos', avatars: { homem: string[], mulher: string[] } }} opts
  */
-export function randomConversation({ tema = "escuro", avatars }) {
-  // 85% mulher (print gestante), 15% homem
-  const genero = Math.random() < 0.15 ? "homem" : "mulher";
+export function randomConversation({ tema = "escuro", modo = "ambos", avatars }) {
+  const genero = pickGenero(modo);
   const fotos = avatars[genero] || [];
   const nomes = NOMES[genero];
   const conv = pick(CONVERSAS);
