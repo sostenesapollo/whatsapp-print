@@ -1,12 +1,13 @@
 {
   "contato": "Sandro Mata",
   "foto": "",
+  "tema": "claro",
   "horaStatus": "17:01",
   "bateria": 10,
   "sinal": 4,
   "wifi": true,
   "saida": "out/sandro-mata.png",
-  "_comentario": "foto: caminho da imagem (ex. ./fotos/sandro.jpg ou ~/Desktop/sandro.png). Omita horaStatus/bateria para usar hora e % reais do Mac.",
+  "_comentario": "tema: claro | escuro. foto: caminho (./fotos/x.jpg ou ~/…). Omita horaStatus/bateria para usar hora e % reais do Mac.",
   "mensagens": [
     { "tipo": "data", "texto": "25 de mar. de 2021" },
     { "de": "eu", "texto": "Oie! Como vc está?", "hora": "21:58", "status": "lido" },

@@ -32,10 +32,19 @@ O PNG sai em `out/` (ou no caminho de `saida` no JSON).
 |---|---|
 | `contato` | Nome no header |
 | `foto` | Caminho da foto: relativo, absoluto ou `~/…`. Vazio = avatar cinza |
+| `tema` | `claro` (padrão) ou `escuro` — estilo WhatsApp light/dark |
 | `horaStatus` | Status bar (ex. `17:01`). Omitir = hora atual do Mac |
 | `bateria` | 0–100 (≤20 vermelha). Omitir = % real da bateria do Mac |
 | `saida` | Caminho do PNG (opcional) |
 | `mensagens` | Lista abaixo |
+
+Lote gestante (claro + escuro):
+
+```fish
+bun run gestante
+```
+
+Saída em `out/gestante/claro/` e `out/gestante/escuro/`.
 
 Mensagens:
 

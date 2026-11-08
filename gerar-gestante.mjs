@@ -12,6 +12,7 @@ import { gerarPrint } from "./generate.mjs";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE = "/Users/sostenesapollo/dev/manual-gestante-tranquila/site";
 const OUT = resolve(__dirname, "out/gestante");
+const TEMAS = ["claro", "escuro"];
 
 const MESES = [
   "jan.",
@@ -705,7 +706,16 @@ const DEP = [
   },
 ];
 
-function toConversa(dep, meta, index) {
+function firstSlug(name) {
+  return String(name || "contato")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split(/\s+/)[0]
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function toConversa(dep, meta, index, tema) {
   const [d1, m1, d2, m2, horaStatus, bateria] = meta;
   const first = fmt(d1, m1);
   const hoje = fmt(d2, m2);
@@ -730,24 +740,30 @@ function toConversa(dep, meta, index) {
   return {
     contato: dep.name,
     foto: img(dep.ava),
+    tema,
     horaStatus,
     bateria,
     sinal: 3 + (index % 2),
     wifi: index % 5 !== 0,
-    saida: resolve(OUT, `${slug}-${dep.name.split(" ")[0].toLowerCase()}.png`),
+    saida: resolve(OUT, tema, `${slug}-${firstSlug(dep.name)}.png`),
     mensagens,
   };
 }
 
 async function main() {
-  mkdirSync(OUT, { recursive: true });
+  for (const tema of TEMAS) mkdirSync(resolve(OUT, tema), { recursive: true });
   const browser = await chromium.launch({ headless: true });
-  console.log(`Gerando ${DEP.length} conversas → ${OUT}`);
+  const total = DEP.length * TEMAS.length;
+  console.log(`Gerando ${DEP.length} conversas × ${TEMAS.length} temas → ${OUT}`);
 
-  for (let i = 0; i < DEP.length; i++) {
-    const data = toConversa(DEP[i], META[i], i);
-    const path = await gerarPrint(data, { baseDir: SITE, browser });
-    console.log(`  ${i + 1}/${DEP.length} ${data.contato} (bat ${data.bateria}%, ${data.horaStatus}) → ${path}`);
+  let n = 0;
+  for (const tema of TEMAS) {
+    for (let i = 0; i < DEP.length; i++) {
+      const data = toConversa(DEP[i], META[i], i, tema);
+      const path = await gerarPrint(data, { baseDir: SITE, browser });
+      n++;
+      console.log(`  ${n}/${total} [${tema}] ${data.contato} → ${path}`);
+    }
   }
 
   await browser.close();
