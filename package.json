@@ -1,0 +1,14 @@
+{
+  "name": "whatsapp-print",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node generate.mjs",
+    "exemplo": "node generate.mjs conversa.exemplo.json",
+    "gestante": "node gerar-gestante.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.56.1"
+  }
+}

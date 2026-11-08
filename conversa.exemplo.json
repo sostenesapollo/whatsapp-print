@@ -1,0 +1,47 @@
+{
+  "contato": "Sandro Mata",
+  "foto": "",
+  "horaStatus": "17:01",
+  "bateria": 10,
+  "sinal": 4,
+  "wifi": true,
+  "saida": "out/sandro-mata.png",
+  "_comentario": "foto: caminho da imagem (ex. ./fotos/sandro.jpg ou ~/Desktop/sandro.png). Omita horaStatus/bateria para usar hora e % reais do Mac.",
+  "mensagens": [
+    { "tipo": "data", "texto": "25 de mar. de 2021" },
+    { "de": "eu", "texto": "Oie! Como vc está?", "hora": "21:58", "status": "lido" },
+    { "tipo": "data", "texto": "26 de mar. de 2021" },
+    { "de": "ele", "texto": "Oi mano", "hora": "08:52" },
+    {
+      "de": "ele",
+      "texto": "Estou com varios sintomas, não vai ter escapatória",
+      "hora": "08:53"
+    },
+    { "de": "eu", "texto": "Foi no trabalho?", "hora": "09:02", "status": "lido" },
+    { "de": "ele", "texto": "Soube, estou morrendo de medo", "hora": "09:06" },
+    { "de": "eu", "texto": "Menino do céu, se cuida.", "hora": "09:07", "status": "lido" },
+    {
+      "de": "ele",
+      "texto": "Tô com febre, tosse, falta de ar, e o teste deu positivo",
+      "hora": "09:08"
+    },
+    {
+      "de": "eu",
+      "texto": "Nossa, que merda. Fica de cama e bebe bastante líquido",
+      "hora": "09:10",
+      "status": "lido"
+    },
+    {
+      "de": "ele",
+      "texto": "Já tô isolado em casa. Minha mãe tá apavorada",
+      "hora": "09:12"
+    },
+    {
+      "de": "eu",
+      "texto": "Manda um áudio depois se der. Qualquer coisa me chama",
+      "hora": "09:14",
+      "status": "lido"
+    },
+    { "de": "ele", "texto": "Valeu mano, vou tentar descansar", "hora": "09:15" }
+  ]
+}
