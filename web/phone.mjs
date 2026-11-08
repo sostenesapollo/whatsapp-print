@@ -150,10 +150,10 @@ function msgsHtml(list, edit = false) {
         ? `<div class="media-wrap"><button type="button" class="shuff" data-shuffle="msg-img" data-i="${i}" title="Próxima imagem">${ICO.cycle}</button><img class="media" src="${esc(m.imagem)}" alt="" data-upload="mensagens.${i}.imagem"/></div>`
         : `<img class="media" src="${esc(m.imagem)}" alt="" data-upload="mensagens.${i}.imagem"/>`
       : "";
-    html += `<div class="row ${side}${first ? " first" : ""}${last ? " tail" : ""}${edit ? " editable" : ""}">
-      ${edit ? msgChrome(i) : ""}
-      <div class="bubble ${side}${m.imagem ? " has-img" : ""}">${img}${m.imagem ? `<div class="caption">${text}${meta}</div>` : `${text}${meta}`}</div>
-    </div>`;
+    const bubble = `<div class="bubble ${side}${m.imagem ? " has-img" : ""}">${img}${m.imagem ? `<div class="caption">${text}${meta}</div>` : `${text}${meta}`}</div>`;
+    html += edit
+      ? `<div class="row ${side}${first ? " first" : ""}${last ? " tail" : ""} editable"><div class="stack">${msgChrome(i)}${bubble}</div></div>`
+      : `<div class="row ${side}${first ? " first" : ""}${last ? " tail" : ""}">${bubble}</div>`;
   }
   return html;
 }
@@ -215,20 +215,29 @@ export function renderPhone(data) {
     #phone .back.glass,#phone .actions.glass{box-shadow:inset 0 1px 0 ${t.glassHi}}
     #phone .chat{position:absolute;top:112px;bottom:80px;left:0;right:0;overflow:hidden;z-index:20;padding:0 14px 10px 16px;display:flex;flex-direction:column;justify-content:flex-end}
     #phone .date-pill{align-self:center;margin:8px 0;position:relative}
+    #phone .date-pill.editable::before,#phone .date-pill.editable::after,
+    #phone .stack::before,#phone .stack::after,#phone .media-wrap::before{
+      content:"";position:absolute;left:0;right:0;pointer-events:auto;
+    }
+    #phone .date-pill.editable::before,#phone .stack::before,#phone .media-wrap::before{top:-28px;height:28px}
+    #phone .date-pill.editable::after,#phone .stack::after{bottom:-28px;height:28px}
     #phone .date-pill span{display:inline-block;background:${t.dateBg};color:${t.dateFg};font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:9px}
     #phone .row{display:flex;margin-top:2px;position:relative;flex-wrap:wrap;overflow:visible}
     #phone .row.first{margin-top:6px}
     #phone .row.out{justify-content:flex-end} #phone .row.in{justify-content:flex-start}
+    #phone .stack{position:relative;max-width:80%;display:flex;flex-direction:column;align-items:stretch}
+    #phone .stack .bubble{max-width:100%}
+    #phone .stack .bubble.has-img{max-width:100%}
     #phone .msg-top,#phone .msg-bottom{
       position:absolute;z-index:40;display:flex;gap:4px;align-items:center;
       opacity:0;pointer-events:none;transition:opacity .12s ease;
     }
-    #phone .msg-top{top:-24px;right:0;left:auto;justify-content:flex-end;padding-bottom:4px}
-    #phone .date-pill .msg-top{top:-24px}
-    #phone .msg-bottom{top:auto;bottom:-24px;left:50%;transform:translateX(-50%);padding-top:4px}
-    #phone .row.editable:hover .msg-top,#phone .row.editable:hover .msg-bottom,
+    #phone .msg-top{top:-24px;right:0;left:auto;justify-content:flex-end}
+    #phone .date-pill .msg-top{top:-24px;right:0}
+    #phone .msg-bottom{top:auto;bottom:-24px;left:50%;transform:translateX(-50%)}
+    #phone .stack:hover .msg-top,#phone .stack:hover .msg-bottom,
     #phone .date-pill.editable:hover .msg-top,#phone .date-pill.editable:hover .msg-bottom,
-    #phone .row.editable:focus-within .msg-top,#phone .row.editable:focus-within .msg-bottom,
+    #phone .stack:focus-within .msg-top,#phone .stack:focus-within .msg-bottom,
     #phone .date-pill.editable:focus-within .msg-top,#phone .date-pill.editable:focus-within .msg-bottom,
     #phone .msg-top:focus-within,#phone .msg-bottom:focus-within{opacity:1;pointer-events:auto}
     #phone .bubble{position:relative;max-width:80%;padding:7px 11px 7px 12px;border-radius:18px;font-size:17px;line-height:1.3;letter-spacing:-.2px;color:${t.bubbleFg}}
@@ -237,7 +246,7 @@ export function renderPhone(data) {
     #phone .text{white-space:pre-wrap;word-break:break-word}
     #phone .meta{float:right;display:inline-flex;align-items:center;gap:4px;margin:8px 0 -4px 12px;color:${t.meta};font-size:12px;line-height:1;position:relative;top:2px}
     #phone .bubble.has-img{padding:4px;max-width:76%}
-    #phone .media-wrap{display:block;width:100%;max-width:262px;padding-top:28px}
+    #phone .media-wrap{display:block;position:relative;width:100%;max-width:262px}
     #phone .media{display:block;width:100%;max-width:262px;max-height:330px;object-fit:cover;border-radius:14px}
     #phone .caption{padding:6px 8px 4px 9px}
     #phone .scroll-hint{position:absolute;right:16px;bottom:96px;z-index:25;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;pointer-events:none}

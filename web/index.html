@@ -195,7 +195,7 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 
 <script type="module">
 import { EXAMPLES, renderPhone } from './phone.mjs';
-import { randomConversation, randomMsgImg, randomNome } from './shuffle.mjs';
+import { MSG_IMGS, randomConversation, randomNome } from './shuffle.mjs';
 
 const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null, avatars: { homem: [], mulher: [] } };
 const $ = (s) => document.querySelector(s);
@@ -203,26 +203,33 @@ const status = (m, ok) => { const el=$('#status'); el.textContent=m||''; el.clas
 const generoModo = () => $('#generoModo')?.value || 'ambos';
 
 const FOTO_KEY = 'wp-foto-history-v1';
+const MSG_IMG_KEY = 'wp-msg-img-history-v1';
 const FOTO_MAX = 20;
 const FOTO_DATA_MAX = 6;
+const MSG_IMG_MAX = 16;
+const MSG_IMG_DATA_MAX = 8;
 
-function loadFotoHistory(){
-  try{ return JSON.parse(localStorage.getItem(FOTO_KEY)||'[]').filter(Boolean); }
+function loadList(key){
+  try{ return JSON.parse(localStorage.getItem(key)||'[]').filter(Boolean); }
   catch{ return []; }
 }
-function rememberFoto(url){
+function rememberUrl(key, url, maxPath, maxData){
   if(!url || String(url).startsWith('data:image/svg')) return;
-  const ordered = [url, ...loadFotoHistory().filter((u) => u !== url)];
+  const ordered = [url, ...loadList(key).filter((u) => u !== url)];
   const kept = [];
   let paths = 0, datas = 0;
   for(const u of ordered){
     const isData = String(u).startsWith('data:');
-    if(isData){ if(datas >= FOTO_DATA_MAX) continue; datas++; }
-    else { if(paths >= FOTO_MAX) continue; paths++; }
+    if(isData){ if(datas >= maxData) continue; datas++; }
+    else { if(paths >= maxPath) continue; paths++; }
     kept.push(u);
   }
-  try{ localStorage.setItem(FOTO_KEY, JSON.stringify(kept)); }catch{ /* quota */ }
+  try{ localStorage.setItem(key, JSON.stringify(kept)); }catch{ /* quota */ }
 }
+function rememberFoto(url){ rememberUrl(FOTO_KEY, url, FOTO_MAX, FOTO_DATA_MAX); }
+function rememberMsgImg(url){ rememberUrl(MSG_IMG_KEY, url, MSG_IMG_MAX, MSG_IMG_DATA_MAX); }
+function loadFotoHistory(){ return loadList(FOTO_KEY); }
+function loadMsgImgHistory(){ return loadList(MSG_IMG_KEY); }
 function presetFotos(){
   const modo = generoModo();
   const m = state.avatars.mulher || [];
@@ -231,21 +238,28 @@ function presetFotos(){
   if(modo === 'homem') return h.slice(0, 10);
   return [...m.slice(0, 6), ...h.slice(0, 6)];
 }
-function fotoPool(){
+function uniqPool(...lists){
   const seen = new Set();
   const out = [];
-  for(const u of [...loadFotoHistory(), ...presetFotos()]){
-    if(!u || seen.has(u)) continue;
-    seen.add(u);
-    out.push(u);
+  for(const list of lists){
+    for(const u of list){
+      if(!u || seen.has(u)) continue;
+      seen.add(u);
+      out.push(u);
+    }
   }
   return out;
 }
-function nextFoto(current){
-  const pool = fotoPool();
+function nextInPool(pool, current){
   if(!pool.length) return current || '';
   const i = pool.indexOf(current);
   return pool[i < 0 ? 0 : (i + 1) % pool.length];
+}
+function nextFoto(current){
+  return nextInPool(uniqPool(loadFotoHistory(), presetFotos()), current);
+}
+function nextMsgImg(current){
+  return nextInPool(uniqPool(loadMsgImgHistory(), MSG_IMGS), current);
 }
 function setFoto(url, note){
   if(!url) return;
@@ -253,6 +267,18 @@ function setFoto(url, note){
   rememberFoto(url);
   syncForm(); paint();
   if(note) status(note, true);
+}
+function focusMsgText(i){
+  requestAnimationFrame(()=>{
+    const el = document.querySelector(`#phone [data-edit="mensagens.${i}.texto"]`);
+    if(!el) return;
+    el.focus();
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  });
 }
 
 $('#thumbEscuro').src = 'examples/escuro.png';
@@ -321,6 +347,7 @@ function syncForm() {
         const i=+card.dataset.i, k=inp.dataset.k;
         state.data.mensagens[i][k]=inp.value;
         if(k==='de'){ if(inp.value==='eu') state.data.mensagens[i].status='lido'; else delete state.data.mensagens[i].status; syncForm(); }
+        if(k==='imagem' && inp.value) rememberMsgImg(inp.value);
         paint();
       };
       inp.addEventListener('change', go);
@@ -411,8 +438,16 @@ function hojeLabel(){
   const d = new Date();
   return `${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`;
 }
-function addMsg(){ state.data.mensagens.push({de:'ela',texto:'nova mensagem',hora:horaApos(state.data.mensagens.length-1)}); syncForm(); paint(); }
-function addData(){ state.data.mensagens.push({tipo:'data',texto:hojeLabel()}); syncForm(); paint(); }
+function addMsg(){
+  const i = state.data.mensagens.length;
+  state.data.mensagens.push({de:'ela',texto:'nova mensagem',hora:horaApos(i-1)});
+  syncForm(); paint(); focusMsgText(i);
+}
+function addData(){
+  const i = state.data.mensagens.length;
+  state.data.mensagens.push({tipo:'data',texto:hojeLabel()});
+  syncForm(); paint(); focusMsgText(i);
+}
 
 document.addEventListener('focusout',(e)=>{
   const el=e.target.closest?.('[data-edit]'); if(!el) return;
@@ -446,12 +481,12 @@ document.addEventListener('click',(e)=>{
       const item = { de, texto: 'nova mensagem', hora: horaApos(i) };
       if(de === 'eu') item.status = 'lido';
       list.splice(i + 1, 0, item);
-      syncForm(); paint(); status('Mensagem adicionada', true);
+      syncForm(); paint(); focusMsgText(i + 1); status('Mensagem adicionada', true);
       return;
     }
     if(act === 'date'){
       list.splice(i + 1, 0, { tipo:'data', texto: hojeLabel() });
-      syncForm(); paint(); status('Data inserida', true);
+      syncForm(); paint(); focusMsgText(i + 1); status('Data inserida', true);
       return;
     }
   }
@@ -475,7 +510,10 @@ document.addEventListener('click',(e)=>{
       const i = Number(shuff.dataset.i);
       const m = state.data.mensagens?.[i];
       if(!m || m.tipo === 'data') return;
-      m.imagem = randomMsgImg(m.imagem || '');
+      const next = nextMsgImg(m.imagem || '');
+      if(!next){ status('Nenhuma imagem no histórico ainda', false); return; }
+      m.imagem = next;
+      rememberMsgImg(next);
       syncForm(); paint(); status('Imagem trocada', true);
       return;
     }
@@ -490,6 +528,7 @@ $('#file').addEventListener('change', async ()=>{
   const dataUrl=await new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(file); });
   setPath(state.data, state.uploadPath, dataUrl);
   if(state.uploadPath==='foto'){ $('#foto').value=dataUrl; rememberFoto(dataUrl); }
+  if(/^mensagens\.\d+\.imagem$/.test(state.uploadPath)) rememberMsgImg(dataUrl);
   state.uploadPath=null; $('#file').value=''; syncForm(); paint(); status('Imagem ok', true);
 });
 
@@ -537,6 +576,7 @@ $('#gerar').onclick=async ()=>{
 
 window.addEventListener('resize', fitPhone);
 if(state.data.foto) rememberFoto(state.data.foto);
+for(const m of state.data.mensagens||[]){ if(m.imagem) rememberMsgImg(m.imagem); }
 syncForm(); paint();
 </script>
 </body>
