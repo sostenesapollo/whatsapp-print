@@ -67,6 +67,7 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
   box-shadow:0 6px 18px rgba(0,0,0,.28);
 }
 .btn-dl:hover{border-color:#3d8f5f;background:#17241c}
+.btn-dl.ghost:hover{border-color:#4a6a88;background:#152028}
 .btn-dl svg{display:block;flex-shrink:0;opacity:.9}
 
 .stage-wrap{
@@ -156,6 +157,12 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
       </svg>
       Baixar
     </button>
+    <button class="btn-dl ghost" type="button" id="aleatorio" title="Aleatório">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M16 3h5v5M8 3H3v5M21 3l-7.5 7.5M3 3l7.5 7.5M16 21h5v-5M8 21H3v-5M21 21l-7.5-7.5M3 21l7.5-7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Aleatório
+    </button>
   </div>
   <div class="stage-wrap"><div id="stage"><div id="phone-host"></div></div></div>
   <p class="hint">Clique no texto/foto do celular pra editar</p>
@@ -176,13 +183,19 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 
 <script type="module">
 import { EXAMPLES, renderPhone } from './phone.mjs';
+import { randomConversation } from './shuffle.mjs';
 
-const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null };
+const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null, avatars: { homem: [], mulher: [] } };
 const $ = (s) => document.querySelector(s);
 const status = (m, ok) => { const el=$('#status'); el.textContent=m||''; el.className='status '+(ok===true?'ok':ok===false?'err':''); };
 
 $('#thumbEscuro').src = 'examples/escuro.png';
 $('#thumbClaro').src = 'examples/claro.png';
+
+fetch('avatars/manifest.json')
+  .then((r) => r.json())
+  .then((m) => { state.avatars = m; })
+  .catch(() => status('Avatares não carregaram', false));
 
 function fitPhone() {
   const wrap = document.querySelector('.stage-wrap');
@@ -341,6 +354,17 @@ $('#addMsg').onclick=addMsg;
 $('#addData').onclick=addData;
 $('#addMsgSide').onclick=addMsg;
 $('#addDataSide').onclick=addData;
+
+$('#aleatorio').onclick=()=>{
+  const tema = $('#tema').value || state.data.tema || 'escuro';
+  if (!(state.avatars.mulher?.length || state.avatars.homem?.length)) {
+    status('Avatares ainda carregando…', false);
+    return;
+  }
+  state.data = randomConversation({ tema, avatars: state.avatars });
+  syncForm(); paint();
+  status('Aleatório ok', true);
+};
 
 $('#gerar').onclick=async ()=>{
   try{

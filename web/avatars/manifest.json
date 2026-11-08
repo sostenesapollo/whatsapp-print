@@ -1,0 +1,43 @@
+{
+  "homem": [
+    "avatars/homem/h01.jpg",
+    "avatars/homem/h02.jpg",
+    "avatars/homem/h03.jpg",
+    "avatars/homem/h04.jpg",
+    "avatars/homem/h05.jpg",
+    "avatars/homem/h06.jpg",
+    "avatars/homem/h07.jpg",
+    "avatars/homem/h08.jpg",
+    "avatars/homem/h09.jpg",
+    "avatars/homem/h10.jpg",
+    "avatars/homem/h11.jpg",
+    "avatars/homem/h12.jpg",
+    "avatars/homem/h13.jpg",
+    "avatars/homem/h14.jpg",
+    "avatars/homem/h15.jpg",
+    "avatars/homem/h16.jpg",
+    "avatars/homem/h17.jpg",
+    "avatars/homem/h18.jpg",
+    "avatars/homem/h19.jpg",
+    "avatars/homem/h20.jpg",
+    "avatars/homem/h21.jpg",
+    "avatars/homem/h22.jpg",
+    "avatars/homem/h23.jpg"
+  ],
+  "mulher": [
+    "avatars/mulher/m01.jpg",
+    "avatars/mulher/m02.jpg",
+    "avatars/mulher/m03.jpg",
+    "avatars/mulher/m04.jpg",
+    "avatars/mulher/m05.jpg",
+    "avatars/mulher/m06.jpg",
+    "avatars/mulher/m07.jpg",
+    "avatars/mulher/m08.jpg",
+    "avatars/mulher/m09.jpg",
+    "avatars/mulher/m10.jpg",
+    "avatars/mulher/m11.jpg",
+    "avatars/mulher/m12.jpg",
+    "avatars/mulher/m13.jpg",
+    "avatars/mulher/m14.jpg"
+  ]
+}
