@@ -69,7 +69,7 @@ function signal(n, color) {
     .join("");
 }
 
-function wifi(color) {
+function wifiIcon(color) {
   // arco wifi centrado opticamente na mesma faixa 12px
   return `<path d="M9.5 2.1c2.55 0 4.9.95 6.7 2.55l-1.15 1.15a7.6 7.6 0 0 0-11.1 0L2.8 4.65A9.9 9.9 0 0 1 9.5 2.1Zm0 3.35c1.6 0 3.05.6 4.15 1.6l-1.15 1.15a4.3 4.3 0 0 0-6 0L5.35 7.05a5.9 5.9 0 0 1 4.15-1.6Zm0 3.35c.7 0 1.35.25 1.85.7L9.5 11.3 7.65 9.5c.5-.45 1.15-.7 1.85-.7Z" fill="${color}"/>`;
 }
@@ -137,7 +137,7 @@ export function renderPhone(data) {
   const bateria = Math.min(100, Math.max(0, Number(data.bateria ?? 80)));
   const sinal = Number(data.sinal ?? 4);
   const foto = data.foto || avatarSvg();
-  const wifi = data.wifi !== false;
+  const showWifi = data.wifi !== false;
 
   return `<div class="phone" id="phone" style="width:${W}px;height:${H}px;position:relative;overflow:hidden;background:${t.bg};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
   <style>
@@ -186,7 +186,7 @@ export function renderPhone(data) {
     <div class="time" data-edit="horaStatus" contenteditable="true">${esc(data.horaStatus || "09:14")}</div>
     <div class="status-right">
       <svg class="ico" width="19" height="12" viewBox="0 0 19 12" aria-hidden="true">${signal(sinal, t.fg)}</svg>
-      ${wifi ? `<svg class="ico" width="19" height="12" viewBox="0 0 19 12" aria-hidden="true">${wifi(t.fg)}</svg>` : ""}
+      ${showWifi ? `<svg class="ico" width="19" height="12" viewBox="0 0 19 12" aria-hidden="true">${wifiIcon(t.fg)}</svg>` : ""}
       ${battery(bateria, t.fg)}
     </div>
   </div>
