@@ -166,7 +166,12 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
     </button>
     <button class="btn-dl ghost" type="button" id="aleatorio" title="Aleatório">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path d="M16 3h5v5M8 3H3v5M21 3l-7.5 7.5M3 3l7.5 7.5M16 21h5v-5M8 21H3v-5M21 21l-7.5-7.5M3 21l7.5-7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="3.5" y="3.5" width="17" height="17" rx="3.2" stroke="currentColor" stroke-width="2"/>
+        <circle cx="8.2" cy="8.2" r="1.35" fill="currentColor"/>
+        <circle cx="15.8" cy="8.2" r="1.35" fill="currentColor"/>
+        <circle cx="12" cy="12" r="1.35" fill="currentColor"/>
+        <circle cx="8.2" cy="15.8" r="1.35" fill="currentColor"/>
+        <circle cx="15.8" cy="15.8" r="1.35" fill="currentColor"/>
       </svg>
       Aleatório
     </button>
@@ -190,12 +195,65 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 
 <script type="module">
 import { EXAMPLES, renderPhone } from './phone.mjs';
-import { randomConversation, randomFoto, randomMsgImg, randomNome } from './shuffle.mjs';
+import { randomConversation, randomMsgImg, randomNome } from './shuffle.mjs';
 
 const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null, avatars: { homem: [], mulher: [] } };
 const $ = (s) => document.querySelector(s);
 const status = (m, ok) => { const el=$('#status'); el.textContent=m||''; el.className='flash '+(ok===true?'ok':ok===false?'err':''); };
 const generoModo = () => $('#generoModo')?.value || 'ambos';
+
+const FOTO_KEY = 'wp-foto-history-v1';
+const FOTO_MAX = 20;
+const FOTO_DATA_MAX = 6;
+
+function loadFotoHistory(){
+  try{ return JSON.parse(localStorage.getItem(FOTO_KEY)||'[]').filter(Boolean); }
+  catch{ return []; }
+}
+function rememberFoto(url){
+  if(!url || String(url).startsWith('data:image/svg')) return;
+  const ordered = [url, ...loadFotoHistory().filter((u) => u !== url)];
+  const kept = [];
+  let paths = 0, datas = 0;
+  for(const u of ordered){
+    const isData = String(u).startsWith('data:');
+    if(isData){ if(datas >= FOTO_DATA_MAX) continue; datas++; }
+    else { if(paths >= FOTO_MAX) continue; paths++; }
+    kept.push(u);
+  }
+  try{ localStorage.setItem(FOTO_KEY, JSON.stringify(kept)); }catch{ /* quota */ }
+}
+function presetFotos(){
+  const modo = generoModo();
+  const m = state.avatars.mulher || [];
+  const h = state.avatars.homem || [];
+  if(modo === 'mulher') return m.slice(0, 10);
+  if(modo === 'homem') return h.slice(0, 10);
+  return [...m.slice(0, 6), ...h.slice(0, 6)];
+}
+function fotoPool(){
+  const seen = new Set();
+  const out = [];
+  for(const u of [...loadFotoHistory(), ...presetFotos()]){
+    if(!u || seen.has(u)) continue;
+    seen.add(u);
+    out.push(u);
+  }
+  return out;
+}
+function nextFoto(current){
+  const pool = fotoPool();
+  if(!pool.length) return current || '';
+  const i = pool.indexOf(current);
+  return pool[i < 0 ? 0 : (i + 1) % pool.length];
+}
+function setFoto(url, note){
+  if(!url) return;
+  state.data.foto = url;
+  rememberFoto(url);
+  syncForm(); paint();
+  if(note) status(note, true);
+}
 
 $('#thumbEscuro').src = 'examples/escuro.png';
 $('#thumbClaro').src = 'examples/claro.png';
@@ -402,9 +460,10 @@ document.addEventListener('click',(e)=>{
     e.preventDefault(); e.stopPropagation();
     const kind=shuff.dataset.shuffle;
     if(kind==='foto'){
-      if(!(state.avatars.mulher?.length||state.avatars.homem?.length)){ status('Avatares ainda carregando…', false); return; }
-      state.data.foto=randomFoto({ avatars:state.avatars, foto:state.data.foto, contato:state.data.contato, modo:generoModo() });
-      syncForm(); paint(); status('Foto trocada', true);
+      if(!(state.avatars.mulher?.length||state.avatars.homem?.length) && !loadFotoHistory().length){
+        status('Avatares ainda carregando…', false); return;
+      }
+      setFoto(nextFoto(state.data.foto||''), 'Próxima foto');
       return;
     }
     if(kind==='nome'){
@@ -430,12 +489,13 @@ $('#file').addEventListener('change', async ()=>{
   const file=$('#file').files?.[0]; if(!file||!state.uploadPath) return;
   const dataUrl=await new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(file); });
   setPath(state.data, state.uploadPath, dataUrl);
-  if(state.uploadPath==='foto') $('#foto').value=dataUrl;
+  if(state.uploadPath==='foto'){ $('#foto').value=dataUrl; rememberFoto(dataUrl); }
   state.uploadPath=null; $('#file').value=''; syncForm(); paint(); status('Imagem ok', true);
 });
 
 $('#bateria').addEventListener('input', ()=>{ $('#batPct').textContent=`${$('#bateria').value}%`; pull(); paint(); });
-['tema','contato','horaStatus','foto'].forEach(id=>$(`#${id}`).addEventListener('change',()=>{ pull(); paint(); }));
+['tema','contato','horaStatus'].forEach(id=>$(`#${id}`).addEventListener('change',()=>{ pull(); paint(); }));
+$('#foto').addEventListener('change',()=>{ pull(); rememberFoto(state.data.foto); paint(); });
 $('#exEscuro').onclick=()=>{ state.data=structuredClone(EXAMPLES.escuro); syncForm(); paint(); };
 $('#exClaro').onclick=()=>{ state.data=structuredClone(EXAMPLES.claro); syncForm(); paint(); };
 $('#addMsg').onclick=addMsg;
@@ -451,6 +511,7 @@ $('#aleatorio').onclick=()=>{
     return;
   }
   state.data = randomConversation({ tema, modo, avatars: state.avatars });
+  rememberFoto(state.data.foto);
   syncForm(); paint();
   status('Aleatório ok', true);
 };
@@ -460,7 +521,7 @@ $('#gerar').onclick=async ()=>{
     pull(); paint(); status('Gerando…');
     const node=document.querySelector('#phone'); if(!node) throw new Error('preview vazio');
     node.querySelectorAll('[data-edit],[data-upload]').forEach(el=>{ el.removeAttribute('contenteditable'); el.style.outline='none'; });
-    node.querySelectorAll('.shuff,.msg-tools').forEach(el=>el.remove());
+    node.querySelectorAll('.shuff,.msg-top,.msg-bottom').forEach(el=>el.remove());
     node.querySelectorAll('.media-wrap').forEach(wrap=>{
       const img = wrap.querySelector('img.media');
       if(img) wrap.replaceWith(img);
@@ -468,7 +529,9 @@ $('#gerar').onclick=async ()=>{
     node.querySelectorAll('.row.editable,.date-pill.editable').forEach(el=>{
       el.classList.remove('editable');
       el.style.paddingTop = '0';
+      el.style.paddingBottom = '0';
       el.style.marginTop = '';
+      el.style.marginBottom = '';
     });
     const dataUrl=await modernScreenshot.domToPng(node,{ width:390, height:844, scale:3 });
     const a=document.createElement('a');
@@ -479,6 +542,7 @@ $('#gerar').onclick=async ()=>{
 };
 
 window.addEventListener('resize', fitPhone);
+if(state.data.foto) rememberFoto(state.data.foto);
 syncForm(); paint();
 </script>
 </body>

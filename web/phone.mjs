@@ -104,23 +104,30 @@ function theme(dark) {
 }
 
 const ICO = {
-  shuff: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M16 3h5v5M8 3H3v5M21 3l-7.5 7.5M3 3l7.5 7.5M16 21h5v-5M8 21H3v-5M21 21l-7.5-7.5M3 21l7.5-7.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  side: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 7H3.5M3.5 7 6 4.5M3.5 7 6 9.5M16 17h4.5m0 0L18 14.5m2.5 2.5L18 19.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  /** ciclo / próxima (foto, nome, imagem) */
+  cycle: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.2-5.5" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/><path d="M20 4v5h-5" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  /** dado — aleatório */
+  dice: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="3.2" stroke="currentColor" stroke-width="2"/><circle cx="8.2" cy="8.2" r="1.35" fill="currentColor"/><circle cx="15.8" cy="8.2" r="1.35" fill="currentColor"/><circle cx="12" cy="12" r="1.35" fill="currentColor"/><circle cx="8.2" cy="15.8" r="1.35" fill="currentColor"/><circle cx="15.8" cy="15.8" r="1.35" fill="currentColor"/></svg>`,
+  /** troca de lado — setas horizontais limpas */
+  side: `<svg width="13" height="11" viewBox="0 0 24 20" fill="none" aria-hidden="true"><path d="M8 4 3 10l5 6M16 4l5 6-5 6" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   plus: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`,
   x: `<svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>`,
   date: `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2.5" stroke="currentColor" stroke-width="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
 };
 
-function msgTools(i, { date = false } = {}) {
-  const sideBtn = date
+function msgChrome(i, { date = false } = {}) {
+  const side = date
     ? ""
-    : `<button type="button" class="tool" data-msg-act="side" data-i="${i}" title="Trocar lado">${ICO.side}</button>`;
-  return `<div class="msg-tools" contenteditable="false">
-    ${sideBtn}
-    <button type="button" class="tool" data-msg-act="add" data-i="${i}" title="Adicionar mensagem abaixo">${ICO.plus}</button>
-    <button type="button" class="tool" data-msg-act="date" data-i="${i}" title="Inserir data abaixo">${ICO.date}</button>
-    <button type="button" class="tool danger" data-msg-act="del" data-i="${i}" title="Remover">${ICO.x}</button>
-  </div>`;
+    : `<button type="button" class="tool side" data-msg-act="side" data-i="${i}" title="Trocar lado">${ICO.side}</button>`;
+  return `
+    <div class="msg-top" contenteditable="false">
+      ${side}
+      <button type="button" class="tool danger" data-msg-act="del" data-i="${i}" title="Remover">${ICO.x}</button>
+    </div>
+    <div class="msg-bottom" contenteditable="false">
+      <button type="button" class="tool" data-msg-act="add" data-i="${i}" title="Adicionar mensagem abaixo">${ICO.plus}</button>
+      <button type="button" class="tool" data-msg-act="date" data-i="${i}" title="Inserir data abaixo">${ICO.date}</button>
+    </div>`;
 }
 
 function msgsHtml(list, edit = false) {
@@ -128,7 +135,7 @@ function msgsHtml(list, edit = false) {
   for (let i = 0; i < list.length; i++) {
     const m = list[i];
     if (m.tipo === "data") {
-      html += `<div class="date-pill${edit ? " editable" : ""}">${edit ? msgTools(i, { date: true }) : ""}<span data-edit="mensagens.${i}.texto" contenteditable="true">${esc(m.texto)}</span></div>`;
+      html += `<div class="date-pill${edit ? " editable" : ""}">${edit ? msgChrome(i, { date: true }) : ""}<span data-edit="mensagens.${i}.texto" contenteditable="true">${esc(m.texto)}</span></div>`;
       continue;
     }
     const next = list[i + 1], prev = list[i - 1];
@@ -140,16 +147,18 @@ function msgsHtml(list, edit = false) {
     const text = m.texto ? `<span class="text" data-edit="mensagens.${i}.texto" contenteditable="true">${esc(m.texto)}</span>` : "";
     const img = m.imagem
       ? edit
-        ? `<div class="media-wrap"><button type="button" class="shuff" data-shuffle="msg-img" data-i="${i}" title="Trocar imagem">${ICO.shuff}</button><img class="media" src="${esc(m.imagem)}" alt="" data-upload="mensagens.${i}.imagem"/></div>`
+        ? `<div class="media-wrap"><button type="button" class="shuff" data-shuffle="msg-img" data-i="${i}" title="Próxima imagem">${ICO.cycle}</button><img class="media" src="${esc(m.imagem)}" alt="" data-upload="mensagens.${i}.imagem"/></div>`
         : `<img class="media" src="${esc(m.imagem)}" alt="" data-upload="mensagens.${i}.imagem"/>`
       : "";
     html += `<div class="row ${side}${first ? " first" : ""}${last ? " tail" : ""}${edit ? " editable" : ""}">
-      ${edit ? msgTools(i) : ""}
+      ${edit ? msgChrome(i) : ""}
       <div class="bubble ${side}${m.imagem ? " has-img" : ""}">${img}${m.imagem ? `<div class="caption">${text}${meta}</div>` : `${text}${meta}`}</div>
     </div>`;
   }
   return html;
 }
+
+export { ICO };
 
 export function renderPhone(data) {
   const dark = data.tema !== "claro";
@@ -160,10 +169,10 @@ export function renderPhone(data) {
   const showWifi = data.wifi !== false;
   const edit = data.editavel === true;
   const avatarHtml = edit
-    ? `<div class="avatar-wrap"><button type="button" class="shuff" data-shuffle="foto" title="Trocar foto">${ICO.shuff}</button><img class="avatar" src="${esc(foto)}" alt="" data-upload="foto"/></div>`
+    ? `<div class="avatar-wrap"><button type="button" class="shuff" data-shuffle="foto" title="Próxima foto">${ICO.cycle}</button><img class="avatar" src="${esc(foto)}" alt="" data-upload="foto"/></div>`
     : `<img class="avatar" src="${esc(foto)}" alt="" style="margin-left:10px"/>`;
   const nameHtml = edit
-    ? `<div class="name-wrap"><button type="button" class="shuff" data-shuffle="nome" title="Trocar nome">${ICO.shuff}</button><div class="name" data-edit="contato" contenteditable="true">${esc(data.contato || "Contato")}</div></div>`
+    ? `<div class="name-wrap"><button type="button" class="shuff" data-shuffle="nome" title="Próximo nome">${ICO.cycle}</button><div class="name" data-edit="contato" contenteditable="true">${esc(data.contato || "Contato")}</div></div>`
     : `<div class="name">${esc(data.contato || "Contato")}</div>`;
 
   return `<div class="phone" id="phone" style="width:${W}px;height:${H}px;position:relative;overflow:hidden;background:${t.bg};font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
@@ -191,6 +200,7 @@ export function renderPhone(data) {
       background:rgba(15,18,20,.92);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.35);
       padding:0;line-height:0;flex-shrink:0;
     }
+    #phone .tool.danger{background:#e11d48;color:#fff}
     #phone .shuff{
       position:absolute;z-index:45;top:0;left:50%;transform:translateX(-50%);
       opacity:0;pointer-events:none;transition:opacity .12s ease;
@@ -199,28 +209,32 @@ export function renderPhone(data) {
     #phone .avatar-wrap:focus-within .shuff,#phone .name-wrap:focus-within .shuff,#phone .media-wrap:focus-within .shuff,
     #phone .shuff:focus-visible{opacity:1;pointer-events:auto}
     #phone .shuff:hover,#phone .tool:hover{background:#25d366;color:#04210f}
-    #phone .tool.danger:hover{background:#ff6b6b;color:#2a0606}
+    #phone .tool.danger:hover{background:#be123c;color:#fff}
     #phone .shuff svg,#phone .tool svg{display:block;pointer-events:none}
     #phone .actions{height:44px;border-radius:22px;padding:0 16px;display:flex;align-items:center;gap:26px;box-shadow:inset 0 1px 0 ${t.glassHi}}
     #phone .back.glass,#phone .actions.glass{box-shadow:inset 0 1px 0 ${t.glassHi}}
     #phone .chat{position:absolute;top:112px;bottom:80px;left:0;right:0;overflow:hidden;z-index:20;padding:0 14px 10px 16px;display:flex;flex-direction:column;justify-content:flex-end}
     #phone .date-pill{align-self:center;margin:10px 0;position:relative}
-    #phone .date-pill.editable{padding-top:28px;margin-top:-8px}
+    #phone .date-pill.editable{padding-top:26px;padding-bottom:26px;margin-top:2px;margin-bottom:2px}
     #phone .date-pill span{display:inline-block;background:${t.dateBg};color:${t.dateFg};font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:9px}
     #phone .row{display:flex;margin-top:2px;position:relative;flex-wrap:wrap} #phone .row.first{margin-top:8px}
-    #phone .row.editable{padding-top:28px;margin-top:-4px}
-    #phone .row.editable.first{margin-top:4px}
+    #phone .row.editable{padding-top:26px;padding-bottom:26px;margin-top:2px}
+    #phone .row.editable.first{margin-top:6px}
     #phone .row.out{justify-content:flex-end} #phone .row.in{justify-content:flex-start}
-    #phone .msg-tools{
-      position:absolute;top:0;z-index:40;display:flex;gap:4px;align-items:center;
+    #phone .msg-top,#phone .msg-bottom{
+      position:absolute;z-index:40;display:flex;gap:4px;align-items:center;
       opacity:0;pointer-events:none;transition:opacity .12s ease;
-      padding-bottom:6px;
     }
-    #phone .row.out .msg-tools{right:0} #phone .row.in .msg-tools{left:0}
-    #phone .date-pill .msg-tools{left:50%;transform:translateX(-50%)}
-    #phone .row.editable:hover .msg-tools,#phone .date-pill.editable:hover .msg-tools,
-    #phone .row.editable:focus-within .msg-tools,#phone .date-pill.editable:focus-within .msg-tools,
-    #phone .msg-tools:focus-within{opacity:1;pointer-events:auto}
+    #phone .msg-top{top:0;width:100%;left:0;right:0;justify-content:space-between;padding:0 0 6px}
+    #phone .msg-top .tool.side{margin-right:auto}
+    #phone .msg-top .tool.danger{margin-left:auto}
+    #phone .date-pill .msg-top{justify-content:flex-end}
+    #phone .msg-bottom{bottom:0;left:50%;transform:translateX(-50%);padding-top:6px}
+    #phone .row.editable:hover .msg-top,#phone .row.editable:hover .msg-bottom,
+    #phone .date-pill.editable:hover .msg-top,#phone .date-pill.editable:hover .msg-bottom,
+    #phone .row.editable:focus-within .msg-top,#phone .row.editable:focus-within .msg-bottom,
+    #phone .date-pill.editable:focus-within .msg-top,#phone .date-pill.editable:focus-within .msg-bottom,
+    #phone .msg-top:focus-within,#phone .msg-bottom:focus-within{opacity:1;pointer-events:auto}
     #phone .bubble{position:relative;max-width:80%;padding:7px 11px 7px 12px;border-radius:18px;font-size:17px;line-height:1.3;letter-spacing:-.2px;color:${t.bubbleFg}}
     #phone .bubble.out{background:${t.bubbleOut}} #phone .bubble.in{background:${t.bubbleIn}}
     #phone .row.tail.in .bubble{border-bottom-left-radius:5px} #phone .row.tail.out .bubble{border-bottom-right-radius:5px}
