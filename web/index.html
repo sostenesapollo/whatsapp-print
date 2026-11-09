@@ -215,14 +215,18 @@ function loadList(key){
 }
 function rememberUrl(key, url, maxPath, maxData){
   if(!url || String(url).startsWith('data:image/svg')) return;
-  const ordered = [url, ...loadList(key).filter((u) => u !== url)];
+  const list = loadList(key);
+  // não reordena: o histórico também é a ordem de ciclo das fotos
+  if(list.includes(url)) return;
   const kept = [];
   let paths = 0, datas = 0;
-  for(const u of ordered){
+  for(let i = list.length; i >= 0; i--){
+    const u = i === list.length ? url : list[i];
+    if(!u) continue;
     const isData = String(u).startsWith('data:');
     if(isData){ if(datas >= maxData) continue; datas++; }
     else { if(paths >= maxPath) continue; paths++; }
-    kept.push(u);
+    kept.unshift(u);
   }
   try{ localStorage.setItem(key, JSON.stringify(kept)); }catch{ /* quota */ }
 }
@@ -234,9 +238,9 @@ function presetFotos(){
   const modo = generoModo();
   const m = state.avatars.mulher || [];
   const h = state.avatars.homem || [];
-  if(modo === 'mulher') return m.slice(0, 10);
-  if(modo === 'homem') return h.slice(0, 10);
-  return [...m.slice(0, 6), ...h.slice(0, 6)];
+  if(modo === 'mulher') return m;
+  if(modo === 'homem') return h;
+  return [...m, ...h];
 }
 function uniqPool(...lists){
   const seen = new Set();
@@ -256,10 +260,10 @@ function nextInPool(pool, current){
   return pool[i < 0 ? 0 : (i + 1) % pool.length];
 }
 function nextFoto(current){
-  return nextInPool(uniqPool(loadFotoHistory(), presetFotos()), current);
+  return nextInPool(uniqPool(presetFotos(), loadFotoHistory()), current);
 }
 function nextMsgImg(current){
-  return nextInPool(uniqPool(loadMsgImgHistory(), MSG_IMGS), current);
+  return nextInPool(uniqPool(MSG_IMGS, loadMsgImgHistory()), current);
 }
 function setFoto(url, note){
   if(!url) return;
