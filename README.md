@@ -21,6 +21,12 @@ Abra direto em https://whatsapp-print.pages.dev/#materia
 
 Arquivos: `web/materia.mjs` (markup + CSS do modelo), `web/fonts/` (Playfair Display + Inter self-hosted, necessário pro export inlinar as fontes).
 
+## Imagens por arrastar-e-soltar
+
+Qualquer alvo de imagem aceita arquivo arrastado do Finder/Explorer: avatar do contato, imagem de uma mensagem, foto da matéria e os campos "Foto (URL)". Enquanto arrasta, o alvo fica com contorno tracejado verde. Arquivo vira data URL (não sobe pra servidor).
+
+Alvo novo: basta o elemento ter `data-upload="caminho"` (imagem) ou `data-drop="caminho"` (input de URL) dentro de `#phone` ou `#artigo`; o roteamento fica em `IMG_EDITORS` no `index.html`.
+
 | Escuro | Claro |
 |---|---|
 | ![exemplo escuro](assets/exemplo-escuro.png) | ![exemplo claro](assets/exemplo-claro.png) |

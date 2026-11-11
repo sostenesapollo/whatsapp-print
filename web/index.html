@@ -131,6 +131,14 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 #file{display:none}
 #fileArtigo{display:none}
 
+/* alvo de arrastar-e-soltar */
+[data-upload].drop-hot{outline:2px dashed #25d366!important;outline-offset:3px}
+#phone .avatar.drop-hot,#phone .media.drop-hot{outline-offset:2px}
+input.drop-hot,textarea.drop-hot{outline:2px dashed #25d366!important;outline-offset:1px;border-color:#25d366!important}
+#artigo [data-upload].drop-hot{outline-offset:-3px!important}
+body.dragging-files [data-upload]{outline:1.5px dashed rgba(37,211,102,.5);outline-offset:2px}
+body.dragging-files #artigo [data-upload]{outline-offset:-3px}
+
 .center.page{justify-content:flex-start;overflow:auto}
 .artigo-wrap{
   position:relative;flex:0 0 auto;overflow:hidden;background:#fff;border-radius:10px;
@@ -190,7 +198,7 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
       <span class="pct" id="batPct">80%</span>
     </div>
   </div>
-  <div class="field"><label>Foto (URL)</label><input id="foto" placeholder="https://… ou clique no avatar"></div>
+  <div class="field"><label>Foto (URL)</label><input id="foto" data-drop="foto" placeholder="https://… , arraste uma imagem ou clique no avatar"></div>
 
   <div class="actions">
     <button class="btn" type="button" id="addMsg">+ mensagem</button>
@@ -254,7 +262,7 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
   <div class="field"><label>Atualizado</label><input id="pgAtualizado" placeholder="Atualizado há 2 horas"></div>
 
   <h2>Imagem</h2>
-  <div class="field"><label>Foto (URL)</label><input id="pgImagem" placeholder="https://… ou clique na imagem"></div>
+  <div class="field"><label>Foto (URL)</label><input id="pgImagem" data-drop="imagem" placeholder="https://… , arraste uma imagem ou clique nela"></div>
   <div class="actions"><button class="btn" type="button" id="pgUpload">Escolher imagem…</button></div>
   <div class="field" style="margin-top:8px"><label>Legenda</label><textarea id="pgLegenda" rows="3"></textarea></div>
   <div class="field"><label>Crédito</label><input id="pgCredito" placeholder="(Enxovaly/Divulgação)"></div>
@@ -644,13 +652,128 @@ document.addEventListener('click',(e)=>{
   state.uploadPath=el.dataset.upload; $('#file').click();
 });
 
+function readImageFile(file){
+  return new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(file); });
+}
+
+/** Cada editor registra como aplicar uma imagem. Novo editor: só empilhar aqui. */
+const IMG_EDITORS = [
+  {
+    sel: '#artigo',
+    apply(path, url){
+      setPath(pg.data, path, url);
+      rememberUrl(PG_FOTO_KEY, url, FOTO_MAX, FOTO_DATA_MAX);
+      pgSync(); pgPaint(); pgStatus('Imagem ok', true);
+    },
+  },
+  {
+    sel: '#phone',
+    apply(path, url){
+      setPath(state.data, path, url);
+      if(path === 'foto'){ $('#foto').value = url; rememberFoto(url); }
+      else rememberMsgImg(url);
+      syncForm(); paint(); status('Imagem ok', true);
+    },
+  },
+];
+
+/** Aplica uma imagem (data URL ou link) no caminho indicado, dentro do editor dono do elemento. */
+function applyUpload(path, dataUrl, el){
+  const ed = IMG_EDITORS.find(e => el?.closest?.(e.sel));
+  if(!ed) return false;
+  ed.apply(path, dataUrl);
+  return true;
+}
+
 $('#file').addEventListener('change', async ()=>{
   const file=$('#file').files?.[0]; if(!file||!state.uploadPath) return;
-  const dataUrl=await new Promise((res,rej)=>{ const fr=new FileReader(); fr.onload=()=>res(fr.result); fr.onerror=rej; fr.readAsDataURL(file); });
-  setPath(state.data, state.uploadPath, dataUrl);
-  if(state.uploadPath==='foto'){ $('#foto').value=dataUrl; rememberFoto(dataUrl); }
-  if(/^mensagens\.\d+\.imagem$/.test(state.uploadPath)) rememberMsgImg(dataUrl);
-  state.uploadPath=null; $('#file').value=''; syncForm(); paint(); status('Imagem ok', true);
+  const dataUrl=await readImageFile(file);
+  const path=state.uploadPath;
+  state.uploadPath=null; $('#file').value='';
+  applyUpload(path, dataUrl, document.querySelector('#phone'));
+});
+
+/* ---------------- arrastar e soltar imagem (de fora do navegador) ---------------- */
+
+const isFileDrag = (e) => [...(e.dataTransfer?.types || [])].includes('Files');
+const dropEl = (e) => e.target.closest?.('[data-upload],[data-drop]') || null;
+const clearHot = () => document.querySelectorAll('.drop-hot').forEach(x => x.classList.remove('drop-hot'));
+
+// evita o navegador abrir o arquivo se soltar fora de um alvo
+document.addEventListener('dragover', (e) => { if(isFileDrag(e)) e.preventDefault(); });
+document.addEventListener('drop', (e) => { if(isFileDrag(e)) e.preventDefault(); });
+
+let dragDepth = 0;
+const draggingOn = () => document.body.classList.add('dragging-files');
+const draggingOff = () => { dragDepth = 0; document.body.classList.remove('dragging-files'); };
+
+document.addEventListener('dragenter', (e) => {
+  if(!isFileDrag(e)) return;
+  dragDepth++; draggingOn();
+});
+document.addEventListener('dragleave', (e) => {
+  if(!isFileDrag(e)) return;
+  dragDepth = Math.max(0, dragDepth - 1);
+  if(!dragDepth) document.body.classList.remove('dragging-files');
+});
+document.addEventListener('dragend', draggingOff);
+window.addEventListener('blur', draggingOff);
+
+document.addEventListener('dragenter', (e) => {
+  const el = dropEl(e);
+  if(!el || !isFileDrag(e)) return;
+  e.preventDefault();
+  clearHot();
+  el.classList.add('drop-hot');
+});
+
+document.addEventListener('dragover', (e) => {
+  const el = dropEl(e);
+  if(!el) return;
+  if(!isFileDrag(e)) return;
+  e.preventDefault();
+  e.stopPropagation();
+  e.dataTransfer.dropEffect = 'copy';
+  if(!el.classList.contains('drop-hot')){ clearHot(); el.classList.add('drop-hot'); }
+});
+
+document.addEventListener('dragleave', (e) => {
+  const el = dropEl(e);
+  if(!el) return;
+  if(e.relatedTarget && el.contains(e.relatedTarget)) return;
+  el.classList.remove('drop-hot');
+});
+
+document.addEventListener('drop', async (e) => {
+  const el = dropEl(e);
+  if(!el) return;
+  const files = [...(e.dataTransfer?.files || [])];
+  if(!files.length) return;
+  e.preventDefault();
+  e.stopPropagation();
+  clearHot();
+  draggingOff();
+  const file = files.find(f => f.type.startsWith('image/'));
+  if(!file){
+    status('Arquivo não é imagem', false);
+    pgStatus('Arquivo não é imagem', false);
+    return;
+  }
+  try{
+    const dataUrl = await readImageFile(file);
+    const path = el.dataset.upload || el.dataset.drop;
+    // input de URL: escreve o data URL e deixa o listener normal cuidar do resto
+    if(el.matches('input,textarea')){
+      el.value = dataUrl;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+      return;
+    }
+    applyUpload(path, dataUrl, el);
+  }catch(err){
+    status(String(err.message || err), false);
+    pgStatus(String(err.message || err), false);
+  }
 });
 
 $('#bateria').addEventListener('input', ()=>{ $('#batPct').textContent=`${$('#bateria').value}%`; pull(); paint(); });
@@ -808,13 +931,9 @@ for(const [id, key] of Object.entries(PG_FIELDS)){
 $('#fileArtigo').addEventListener('change', async () => {
   const file = $('#fileArtigo').files?.[0];
   if(!file || !pg.uploadPath) return;
-  const dataUrl = await new Promise((res, rej) => {
-    const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(file);
-  });
-  pg.data.imagem = dataUrl;
-  rememberUrl(PG_FOTO_KEY, dataUrl, FOTO_MAX, FOTO_DATA_MAX);
+  const dataUrl = await readImageFile(file);
   pg.uploadPath = null; $('#fileArtigo').value = '';
-  pgSync(); pgPaint(); pgStatus('Imagem ok', true);
+  applyUpload('imagem', dataUrl, document.querySelector('#artigo'));
 });
 
 $('#pgBaixar').onclick = async () => {
