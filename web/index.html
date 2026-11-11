@@ -4,6 +4,14 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>WhatsApp Print</title>
+<style>
+@font-face{font-family:"Inter";font-style:normal;font-weight:400;font-display:block;src:url("fonts/inter-400.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:500;font-display:block;src:url("fonts/inter-400.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:600;font-display:block;src:url("fonts/inter-400.woff2") format("woff2")}
+@font-face{font-family:"Inter";font-style:normal;font-weight:700;font-display:block;src:url("fonts/inter-400.woff2") format("woff2")}
+@font-face{font-family:"Playfair Display";font-style:normal;font-weight:700;font-display:block;src:url("fonts/playfair-display-700.woff2") format("woff2")}
+@font-face{font-family:"Playfair Display";font-style:normal;font-weight:800;font-display:block;src:url("fonts/playfair-display-700.woff2") format("woff2")}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/modern-screenshot@4.6.0/dist/index.js"></script>
 <style>
 :root{
@@ -13,7 +21,20 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--text);
   font:13px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif}
-body{display:grid;grid-template-columns:240px minmax(0,1fr) 300px;height:100vh;overflow:hidden}
+body{display:flex;flex-direction:column;height:100vh;overflow:hidden}
+.tabbar{
+  flex:0 0 auto;display:flex;align-items:center;gap:6px;padding:7px 10px;
+  border-bottom:1px solid var(--line);background:#0a0d0f;z-index:50;
+}
+.tabbar .brand{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#5f6b72;margin:0 8px 0 2px}
+.tabbtn{
+  appearance:none;border:1px solid var(--line);background:#121618;color:#9aa5ac;
+  border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;line-height:1.2;
+}
+.tabbtn:hover{border-color:#3d4a52;color:#dbe6ec}
+.tabbtn.on{background:#17241c;border-color:#2f5a40;color:#c8ffdd}
+.shell{flex:1;display:grid;grid-template-columns:240px minmax(0,1fr) 300px;min-height:0;overflow:hidden}
+.shell[hidden]{display:none}
 button,input,select,textarea{font:inherit;color:var(--text)}
 button{cursor:pointer}
 
@@ -108,9 +129,25 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 .msg .field textarea{min-height:44px}
 .msg .field label{font-size:9px;margin-bottom:3px}
 #file{display:none}
+#fileArtigo{display:none}
+
+.center.page{justify-content:flex-start;overflow:auto}
+.artigo-wrap{
+  position:relative;flex:0 0 auto;overflow:hidden;background:#fff;border-radius:10px;
+  box-shadow:0 18px 50px rgba(0,0,0,.55);
+}
+#artigo-stage{position:absolute;inset:0 auto auto 0;transform-origin:0 0;will-change:transform}
+.par{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;margin:0 0 7px;
+  display:grid;gap:6px;
+}
+.par-head{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.par .field{margin:0}
+.par .field textarea{min-height:66px;padding:6px 8px;font-size:11px;border-radius:7px}
+.par .idx{color:var(--muted);font-size:10px}
 
 @media(max-width:980px){
-  body{grid-template-columns:1fr;grid-template-rows:auto auto 1fr;height:auto;overflow:auto}
+  .shell{grid-template-columns:1fr;grid-template-rows:auto auto 1fr;height:auto;overflow:auto}
   .left,.right{border:0;max-height:none}
   .stage-wrap{width:min(240px,70vw);max-height:none}
   #stage{position:relative}
@@ -118,6 +155,13 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
 </style>
 </head>
 <body>
+<nav class="tabbar">
+  <span class="brand">Print</span>
+  <button class="tabbtn on" type="button" data-tab="chat">WhatsApp</button>
+  <button class="tabbtn" type="button" data-tab="materia">Página / matéria</button>
+</nav>
+
+<div class="shell" id="view-chat">
 <aside class="panel left">
   <h1>WhatsApp Print</h1>
   <p class="sub">100% browser. Sem servidor.</p>
@@ -190,12 +234,72 @@ h2{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute
   </h2>
   <div id="msgs"></div>
 </aside>
+</div>
+
+<div class="shell" id="view-materia" hidden>
+<aside class="panel left">
+  <h1>Matéria</h1>
+  <p class="sub">Modelo de página de portal. Texto e foto editáveis.</p>
+
+  <h2>Cabeçalho</h2>
+  <div class="field"><label>Marca</label><input id="pgMarca" placeholder="Startups"></div>
+  <div class="row2">
+    <div class="field"><label>Editoria 1</label><input id="pgSecao1" placeholder="Início"></div>
+    <div class="field"><label>Editoria 2</label><input id="pgSecao2" placeholder="Negócios"></div>
+  </div>
+
+  <h2>Texto</h2>
+  <div class="field"><label>Título</label><textarea id="pgTitulo" rows="5"></textarea></div>
+  <div class="field"><label>Linha fina</label><textarea id="pgLinha" rows="4"></textarea></div>
+  <div class="field"><label>Atualizado</label><input id="pgAtualizado" placeholder="Atualizado há 2 horas"></div>
+
+  <h2>Imagem</h2>
+  <div class="field"><label>Foto (URL)</label><input id="pgImagem" placeholder="https://… ou clique na imagem"></div>
+  <div class="actions"><button class="btn" type="button" id="pgUpload">Escolher imagem…</button></div>
+  <div class="field" style="margin-top:8px"><label>Legenda</label><textarea id="pgLegenda" rows="3"></textarea></div>
+  <div class="field"><label>Crédito</label><input id="pgCredito" placeholder="(Enxovaly/Divulgação)"></div>
+
+  <div class="actions">
+    <button class="btn" type="button" id="pgReset">Restaurar texto do modelo</button>
+  </div>
+  <p class="flash" id="pgStatus" style="margin-top:10px;text-align:left"></p>
+</aside>
+
+<main class="center page">
+  <div class="download-bar">
+    <button class="btn-dl" type="button" id="pgBaixar" title="Baixar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M4 19h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      Baixar
+    </button>
+    <button class="btn-dl ghost" type="button" id="pgLimparFoto" title="Remover imagem">Sem foto</button>
+  </div>
+  <div class="artigo-wrap"><div id="artigo-stage"><div id="artigo-host"></div></div></div>
+  <p class="hint">Clique no texto ou na foto da página pra editar</p>
+</main>
+
+<aside class="panel right">
+  <h2>
+    <span>Corpo</span>
+    <span class="tools">
+      <button class="btn sm icon" type="button" id="pgAddPar" title="Adicionar parágrafo">+</button>
+    </span>
+  </h2>
+  <div id="pgParagrafos"></div>
+  <p class="sub" id="pgVazio">Sem parágrafos. A página fica igual ao modelo: cabeçalho, título, linha fina, foto e legenda.</p>
+</aside>
+</div>
+
+<input id="fileArtigo" type="file" accept="image/*">
 
 <input id="file" type="file" accept="image/*">
 
 <script type="module">
 import { EXAMPLES, renderPhone } from './phone.mjs';
 import { MSG_IMGS, randomConversation, randomNome } from './shuffle.mjs';
+import { MODELO_MATERIA, renderArtigo, ARTIGO_W } from './materia.mjs';
 
 const state = { data: structuredClone(EXAMPLES.escuro), uploadPath: null, dragFrom: null, avatars: { homem: [], mulher: [] } };
 const $ = (s) => document.querySelector(s);
@@ -455,6 +559,11 @@ function addData(){
 
 document.addEventListener('focusout',(e)=>{
   const el=e.target.closest?.('[data-edit]'); if(!el) return;
+  if(el.closest('#artigo')){
+    setPath(pg.data, el.dataset.edit, el.innerText.replace(/\u00a0/g,' ').trim());
+    pgSync(); return;
+  }
+  if(!el.closest('#phone')) return;
   setPath(state.data, el.dataset.edit, el.innerText); syncForm();
 });
 document.addEventListener('click',(e)=>{
@@ -498,6 +607,12 @@ document.addEventListener('click',(e)=>{
   if(shuff){
     e.preventDefault(); e.stopPropagation();
     const kind=shuff.dataset.shuffle;
+    if(kind==='pg-foto'){
+      const next = nextInPool(uniqPool([MODELO_MATERIA.imagem], loadList(PG_FOTO_KEY)), pg.data.imagem || '');
+      if(next) pg.data.imagem = next;
+      pgSync(); pgPaint(); pgStatus('Imagem trocada', true);
+      return;
+    }
     if(kind==='foto'){
       if(!(state.avatars.mulher?.length||state.avatars.homem?.length) && !loadFotoHistory().length){
         status('Avatares ainda carregando…', false); return;
@@ -524,7 +639,9 @@ document.addEventListener('click',(e)=>{
   }
   if(e.target.closest?.('[data-msg-act],[data-shuffle]')) return;
   const el=e.target.closest?.('[data-upload]'); if(!el) return;
-  e.preventDefault(); state.uploadPath=el.dataset.upload; $('#file').click();
+  e.preventDefault();
+  if(el.closest('#artigo')){ pg.uploadPath = 'imagem'; $('#fileArtigo').click(); return; }
+  state.uploadPath=el.dataset.upload; $('#file').click();
 });
 
 $('#file').addEventListener('change', async ()=>{
@@ -582,6 +699,167 @@ window.addEventListener('resize', fitPhone);
 if(state.data.foto) rememberFoto(state.data.foto);
 for(const m of state.data.mensagens||[]){ if(m.imagem) rememberMsgImg(m.imagem); }
 syncForm(); paint();
+
+/* ---------------- Página / matéria ---------------- */
+
+const PG_FOTO_KEY = 'wp-materia-fotos-v1';
+const PG_FOTOS_BASE = [MODELO_MATERIA.imagem];
+
+const pg = { data: structuredClone(MODELO_MATERIA), uploadPath: null };
+const pgStatus = (m, ok) => {
+  const el = $('#pgStatus');
+  el.textContent = m || '';
+  el.className = 'flash ' + (ok === true ? 'ok' : ok === false ? 'err' : '');
+};
+
+function pgFit(){
+  const wrap = $('#view-materia .artigo-wrap');
+  const stage = $('#artigo-stage');
+  const center = $('#view-materia .center');
+  const node = document.querySelector('#artigo');
+  if(!wrap || !stage || !center || !node) return;
+  const natH = node.offsetHeight || 720;
+  const chrome = 96;
+  const availW = Math.max(200, center.clientWidth - 24);
+  const availH = Math.max(200, center.clientHeight - chrome);
+  const s = Math.max(0.35, Math.min(availW / ARTIGO_W, availH / natH, 1));
+  stage.style.transform = `scale(${s})`;
+  wrap.style.width = `${Math.round(ARTIGO_W * s)}px`;
+  wrap.style.height = `${Math.round(natH * s)}px`;
+}
+
+function pgSyncParagrafos(){
+  const box = $('#pgParagrafos');
+  const list = pg.data.corpo || (pg.data.corpo = []);
+  box.innerHTML = list.map((p, i) => `<article class="par">
+    <div class="par-head">
+      <span class="idx">¶ ${i + 1}</span>
+      <button class="btn sm danger" type="button" data-pgdel="${i}" title="Remover">✕</button>
+    </div>
+    <div class="field"><textarea data-pgtext="${i}" placeholder="Texto do parágrafo">${esc(p.texto)}</textarea></div>
+  </article>`).join('');
+  $('#pgVazio').style.display = list.length ? 'none' : '';
+  box.querySelectorAll('[data-pgtext]').forEach(t => {
+    t.addEventListener('input', () => { pg.data.corpo[+t.dataset.pgtext].texto = t.value; pgPaint(); });
+  });
+  box.querySelectorAll('[data-pgdel]').forEach(b => {
+    b.addEventListener('click', () => {
+      pg.data.corpo.splice(+b.dataset.pgdel, 1);
+      pgSyncParagrafos(); pgPaint(); pgStatus('Parágrafo removido', true);
+    });
+  });
+}
+
+function pgPull(){
+  const d = pg.data;
+  d.marca = $('#pgMarca').value;
+  d.secao1 = $('#pgSecao1').value;
+  d.secao2 = $('#pgSecao2').value;
+  d.titulo = $('#pgTitulo').value;
+  d.linhaFina = $('#pgLinha').value;
+  d.atualizado = $('#pgAtualizado').value;
+  d.imagem = $('#pgImagem').value.trim();
+  d.legenda = $('#pgLegenda').value;
+  d.credito = $('#pgCredito').value;
+}
+
+const PG_FIELDS = {
+  pgMarca: 'marca', pgSecao1: 'secao1', pgSecao2: 'secao2', pgTitulo: 'titulo',
+  pgLinha: 'linhaFina', pgAtualizado: 'atualizado', pgImagem: 'imagem',
+  pgLegenda: 'legenda', pgCredito: 'credito',
+};
+
+function pgSync(){
+  const d = pg.data;
+  for(const [id, key] of Object.entries(PG_FIELDS)) $(`#${id}`).value = d[key] || '';
+  pgSyncParagrafos();
+}
+
+function pgPaint(){
+  pgPull();
+  $('#artigo-host').innerHTML = renderArtigo(pg.data, { editavel: true });
+  requestAnimationFrame(pgFit);
+}
+
+$('#pgAddPar').onclick = () => {
+  pg.data.corpo.push({ texto: '' });
+  pgSyncParagrafos(); pgPaint();
+  requestAnimationFrame(() => {
+    const areas = $('#pgParagrafos').querySelectorAll('textarea');
+    areas[areas.length - 1]?.focus();
+  });
+};
+$('#pgLimparFoto').onclick = () => { pg.data.imagem = ''; pgSync(); pgPaint(); pgStatus('Imagem removida', true); };
+$('#pgUpload').onclick = () => { pg.uploadPath = 'imagem'; $('#fileArtigo').click(); };
+$('#pgReset').onclick = () => {
+  const img = pg.data.imagem;
+  pg.data = structuredClone(MODELO_MATERIA);
+  pg.data.imagem = img;
+  pgSync(); pgPaint(); pgStatus('Modelo restaurado', true);
+};
+for(const [id, key] of Object.entries(PG_FIELDS)){
+  $(`#${id}`).addEventListener('input', () => {
+    pg.data[key] = $(`#${id}`).value;
+    if(key === 'imagem' && pg.data.imagem) rememberUrl(PG_FOTO_KEY, pg.data.imagem, FOTO_MAX, FOTO_DATA_MAX);
+    pgPaint();
+  });
+}
+
+$('#fileArtigo').addEventListener('change', async () => {
+  const file = $('#fileArtigo').files?.[0];
+  if(!file || !pg.uploadPath) return;
+  const dataUrl = await new Promise((res, rej) => {
+    const fr = new FileReader(); fr.onload = () => res(fr.result); fr.onerror = rej; fr.readAsDataURL(file);
+  });
+  pg.data.imagem = dataUrl;
+  rememberUrl(PG_FOTO_KEY, dataUrl, FOTO_MAX, FOTO_DATA_MAX);
+  pg.uploadPath = null; $('#fileArtigo').value = '';
+  pgSync(); pgPaint(); pgStatus('Imagem ok', true);
+});
+
+$('#pgBaixar').onclick = async () => {
+  try{
+    pgStatus('Gerando…');
+    pgPaint();
+    await new Promise(r => requestAnimationFrame(r));
+    const node = document.querySelector('#artigo');
+    if(!node) throw new Error('preview vazio');
+    const h = node.offsetHeight;
+    node.querySelectorAll('[data-edit],[data-upload]').forEach(el => {
+      el.removeAttribute('contenteditable');
+      el.style.outline = 'none';
+    });
+    node.querySelectorAll('.shuff').forEach(el => el.remove());
+    if(document.fonts?.ready) await document.fonts.ready;
+    const dataUrl = await modernScreenshot.domToPng(node, {
+      width: ARTIGO_W, height: h, scale: 2, backgroundColor: '#ffffff',
+    });
+    const slug = (pg.data.titulo || 'materia').toLowerCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+    const a = document.createElement('a');
+    a.href = dataUrl; a.download = `${slug || 'materia'}.png`;
+    a.rel = 'noopener'; a.click();
+    pgStatus('Baixado', true); pgPaint();
+  }catch(e){ pgStatus(String(e.message || e), false); }
+};
+
+const tabs = [...document.querySelectorAll('.tabbtn')];
+function showTab(id){
+  tabs.forEach(b => b.classList.toggle('on', b.dataset.tab === id));
+  $('#view-chat').hidden = id !== 'chat';
+  $('#view-materia').hidden = id !== 'materia';
+  if(id === 'chat') requestAnimationFrame(fitPhone);
+  else requestAnimationFrame(() => { pgPaint(); pgFit(); });
+}
+tabs.forEach(b => b.addEventListener('click', () => {
+  showTab(b.dataset.tab);
+  history.replaceState(null, '', b.dataset.tab === 'materia' ? '#materia' : location.pathname + location.search);
+}));
+
+pgSync(); pgPaint();
+showTab(location.hash === '#materia' ? 'materia' : 'chat');
+if(document.fonts?.ready) document.fonts.ready.then(() => { pgPaint(); fitPhone(); });
 </script>
 </body>
 </html>

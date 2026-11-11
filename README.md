@@ -13,6 +13,14 @@ https://pub-1201b8b15bf3455ab30396aa22245d5f.r2.dev/index.html
 
 Dois exemplos no site: **escuro** e **claro**. Clique no texto/foto pra editar, escolha o tema, gere o PNG.
 
+## Aba "Página / matéria"
+
+Segunda aba do editor: modelo de página de portal de notícias (cabeçalho, editoria, título, linha fina, foto com legenda e corpo opcional), com os mesmos textos do modelo. Tudo editável no painel esquerdo ou direto na prévia; a foto troca por upload/URL. Exporta PNG 1724px (862 CSS @2x).
+
+Abra direto em https://whatsapp-print.pages.dev/#materia
+
+Arquivos: `web/materia.mjs` (markup + CSS do modelo), `web/fonts/` (Playfair Display + Inter self-hosted, necessário pro export inlinar as fontes).
+
 | Escuro | Claro |
 |---|---|
 | ![exemplo escuro](assets/exemplo-escuro.png) | ![exemplo claro](assets/exemplo-claro.png) |
